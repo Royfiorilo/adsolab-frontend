@@ -9,6 +9,7 @@ import Plotly from 'plotly.js-dist-min';
 //import locale from 'plotly.js-locales/es';
 import { PlotlyModule } from 'angular-plotly.js';
 import {HttpClientModule} from "@angular/common/http";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 //Plotly.register(locale)
 
@@ -23,7 +24,8 @@ PlotlyModule.plotlyjs = Plotly;
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    PlotlyModule
+    PlotlyModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
