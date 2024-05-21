@@ -55,8 +55,16 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-9 d-flex">
-      <app-graph></app-graph>
+    <div class="col-sm-9">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" ariaCurrentWhenActive="page">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/graph" ariaCurrentWhenActive="page">Graph</a>
+        </li>
+      </ul>
+      <router-outlet></router-outlet>
     </div>
   </div>
 </div>
