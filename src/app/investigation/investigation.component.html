@@ -1,0 +1,50 @@
+<div class="container mt-5">
+  <ngb-progressbar [animated]="true" [striped]="true"  class="mb-3" [value]=progressBarValue />
+  <div ngbNav #nav="ngbNav" class="stepper d-flex justify-content-between nav-tabs">
+    <div class="step" (click)="stepId=1">
+      <div class="step-title" (click)="updateProgressBar(25)" >Set de datos</div>
+    </div>
+    <div class="step" (click)="stepId=2">
+      <div class="step-title" (click)="updateProgressBar(50)" >Seleccionar modelos</div>
+    </div>
+    <div class="step" (click)="stepId=3">
+      <div class="step-title" (click)="updateProgressBar(75)" >Resultados</div>
+    </div>
+    <div class="step" (click)="stepId=4">
+      <div class="step-title" (click)="updateProgressBar(100)" >Comparación</div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid d-flex justify-content-center">
+
+  <div class="col-md-4 m-3">
+
+    <div *ngIf="stepId == 1" class="card mt-3">
+      <div class="card-body">
+        <h5 class="card-title">Nuevo set de datos</h5>
+        <p class="card-text">Arrastre aquí el archivo<br>Debe ser en formato .xlsx</p>
+        <input type="file" (change)="onFileSelected($event)" accept=".xlsx" class="form-control-file">
+        <button class="btn btn-primary mt-3" (click)="onUpload()">Subir archivo</button>
+      </div>
+    </div>
+
+    <div class="container-fluid d-flex justify-content-center" *ngIf="stepId == 2">
+      <div *ngFor="let model of models" class="card col-md-9 m-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 flex-grow-1 text-center">{{ model.name }}</h5>
+            <input class="form-check-input" type="checkbox" value="{{ model.name }}">
+          </div>
+          <p class="card-text mt-2">{{model.description}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="stepId == 3"></div>
+
+    <div *ngIf="stepId == 4"></div>
+
+  </div>
+
+</div>
