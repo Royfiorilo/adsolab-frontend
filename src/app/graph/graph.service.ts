@@ -1,19 +1,26 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, tap} from "rxjs";
+import { environment } from '../../environments/environment';
+import {IModelResult} from "./interface";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GraphService {
 
-  constructor(private httpClient: HttpClient) { }
+  backendBaseUrl: string;
 
-  getLangmuirResults(ce: number[]): Observable<number[]> {
+  constructor(private httpClient: HttpClient) {
+    this.backendBaseUrl = environment.backendBaseUrl;
+  }
 
-    return this.httpClient.get<number[]>('https://adsolab-back.onrender.com/langmuir')
-      // .pipe(
-      //   tap(results => console.info(`Results: ${JSON.stringify(results)}`))
-      // )
+  getLangmuirResults(ce: number[]): Observable<IModelResult> {
+
+    this.httpClient.get<any>(`${this.backendBaseUrl}/health-check`).subscribe(response => console.log(response))
+
+    return this.httpClient.post<IModelResult>(`${this.backendBaseUrl}/run-model/langmuir`, {
+      x: ce
+    })
   }
 }

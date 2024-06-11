@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {GraphService} from "./graph.service";
+import {IModelResult} from "./interface";
 
 @Component({
   selector: 'app-graph',
@@ -20,8 +21,8 @@ export class GraphComponent {
 
     this.graphService
       .getLangmuirResults(this.ce)
-      .subscribe((results: number[]) => {
-        this.qe = results;
+      .subscribe((results: IModelResult) => {
+        this.qe = results.y;
         this.graph = {
           data: [
             { x: this.ce, y: this.qe, type: 'scatter', mode: 'lines+points', marker: {color: 'red'} },

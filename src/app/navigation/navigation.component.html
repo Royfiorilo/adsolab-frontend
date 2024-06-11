@@ -1,0 +1,36 @@
+<ng-container>
+  <nav class="navbar navbar-expand navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand">Adsolab</a>
+      <div class=" navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/" aria-current="page" >Inicio</a>
+          </li>
+          <li ngbDropdown class="nav-item dropdown">
+            <a ngbDropdownToggle class="nav-link dropdown-toggle" role="button">
+              Nuevo
+            </a>
+            <ul ngbDropdownMenu class="dropdown-menu">
+              <li><a ngbDropdownItem class="dropdown-item" routerLink="/investigation">Investigacion</a></li>
+              <li><a ngbDropdownItem class="dropdown-item" >Set de datos</a></li>
+            </ul>
+          </li>
+          <li ngbDropdown class="nav-item dropdown">
+            <a ngbDropdownToggle class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Modelos
+            </a>
+            <ul ngbDropdownMenu class="dropdown-menu">
+              <li><a ngbDropdownItem class="dropdown-item" href="#">Lagmuir</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/graph" ariaCurrentWhenActive="page" >Graficos</a>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</ng-container>

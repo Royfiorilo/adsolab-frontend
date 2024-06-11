@@ -10,6 +10,9 @@ import Plotly from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
 import {HttpClientModule} from "@angular/common/http";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NavigationComponent } from './navigation/navigation.component';
+import { InvestigationComponent } from './investigation/investigation.component';
+import {FormsModule} from "@angular/forms";
 
 //Plotly.register(locale)
 
@@ -18,14 +21,17 @@ PlotlyModule.plotlyjs = Plotly;
 @NgModule({
   declarations: [
     AppComponent,
-    GraphComponent
+    GraphComponent,
+    NavigationComponent,
+    InvestigationComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     PlotlyModule,
-    NgbModule
+    NgbModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

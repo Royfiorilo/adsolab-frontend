@@ -2,4 +2,8 @@
   <plotly-plot [data]="graph.data" [layout]="graph.layout">
   </plotly-plot>
 </div>
-<ng-template #loading><p>Loading</p></ng-template>
+<ng-template #loading>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status"></div>
+  </div>
+</ng-template>
