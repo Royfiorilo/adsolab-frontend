@@ -18,7 +18,7 @@
 
 <div class="container-fluid d-flex justify-content-center">
 
-  <div class="col-md-4 m-3">
+  <div class="col-md-8 m-3">
 
     <div *ngIf="stepId == 1" class="card mt-3">
       <div class="card-body">
@@ -30,7 +30,7 @@
     </div>
 
     <div *ngIf="stepId == 2" class="container-fluid d-flex justify-content-center" >
-      <div *ngFor="let model of models" class="card col-md-9 m-3">
+      <div *ngFor="let model of models" class="card m-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0 flex-grow-1 text-center">{{ model.name }}</h5>
