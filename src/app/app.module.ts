@@ -13,6 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavigationComponent } from './navigation/navigation.component';
 import { InvestigationComponent } from './investigation/investigation.component';
 import {FormsModule} from "@angular/forms";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 //Plotly.register(locale)
 
@@ -31,7 +32,8 @@ PlotlyModule.plotlyjs = Plotly;
     HttpClientModule,
     PlotlyModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

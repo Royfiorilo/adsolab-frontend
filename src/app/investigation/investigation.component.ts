@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, TemplateRef } from '@angular/core';
+import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-investigation',
@@ -28,6 +30,11 @@ export class InvestigationComponent {
   sheetHeaders: string[] = [];
   selectedModels: string[] = [];
   modelSelections: { [key: string]: number } = {};
+  private modalService = inject(NgbModal);
+
+  open(content: TemplateRef<any>) {
+    this.modalService.open(content)
+  }
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
@@ -58,4 +65,6 @@ export class InvestigationComponent {
   updateProgressBar(status: number) {
     this.progressBarValue = status;
   }
+
+  protected readonly faInfoCircle = faInfoCircle;
 }

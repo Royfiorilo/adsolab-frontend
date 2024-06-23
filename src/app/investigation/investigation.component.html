@@ -20,7 +20,7 @@
 
   <div class="col-md-8 m-3">
 
-    <div *ngIf="stepId == 1" class="card mt-3">
+    <div *ngIf="stepId == 1" class="card  mt-3">
       <div class="card-body">
         <h5 class="card-title">Nuevo set de datos</h5>
         <p class="card-text">Arrastre aquí el archivo<br>Debe ser en formato .xlsx</p>
@@ -33,11 +33,26 @@
       <div *ngFor="let model of models" class="card m-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0 flex-grow-1 text-center">{{ model.name }}</h5>
+              <fa-icon (click)="open(content)" [icon]="faInfoCircle"></fa-icon>
+              <h5 class="card-title mb-0 flex-grow-1 text-center">{{ model.name }}</h5>
             <input class="form-check-input" type="checkbox" [checked]="selectedModels.includes(model.name)" (change)="onModelSelected(model.name)">
           </div>
-          <p class="card-text mt-2">{{model.description}}</p>
         </div>
+
+        <ng-template #content let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Detalles del modelo</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          </div>
+          <div class="modal-body">
+              <div class="mb-3">
+                <div class="input-group">
+                  {{model.description}}
+                </div>
+              </div>
+          </div>
+        </ng-template>
+
       </div>
     </div>
 
