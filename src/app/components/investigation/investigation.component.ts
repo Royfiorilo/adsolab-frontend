@@ -1,6 +1,5 @@
-import { Component, inject, TemplateRef } from '@angular/core';
-import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, inject, TemplateRef, EventEmitter } from '@angular/core';
+import {elementAt} from "rxjs";
 
 @Component({
   selector: 'app-investigation',
@@ -10,7 +9,6 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class InvestigationComponent {
   selectedFile: File | null = null;
-  progressBarValue: number = 0;
   stepId: number = 0;
   models: { name: string, description: string, params: number }[] = [{
     name: "Langmuir",
@@ -30,41 +28,34 @@ export class InvestigationComponent {
   sheetHeaders: string[] = [];
   selectedModels: string[] = [];
   modelSelections: { [key: string]: number } = {};
-  private modalService = inject(NgbModal);
 
-  open(content: TemplateRef<any>) {
-    this.modalService.open(content)
+  setStepId(value: number){
+    this.stepId = value;
   }
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
-  }
-  addModel(model: string){
-    this.selectedModels.push(model);
-    this.modelSelections[model] = 1;
-  }
-
-  onModelSelected(model: string) {
-    this.selectedModels.includes(model) ? this.selectedModels.splice(this.selectedModels.indexOf(model),1) : this.addModel(model);
-    console.log(this.selectedModels);
+  selectFile(event: any) {
+    if (event.target == null){
+      console.log("null file");
+    } else{
+        this.selectedFile = event.target.files[0];
+    }
   }
 
-  getParamsArray(modelName: string): number[] {
-    let model  = this.models.find(m => m.name === modelName);
-    return model === undefined ? [] : Array(model.params).fill(0).map((x, i) => i);
-  }
-
-  onUpload() {
+  uploadFile(){
     if (this.selectedFile) {
       console.log(`File selected: ${this.selectedFile.name}`);
     } else {
       alert('Please select a file first');
     }
   }
-
-  updateProgressBar(status: number) {
-    this.progressBarValue = status;
+  addModel(model: string){
+    this.selectedModels.push(model);
+    this.modelSelections[model] = 1;
   }
 
-  protected readonly faInfoCircle = faInfoCircle;
+  onModelSelected(modelName: string) {
+  this.selectedModels.includes(modelName) ? this.selectedModels.splice(this.selectedModels.indexOf(modelName),1) : this.addModel(modelName);
+  }
+
+
 }

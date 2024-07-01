@@ -1,0 +1,36 @@
+<ng-container *ngIf="selectedModels.length === 0">
+  <div class="alert alert-warning" role="alert">
+    No se han seleccionado modelos
+  </div>
+</ng-container>
+
+<div class="container-fluid d-flex justify-content-between m-3">
+  <div *ngFor="let model of selectedModels" class="card m-3">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0 flex-grow-1 text-center">{{ model }}</h5>
+      </div>
+      <p class="card-text mt-2"></p>
+      <div class="form-floating">
+        <select [(ngModel)]="modelSelections[model]" class="form-select" aria-label="Tipo de parametros">
+          <option value=1 >Parametros manuales</option>
+          <option value=2 >Parametros automatizados</option>
+        </select>
+        <label [for]="model">Tipo de parametros</label>
+      </div>
+      <ng-container *ngIf="modelSelections[model] == 1;else automatedParams">
+        <div *ngFor="let i of getParamsArray(model)">
+          <div class="form-floating m-3">
+            <input type="text" class="form-control" id="floatingParam{{i+1}}" placeholder="Parametro {{i+1}}">
+            <label for="floatingParam{{i+1}}">Parametro {{i+1}}</label>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #automatedParams>
+        <div class="mt-3 alert alert-success" role="alert">
+          Parametros automatizados
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
