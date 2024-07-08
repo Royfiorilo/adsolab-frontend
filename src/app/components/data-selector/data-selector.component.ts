@@ -1,4 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
+import {DataSelectorService} from "./data-selector.service"
+import {DataSample} from "./data-sample";
+
 
 @Component({
   selector: 'app-data-selector',
@@ -9,6 +12,10 @@ export class DataSelectorComponent {
 @Output() onFileSelected: EventEmitter<Event> = new EventEmitter();
 @Output() onUploadFile: EventEmitter<File> = new EventEmitter();
 
+  private dataSample: DataSample = { "ce" : [4.4, 7.7, 9.9], "qe": [16.16, 32.32, 62.62]};
+
+  constructor(private dataService: DataSelectorService) {}
+
   onChange(event: Event){
     console.log(event);
     this.onFileSelected.emit(event);
@@ -16,7 +23,14 @@ export class DataSelectorComponent {
 
   onUpload(){
     console.log("upload");
-    this.onUploadFile.emit();
+    this.dataService
+      .setDataSample(this.dataSample)
+      .subscribe((results) => {
+        console.log(results);
+      });
+    //this.onUploadFile.emit();
   }
+
+
 
 }
