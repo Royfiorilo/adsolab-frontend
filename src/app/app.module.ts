@@ -19,6 +19,8 @@ import { ModelSelectorComponent } from './components/model-selector/model-select
 import { ModelConfigurationComponent } from './components/model-configuration/model-configuration.component';
 import { ModelCompareComponent } from './components/model-compare/model-compare.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { MainPageComponent } from './components/main-page/main-page.component';
 
 //Plotly.register(locale)
 
@@ -34,7 +36,9 @@ PlotlyModule.plotlyjs = Plotly;
     ModelSelectorComponent,
     ModelConfigurationComponent,
     ModelCompareComponent,
-    ProgressBarComponent
+    ProgressBarComponent,
+    FileUploadComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,

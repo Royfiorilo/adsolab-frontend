@@ -1,0 +1,8 @@
+<div class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" [class.dragging]="isDragging" >
+  <label for="fileUploader" class="btn btn-primary mt-3" >Seleccionar Archivo</label>
+  <input id="fileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv" />
+  <p>o</p>
+  <p>Arrastre un archivo Excel o CSV aqui</p>
+</div>
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+<div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
