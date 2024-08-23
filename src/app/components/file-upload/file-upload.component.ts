@@ -89,7 +89,7 @@ export class FileUploadComponent {
       const columns = line.split(',');
       if (columns.length !== 2){
         this.errorMessage = 'Formato invalido. El archivo debe tener exactamente dos columnas.';
-      } else if (isNaN(Number(columns[0])) || isNaN(Number(columns[1]))) {
+      } else if (columns[0] === "" || columns[1] === "" || isNaN(Number(columns[0])) || isNaN(Number(columns[1]))) {
         this.errorMessage = 'Formato invalido. El archivo debe tener exclusivamente valores numericos.';
         return;
       }
