@@ -13,4 +13,9 @@ export class ModelConfigurationComponent {
     let model  = this.models.find(m => m.name === modelName);
     return model === undefined ? [] : Array(model.params).fill(0).map((x, i) => i);
   }
+
+  runModel(model: string) {
+    console.log(model);
+
+  }
 }

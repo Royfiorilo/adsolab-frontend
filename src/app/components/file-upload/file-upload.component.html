@@ -1,4 +1,4 @@
-<div class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" [class.dragging]="isDragging" >
+<div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"  [class.dragging]="isDragging" >
   <label for="fileUploader" class="btn btn-primary mt-3" >Seleccionar Archivo</label>
   <input id="fileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv" />
   <p>o</p>

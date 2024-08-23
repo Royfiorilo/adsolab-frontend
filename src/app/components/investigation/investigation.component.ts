@@ -9,7 +9,7 @@ import {elementAt} from "rxjs";
 
 export class InvestigationComponent {
   selectedFile: File | null = null;
-  stepId: number = 0;
+  stepId: number = 1;
   models: { name: string, description: string, params: number }[] = [{
     name: "Langmuir",
     description: "The Langmuir adsorption model explains adsorption by assuming an adsorbate behaves as an ideal gas at isothermal conditions. According to the model, adsorption and desorption are reversible processes.",

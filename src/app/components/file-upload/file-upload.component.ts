@@ -13,19 +13,18 @@ export class FileUploadComponent {
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
-    event.stopPropagation();
     this.isDragging = true;
   }
 
   onDragLeave(event: DragEvent) {
+
     event.preventDefault();
-    event.stopPropagation();
     this.isDragging = false;
+
   }
 
   onDrop(event: DragEvent) {
     event.preventDefault();
-    event.stopPropagation();
     this.isDragging = false;
 
     const files = event.dataTransfer?.files;

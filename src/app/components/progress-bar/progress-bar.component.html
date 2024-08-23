@@ -1,15 +1,15 @@
 <ngb-progressbar [animated]="true" [striped]="true"  class="mb-3" [value]=progressBarValue />
 <div ngbNav #nav="ngbNav" class="stepper d-flex justify-content-between nav-tabs">
   <div class="step" (click)="setStepId(1)">
-    <div class="step-title" (click)="updateProgressBar(25)" >Set de datos</div>
+    <div class="step-title" (click)="updateProgressBar(0)" >Set de datos</div>
   </div>
   <div class="step" (click)="setStepId(2)">
-    <div class="step-title" (click)="updateProgressBar(50)" >Seleccionar modelos</div>
+    <div class="step-title" (click)="updateProgressBar(25)" >Seleccionar modelos</div>
   </div>
   <div class="step" (click)="setStepId(3)">
-    <div class="step-title" (click)="updateProgressBar(75)" >Configuracion de modelos</div>
+    <div class="step-title" (click)="updateProgressBar(50)" >Configuracion de modelos</div>
   </div>
   <div class="step" (click)="setStepId(4)">
-    <div class="step-title" (click)="updateProgressBar(100)" >Comparación</div>
+    <div class="step-title" (click)="updateProgressBar(75)" >Comparación</div>
   </div>
 </div>
