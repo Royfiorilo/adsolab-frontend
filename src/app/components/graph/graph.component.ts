@@ -25,7 +25,7 @@ export class GraphComponent {
         this.qe = results.y;
         this.graph = {
           data: [
-            { x: this.ce, y: this.qe, type: 'scatter', mode: 'lines+points', marker: {color: 'red'} },
+            { x: this.ce, y: this.qe, type: 'scatter', mode: 'lines+markers', marker: {color: 'red'} },
           ],
           layout: {title: 'Modelo de Langmuir'}
         };

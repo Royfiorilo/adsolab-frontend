@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, TemplateRef, EventEmitter } from '@angular/core';
+import {elementAt} from "rxjs";
 
 @Component({
   selector: 'app-investigation',
@@ -8,8 +9,7 @@ import { Component } from '@angular/core';
 
 export class InvestigationComponent {
   selectedFile: File | null = null;
-  progressBarValue: number = 0;
-  stepId: number = 0;
+  stepId: number = 1;
   models: { name: string, description: string, params: number }[] = [{
     name: "Langmuir",
     description: "The Langmuir adsorption model explains adsorption by assuming an adsorbate behaves as an ideal gas at isothermal conditions. According to the model, adsorption and desorption are reversible processes.",
@@ -29,33 +29,33 @@ export class InvestigationComponent {
   selectedModels: string[] = [];
   modelSelections: { [key: string]: number } = {};
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
-  }
-  addModel(model: string){
-    this.selectedModels.push(model);
-    this.modelSelections[model] = 1;
+  setStepId(value: number){
+    this.stepId = value;
   }
 
-  onModelSelected(model: string) {
-    this.selectedModels.includes(model) ? this.selectedModels.splice(this.selectedModels.indexOf(model),1) : this.addModel(model);
-    console.log(this.selectedModels);
+  selectFile(event: any) {
+    if (event.target == null){
+      console.log("null file");
+    } else{
+        this.selectedFile = event.target.files[0];
+    }
   }
 
-  getParamsArray(modelName: string): number[] {
-    let model  = this.models.find(m => m.name === modelName);
-    return model === undefined ? [] : Array(model.params).fill(0).map((x, i) => i);
-  }
-
-  onUpload() {
+  uploadFile(){
     if (this.selectedFile) {
       console.log(`File selected: ${this.selectedFile.name}`);
     } else {
       alert('Please select a file first');
     }
   }
-
-  updateProgressBar(status: number) {
-    this.progressBarValue = status;
+  addModel(model: string){
+    this.selectedModels.push(model);
+    this.modelSelections[model] = 1;
   }
+
+  onModelSelected(modelName: string) {
+  this.selectedModels.includes(modelName) ? this.selectedModels.splice(this.selectedModels.indexOf(modelName),1) : this.addModel(modelName);
+  }
+
+
 }
