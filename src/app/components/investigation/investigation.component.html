@@ -10,7 +10,7 @@
     </div>
 
     <div *ngIf="stepId == 2"  >
-      <app-model-selector [models]="models" [selectedModels]="selectedModels" (onSelectedModels)="onModelSelected($event)"></app-model-selector>
+      <app-model-selector [selectedModels]="selectedModels" (onSelectedModels)="onModelSelected($event)"></app-model-selector>
     </div>
 
     <div *ngIf="stepId == 3" >
