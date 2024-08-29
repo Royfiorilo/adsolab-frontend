@@ -1,7 +1,6 @@
 import {Component, EventEmitter, inject, Input, Output, TemplateRef} from '@angular/core';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {IModelResult} from "../graph/interface";
 import {ModelSelectorServiceService} from "./model-selector-service.service";
 import {Model, ModelsResponse, Parameter, Linearization} from "./model";
 
@@ -11,18 +10,21 @@ import {Model, ModelsResponse, Parameter, Linearization} from "./model";
   styleUrl: './model-selector.component.css'
 })
 export class ModelSelectorComponent {
-  protected models: Model[] = [];
   @Input() selectedModels!: string[];
+  @Input() models!: Model[];
   @Output() onSelectedModels: EventEmitter<string> = new EventEmitter();
+  @Output() onLoadedModels: EventEmitter<Model[]> = new EventEmitter();
   private modalService = inject(NgbModal);
   protected readonly faInfoCircle = faInfoCircle;
 
 constructor(private modelService: ModelSelectorServiceService) {
 }
   ngOnInit() {
-    this.modelService.getModels().subscribe(response => {
-      this.models = response.models;
-    });
+    if (this.models.length === 0){
+      this.modelService.getModels().subscribe(response => {
+        this.onLoadedModels.emit(response.models);
+      });
+    }
   }
 
   open(content: TemplateRef<any>) {
