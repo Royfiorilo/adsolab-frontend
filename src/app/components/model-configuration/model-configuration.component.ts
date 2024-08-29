@@ -1,5 +1,6 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {Model} from "../model-selector/model";
+import {IModelConfiguration} from "../investigation/interface";
 
 @Component({
   selector: 'app-model-configuration',
@@ -7,19 +8,28 @@ import {Model} from "../model-selector/model";
   styleUrl: './model-configuration.component.css'
 })
 export class ModelConfigurationComponent {
-  @Input() selectedModels!: string[];
-  @Input() modelSelections!: { [p: string]: number };
+  @Input() selectedModels!: number[];
+  @Input() modelConfiguration!: { [modelId: number]:  IModelConfiguration};
   @Input() models!: Model[];
-  getParamsArray(modelName: string): number[] {
+  @Output() onSelectedConfiguration = new EventEmitter<number>();
+
+ getParamsArray(modelId: number): number[] {
     // let model  = this.models.find(m => m.name === modelName);
     let model: number[] = [];
     // return model === undefined ? [] : Array(model.params).fill(0).map((x, i) => i);
     return model;
   }
 
+  getModelById(modelId: number): Model {
+   return this.models.filter(model => model._id === modelId).pop()!;
+  }
 
-  runModel(model: string) {
-    console.log(this.models);
 
+  runModel(model: number) {
+
+  }
+
+  selectConfiguration(event: Event,modelId:number): void {
+    this.onSelectedConfiguration.emit(modelId);
   }
 }

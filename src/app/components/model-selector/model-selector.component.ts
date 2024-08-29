@@ -10,9 +10,9 @@ import {Model, ModelsResponse, Parameter, Linearization} from "./model";
   styleUrl: './model-selector.component.css'
 })
 export class ModelSelectorComponent {
-  @Input() selectedModels!: string[];
+  @Input() selectedModels!: number[];
   @Input() models!: Model[];
-  @Output() onSelectedModels: EventEmitter<string> = new EventEmitter();
+  @Output() onSelectedModels: EventEmitter<number> = new EventEmitter();
   @Output() onLoadedModels: EventEmitter<Model[]> = new EventEmitter();
   private modalService = inject(NgbModal);
   protected readonly faInfoCircle = faInfoCircle;
@@ -31,8 +31,8 @@ constructor(private modelService: ModelSelectorServiceService) {
     this.modalService.open(content)
   }
 
-  selectModel(modelName: string){
-    this.onSelectedModels.emit(modelName);
+  selectModel(modelId: number){
+    this.onSelectedModels.emit(modelId);
   }
 
 }
