@@ -11,8 +11,8 @@
       <app-model-selector [models]="models" [selectedModels]="selectedModels" (onLoadedModels)="onLoadedModels($event)" (onSelectedModels)="onModelSelected($event)"></app-model-selector>
     </div>
 
-    <div *ngIf="stepId == 3" >
-      <app-model-configuration [models]="models" [modelConfiguration]="modelConfiguration" (onSelectedConfiguration)="onSelectedConfiguration($event)"  [selectedModels]="selectedModels"></app-model-configuration>
+    <div class="container-fluid" *ngIf="stepId == 3" >
+      <app-model-configuration [investigationId]="investigationId" [models]="models" [modelConfiguration]="modelConfiguration" (onSelectedConfiguration)="onSelectedConfiguration($event)"  [selectedModels]="selectedModels"></app-model-configuration>
     </div>
 
     <div *ngIf="stepId == 4">

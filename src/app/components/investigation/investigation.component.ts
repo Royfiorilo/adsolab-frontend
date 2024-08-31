@@ -10,6 +10,7 @@ import {IModelConfiguration} from "./interface";
 })
 
 export class InvestigationComponent {
+  investigationId: number = 1;
   selectedFile: File | null = null;
   stepId: number = 1;
   models: Model[] = [];

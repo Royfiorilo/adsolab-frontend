@@ -1,6 +1,9 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "../investigation/interface";
+import {DataSelectorService} from "../data-selector/data-selector.service";
+import {ModelConfigurationService} from "./model-configuration.service";
+import {ILinearizationRequest} from "./interface";
 
 @Component({
   selector: 'app-model-configuration',
@@ -9,9 +12,11 @@ import {IModelConfiguration} from "../investigation/interface";
 })
 export class ModelConfigurationComponent {
   @Input() selectedModels!: number[];
+  @Input() investigationId!: number;
   @Input() modelConfiguration!: { [modelId: number]:  IModelConfiguration};
   @Input() models!: Model[];
   @Output() onSelectedConfiguration = new EventEmitter<number>();
+  constructor(private modelConfigurationService: ModelConfigurationService) {}
 
  getParamsArray(modelId: number): number[] {
     // let model  = this.models.find(m => m.name === modelName);
@@ -25,8 +30,17 @@ export class ModelConfigurationComponent {
   }
 
 
-  runModel(model: number) {
+  runLinearization(modelId: number) {
+    let model: Model = this.getModelById(modelId);
+    let request: ILinearizationRequest = {investigation_id: this.investigationId, models: [{
+        model: model.name,
+        linearizations: model.linearizations.map(linearization => linearization.name)
+      }]};
 
+    this.modelConfigurationService.runLinearization(request).subscribe((results) => {
+      console.log(results);
+
+    });
   }
 
   selectConfiguration(event: Event,modelId:number): void {
