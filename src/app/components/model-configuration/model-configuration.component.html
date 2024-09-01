@@ -43,6 +43,7 @@
           <div class="mt-auto d-flex align-content-center justify-content-center">
             <button class="btn btn-primary mt-3" (click)="runLinearization(modelId)">Run Linearization</button>
           </div>
+            <plotly-plot [data]="graph.data" [layout]="graph.layout"> </plotly-plot>
         </div>
       </div>
     </div>

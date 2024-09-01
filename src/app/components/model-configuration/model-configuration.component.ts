@@ -3,7 +3,7 @@ import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "../investigation/interface";
 import {DataSelectorService} from "../data-selector/data-selector.service";
 import {ModelConfigurationService} from "./model-configuration.service";
-import {ILinearizationRequest} from "./interface";
+import {ILinearizationRequest, ILinearizationResponse} from "./interface";
 
 @Component({
   selector: 'app-model-configuration',
@@ -16,6 +16,8 @@ export class ModelConfigurationComponent {
   @Input() modelConfiguration!: { [modelId: number]:  IModelConfiguration};
   @Input() models!: Model[];
   @Output() onSelectedConfiguration = new EventEmitter<number>();
+  protected graph: any = {};
+
   constructor(private modelConfigurationService: ModelConfigurationService) {}
 
  getParamsArray(modelId: number): number[] {
@@ -37,9 +39,19 @@ export class ModelConfigurationComponent {
         linearizations: model.linearizations.map(linearization => linearization.name)
       }]};
 
-    this.modelConfigurationService.runLinearization(request).subscribe((results) => {
-      console.log(results);
+    this.modelConfigurationService.runLinearization(request).subscribe((response) => {
+      let slope:number = response.results[0].linearizations[0].slope;
+      let intercept:number= response.results[0].linearizations[0].intercept;
+      let xMin:number= response.results[0].linearizations[0].transformed.x[0];
+      let xMax:number= response.results[0].linearizations[0].transformed.x.pop()!;
 
+      this.graph = {
+        data: [
+          {x: response.results[0].linearizations[0].transformed.x, y: response.results[0].linearizations[0].transformed.y, type: 'scatter', mode: 'markers', marker: {color: 'red'}},
+          {x: [xMin, xMax], y: [(slope*xMin+intercept),(slope*xMax+intercept)], type: 'scatter', mode: 'line', marker: {color: 'blue'}},
+        ],
+        layout: {title: 'Modelo Linearizado'}
+      }
     });
   }
 
