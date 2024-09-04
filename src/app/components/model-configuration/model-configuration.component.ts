@@ -3,7 +3,7 @@ import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "../investigation/interface";
 import {DataSelectorService} from "../data-selector/data-selector.service";
 import {ModelConfigurationService} from "./model-configuration.service";
-import {ILinearizationRequest, ILinearizationResponse} from "./interface";
+import {ILinearizationGraph, ILinearizationRequest, ILinearizationResponse} from "./interface";
 
 @Component({
   selector: 'app-model-configuration',
@@ -16,7 +16,7 @@ export class ModelConfigurationComponent {
   @Input() modelConfiguration!: { [modelId: number]:  IModelConfiguration};
   @Input() models!: Model[];
   @Output() onSelectedConfiguration = new EventEmitter<number>();
-  protected graph: any = {};
+  protected linearizationGraphs: {[key: number]: ILinearizationGraph[]} = {};
 
   constructor(private modelConfigurationService: ModelConfigurationService) {}
 
@@ -31,7 +31,6 @@ export class ModelConfigurationComponent {
    return this.models.filter(model => model._id === modelId).pop()!;
   }
 
-
   runLinearization(modelId: number) {
     let model: Model = this.getModelById(modelId);
     let request: ILinearizationRequest = {investigation_id: this.investigationId, models: [{
@@ -40,17 +39,26 @@ export class ModelConfigurationComponent {
       }]};
 
     this.modelConfigurationService.runLinearization(request).subscribe((response) => {
-      let slope:number = response.results[0].linearizations[0].slope;
-      let intercept:number= response.results[0].linearizations[0].intercept;
-      let xMin:number= response.results[0].linearizations[0].transformed.x[0];
-      let xMax:number= response.results[0].linearizations[0].transformed.x.pop()!;
 
-      this.graph = {
-        data: [
-          {x: response.results[0].linearizations[0].transformed.x, y: response.results[0].linearizations[0].transformed.y, type: 'scatter', mode: 'markers', marker: {color: 'red'}},
-          {x: [xMin, xMax], y: [(slope*xMin+intercept),(slope*xMax+intercept)], type: 'scatter', mode: 'line', marker: {color: 'blue'}},
-        ],
-        layout: {title: 'Modelo Linearizado'}
+      this.linearizationGraphs[model._id] = [];
+
+      for ( const linearization of response.results[0].linearizations){
+
+        let slope:number = linearization.slope;
+        let intercept:number= linearization.intercept;
+        let xMin:number= linearization.transformed.x[0];
+        let xMax:number= linearization.transformed.x.pop()!;
+        let linearizationGraph:ILinearizationGraph = {
+          linearizationName: linearization.name,
+        graph: {
+          data: [
+            {x: linearization.transformed.x, y: linearization.transformed.y, type: 'scatter', mode: 'markers', marker: {color: 'red'}},
+            {x: [xMin, xMax], y: [(slope*xMin+intercept),(slope*xMax+intercept)], type: 'scatter', mode: 'line', marker: {color: 'blue'}},
+          ],
+            layout: {title: linearization.name}
+        }
+        }
+        this.linearizationGraphs[modelId].push(linearizationGraph);
       }
     });
   }

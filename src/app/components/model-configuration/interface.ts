@@ -45,3 +45,29 @@ export interface IStatistics {
 }
 
 
+export interface ILinearizationGraph {
+  linearizationName: string;
+  graph: IGraph;
+}
+
+export interface IGraph {
+  data: IGraphData[];
+  layout: IGraphLayout;
+}
+
+export interface IGraphData {
+  x: (number)[];  // Supports both numbers and strings (for variables)
+  y: (number)[];
+  type: string;            // e.g., 'scatter'
+  mode: string;            // e.g., 'markers', 'line'
+  marker: IMarker;
+}
+
+export interface IMarker {
+  color: string;
+}
+
+export interface IGraphLayout {
+  title: string;
+}
+
