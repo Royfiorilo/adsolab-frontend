@@ -3,23 +3,19 @@
 </div>
 
 <div class="container-fluid d-flex justify-content-center">
-
-
-    <div *ngIf="stepId == 1" >
+      <div *ngIf="stepId == 1" >
       <app-data-selector (onFileSelected)="selectFile($event)" (onUploadFile)="uploadFile()"></app-data-selector>
     </div>
 
     <div *ngIf="stepId == 2"  >
-      <app-model-selector [models]="models" [selectedModels]="selectedModels" (onSelectedModels)="onModelSelected($event)"></app-model-selector>
+      <app-model-selector [models]="models" [selectedModels]="selectedModels" (onLoadedModels)="onLoadedModels($event)" (onSelectedModels)="onModelSelected($event)"></app-model-selector>
     </div>
 
-    <div *ngIf="stepId == 3" >
-      <app-model-configuration [models]="models" [modelSelections]="modelSelections" [selectedModels]="selectedModels"></app-model-configuration>
+    <div class="container-fluid" *ngIf="stepId == 3" >
+      <app-model-configuration [investigationId]="investigationId" [models]="models" [modelConfiguration]="modelConfiguration" (onSelectedConfiguration)="onSelectedConfiguration($event)"  [selectedModels]="selectedModels"></app-model-configuration>
     </div>
 
     <div *ngIf="stepId == 4">
       <app-model-compare [selectedModels]="selectedModels"></app-model-compare>
     </div>
-
-
 </div>

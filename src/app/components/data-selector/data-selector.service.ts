@@ -25,7 +25,6 @@ export class DataSelectorService {
       console.log("Invalid data sample");
     }
 
-    this.httpClient.get<any>(`${this.backendBaseUrl}/health-check`).subscribe(response => console.log(response))
 
     return this.httpClient.post<DataSample>(`${this.backendBaseUrl}/investigation/sample`, sample)
   }

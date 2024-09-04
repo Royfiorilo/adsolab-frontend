@@ -9,27 +9,31 @@ import {IModelResult} from "./interface";
 })
 export class GraphComponent {
 
-  private ce: number[] = [];
-  protected qe: number[] = [];
+  private ce: number[] = [4.7, 7.0, 9.31, 16.6, 32.5, 362.8];
+  protected qe: number[] = [4.7, 7.0, 9.31, 16.6, 32.5, 120.8];
   protected graph: any = {};
 
   constructor(private graphService: GraphService) {}
 
   ngOnInit() {
-
-    this.ce = [4.7, 7.0, 9.31, 16.6, 32.5, 62.8];
-
-    this.graphService
-      .getLangmuirResults(this.ce)
-      .subscribe((results: IModelResult) => {
-        this.qe = results.y;
-        this.graph = {
-          data: [
-            { x: this.ce, y: this.qe, type: 'scatter', mode: 'lines+markers', marker: {color: 'red'} },
-          ],
-          layout: {title: 'Modelo de Langmuir'}
-        };
-      });
+    this.graph = {
+      data: [
+        {x: this.ce, y: this.qe, type: 'scatter', mode: 'lines+markers', marker: {color: 'red'}},
+      ],
+      layout: {title: 'Modelo de Langmuir'}
+    }
+    //
+    // this.graphService
+    //   .getLangmuirResults(this.ce)
+    //   .subscribe((results: IModelResult) => {
+    //     this.qe = results.y;
+    //     this.graph = {
+    //       data: [
+    //         { x: this.ce, y: this.qe, type: 'scatter', mode: 'lines+markers', marker: {color: 'red'} },
+    //       ],
+    //       layout: {title: 'Modelo de Langmuir'}
+    //     };
+    //   });
 
   }
 

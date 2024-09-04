@@ -6,6 +6,6 @@ import {Component, Input} from '@angular/core';
   styleUrl: './model-compare.component.css'
 })
 export class ModelCompareComponent {
-  @Input() selectedModels!: string[];
+  @Input() selectedModels!: number[];
 
 }

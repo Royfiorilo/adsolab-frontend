@@ -4,36 +4,53 @@
   </div>
 </ng-container>
 
-<div class="container-fluid d-flex justify-content-between m-3">
-  <div *ngFor="let model of selectedModels" class="card m-3">
-    <div class="card-body d-flex flex-column">
-      <div class="d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0 flex-grow-1 text-center">{{ model }}</h5>
-      </div>
-      <p class="card-text mt-2"></p>
-      <div class="form-floating">
-        <select [(ngModel)]="modelSelections[model]" class="form-select" aria-label="Tipo de parametros">
-          <option value=1 >Parametros manuales</option>
-          <option value=2 >Parametros automatizados</option>
-        </select>
-        <label [for]="model">Tipo de parametros</label>
-      </div>
-      <ng-container *ngIf="modelSelections[model] == 1;else automatedParams">
-        <div *ngFor="let i of getParamsArray(model)">
-          <div class="form-floating m-3">
-            <input type="text" class="form-control" id="floatingParam{{i+1}}" placeholder="Parametro {{i+1}}">
-            <label for="floatingParam{{i+1}}">Parametro {{i+1}}</label>
+<div class="container-fluid m-3">
+  <div class="row">
+    <div *ngFor="let modelId of selectedModels" class="col-6">
+      <div class="card">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 flex-grow-1 text-center">{{ getModelById(modelId).name }}</h5>
           </div>
+          <p class="card-text mt-2"></p>
+          <div class="form-floating">
+            <select [id]="modelId" (change)="selectConfiguration($event,modelId)" class="form-select"
+                    aria-label="Tipo de parametros">
+              <option value="true">Parametros automatizados</option>
+              <option value="false">Parametros manuales</option>
+            </select>
+            <label [for]="modelId">Tipo de parametros</label>
+          </div>
+          <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
+            <div *ngFor="let i of getParamsArray(modelId)">
+              <div class="form-floating m-3">
+                <input type="text" class="form-control" id="floatingParam{{i+1}}" placeholder="Parametro {{i+1}}">
+                <label for="floatingParam{{i+1}}">Parametro {{ i + 1 }}</label>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #automatedParams>
+            <div class="mt-3 alert alert-success" role="alert">
+              Parametros automatizados
+            </div>
+            <div *ngFor="let linearization of getModelById(modelId).linearizations" class="card m-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 flex-grow-1 text-center">{{ linearization.name }}</h5>
+              </div>
+            </div>
+
+          </ng-template>
+          <div class="mt-auto d-flex align-content-center justify-content-center">
+            <button class="btn btn-primary mt-3" (click)="runLinearization(modelId)">Run Linearization</button>
+          </div>
+
+          <div *ngFor="let item of linearizationGraphs[modelId]" >
+            <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"> </plotly-plot>
+          </div>
+
         </div>
-      </ng-container>
-      <ng-template #automatedParams>
-        <div class="mt-3 alert alert-success" role="alert">
-          Parametros automatizados
-        </div>
-      </ng-template>
-      <div class="mt-auto d-flex align-content-center justify-content-center">
-        <button class="btn btn-primary mt-3" (click)="runModel(model)">Run Model</button>
       </div>
     </div>
   </div>
+
 </div>
