@@ -31,12 +31,10 @@ export class InvestigationComponent {
     }
   }
 
-  uploadFile(){
-    if (this.selectedFile) {
-      console.log(`File selected: ${this.selectedFile.name}`);
-    } else {
-      alert('Please select a file first');
-    }
+  investigationCreated(investigationId: number){
+    this.investigationId = investigationId;
+    this.stepId = 2;
+    alert("Investigacion creada con exito")
   }
   addModel(modelId: number){
     this.selectedModels.push(modelId);

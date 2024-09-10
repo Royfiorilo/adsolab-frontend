@@ -40,6 +40,8 @@ export class ModelConfigurationComponent {
 
     this.modelConfigurationService.runLinearization(request).subscribe((response) => {
 
+      console.log(JSON.stringify(response));
+
       this.linearizationGraphs[model._id] = [];
 
       for ( const linearization of response.results[0].linearizations){
@@ -47,7 +49,7 @@ export class ModelConfigurationComponent {
         let slope:number = linearization.slope;
         let intercept:number= linearization.intercept;
         let xMin:number= linearization.transformed.x[0];
-        let xMax:number= linearization.transformed.x.pop()!;
+        let xMax:number= linearization.transformed.x[linearization.transformed.x.length - 1]!;
         let linearizationGraph:ILinearizationGraph = {
           linearizationName: linearization.name,
         graph: {
