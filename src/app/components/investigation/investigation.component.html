@@ -4,7 +4,7 @@
 
 <div class="container-fluid d-flex justify-content-center">
       <div *ngIf="stepId == 1" >
-      <app-data-selector (onFileSelected)="selectFile($event)" (onUploadFile)="uploadFile()"></app-data-selector>
+      <app-data-selector (onDataSampleUploaded)="investigationCreated($event)"></app-data-selector>
     </div>
 
     <div *ngIf="stepId == 2"  >

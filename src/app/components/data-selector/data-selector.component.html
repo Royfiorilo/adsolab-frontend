@@ -1,7 +1,10 @@
 <div class="col-md-12 m-3">
   <div class="card mt-3 d-flex align-content-center justify-content-center">
       <div class="card-body">
-        <app-file-upload></app-file-upload>
+        <app-file-upload (onDataSampleUploaded)="setDataSample($event)"></app-file-upload>
       </div>
+    <ng-container *ngIf="dataSample" class="mt-auto d-flex align-content-center justify-content-center">
+      <button class="btn btn-primary mt-3" (click)="uploadDataSample()">Cargar Datos</button>
+    </ng-container>
   </div>
 </div>
