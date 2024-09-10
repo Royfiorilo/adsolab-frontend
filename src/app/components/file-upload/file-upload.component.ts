@@ -57,10 +57,10 @@ export class FileUploadComponent {
 
   validateFileStructure(file: File) {
     const reader = new FileReader();
+    let isCSV = file.type === 'text/csv';
 
     reader.onload = (e) => {
       let content: string | ArrayBuffer | null | undefined = e.target?.result;
-      let isCSV = file.type === 'text/csv';
 
       try {
         if (isCSV) {
@@ -82,7 +82,12 @@ export class FileUploadComponent {
       this.errorMessage = 'Error en la lectura del archivo.';
     };
 
-    reader.readAsArrayBuffer(file);
+    if (isCSV) {
+      reader.readAsText(file);
+    } else {
+      reader.readAsArrayBuffer(file);
+    }
+
   }
 
   validateCSVContent(content: string): DataSample {
