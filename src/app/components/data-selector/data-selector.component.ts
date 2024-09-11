@@ -16,7 +16,6 @@ export class DataSelectorComponent {
   constructor(private dataService: DataSelectorService) {}
 
   uploadDataSample(){
-    console.log("upload");
     if (this.dataSample) {
       this.dataService
         .setDataSample(this.dataSample)

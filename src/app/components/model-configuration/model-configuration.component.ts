@@ -40,21 +40,20 @@ export class ModelConfigurationComponent {
 
     this.modelConfigurationService.runLinearization(request).subscribe((response) => {
 
-      console.log(JSON.stringify(response));
-
       this.linearizationGraphs[model._id] = [];
 
       for ( const linearization of response.results[0].linearizations){
 
         let slope:number = linearization.slope;
         let intercept:number= linearization.intercept;
-        let xMin:number= linearization.transformed.x[0];
-        let xMax:number= linearization.transformed.x[linearization.transformed.x.length - 1]!;
+        let xTransformed = linearization.transformed.x;
+        let xMin:number= this.getMinValue(xTransformed!);
+        let xMax:number= this.getMaxValue(xTransformed!);
         let linearizationGraph:ILinearizationGraph = {
           linearizationName: linearization.name,
         graph: {
           data: [
-            {x: linearization.transformed.x, y: linearization.transformed.y, type: 'scatter', mode: 'markers', marker: {color: 'red'}},
+            {x: xTransformed, y: linearization.transformed.y, type: 'scatter', mode: 'markers', marker: {color: 'red'}},
             {x: [xMin, xMax], y: [(slope*xMin+intercept),(slope*xMax+intercept)], type: 'scatter', mode: 'line', marker: {color: 'blue'}},
           ],
             layout: {title: linearization.name}
@@ -63,6 +62,14 @@ export class ModelConfigurationComponent {
         this.linearizationGraphs[modelId].push(linearizationGraph);
       }
     });
+  }
+
+  private getMaxValue(numbers: number[]) {
+    return Math.max(...numbers);
+  }
+
+  private getMinValue(numbers: number[]) {
+    return Math.min(...numbers);
   }
 
   selectConfiguration(event: Event,modelId:number): void {
