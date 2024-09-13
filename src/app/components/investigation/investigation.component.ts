@@ -38,7 +38,12 @@ export class InvestigationComponent {
   }
   addModel(modelId: number){
     this.selectedModels.push(modelId);
-    this.modelConfiguration[modelId] = {automatedParams: true, paramValues: {}, selectedLinearizations: []};
+    this.modelConfiguration[modelId] = {
+      automatedParams: true,
+      paramValues: Object.keys(this.models.find(model => model._id === modelId)?.parameters || {})
+        .reduce((acc, key) => ({ ...acc, [key]: undefined }), {}),
+      paramInfo: this.models.find(model => model._id === modelId)?.parameters || {},
+      selectedLinearizations: []};
   }
 
   onModelSelected(modelId: number) {
