@@ -21,6 +21,7 @@ import { ModelCompareComponent } from './components/model-compare/model-compare.
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 //Plotly.register(locale)
 
@@ -49,7 +50,9 @@ PlotlyModule.plotlyjs = Plotly;
     FormsModule,
     FontAwesomeModule
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
