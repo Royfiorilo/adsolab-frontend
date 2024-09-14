@@ -41,11 +41,14 @@ export interface IParameter {
 
 export interface IStatistics {
   r: number;
-  stderr: number;
+  std_err: number;
 }
 
 
 export interface ILinearizationGraph {
+  isBestResult:boolean;
+  parameters: IParameter[];
+  statistics: IStatistics;
   linearizationName: string;
   graph: IGraph;
 }
