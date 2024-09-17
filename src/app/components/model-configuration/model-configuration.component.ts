@@ -1,9 +1,11 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "../investigation/interface";
 import {DataSelectorService} from "../data-selector/data-selector.service";
 import {ModelConfigurationService} from "./model-configuration.service";
 import {ILinearizationGraph, ILinearizationRequest, ILinearizationResponse} from "./interface";
+import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-model-configuration',
@@ -17,18 +19,15 @@ export class ModelConfigurationComponent {
   @Input() models!: Model[];
   @Output() onSelectedConfiguration = new EventEmitter<number>();
   protected linearizationGraphs: {[key: number]: ILinearizationGraph[]} = {};
+  private modalService = inject(NgbModal);
 
   constructor(private modelConfigurationService: ModelConfigurationService) {}
 
- getParamsArray(modelId: number): number[] {
-    // let model  = this.models.find(m => m.name === modelName);
-    let model: number[] = [];
-    // return model === undefined ? [] : Array(model.params).fill(0).map((x, i) => i);
-    return model;
-  }
-
   getModelById(modelId: number): Model {
    return this.models.filter(model => model._id === modelId).pop()!;
+  }
+  open(content: TemplateRef<any>) {
+    this.modalService.open(content)
   }
 
   runLinearization(modelId: number) {
@@ -41,8 +40,8 @@ export class ModelConfigurationComponent {
     this.modelConfigurationService.runLinearization(request).subscribe((response) => {
 
       this.linearizationGraphs[model._id] = [];
-
-      for ( const linearization of response.results[0].linearizations){
+      let linearizations = response.results[0].linearizations;
+      for ( const linearization of linearizations){
 
         let slope:number = linearization.slope;
         let intercept:number= linearization.intercept;
@@ -50,6 +49,9 @@ export class ModelConfigurationComponent {
         let xMin:number= this.getMinValue(xTransformed!);
         let xMax:number= this.getMaxValue(xTransformed!);
         let linearizationGraph:ILinearizationGraph = {
+          parameters: linearization.parameters,
+          statistics: linearization.statistics,
+          isBestResult: linearization.name === response.results[0].best_result,
           linearizationName: linearization.name,
         graph: {
           data: [
@@ -75,4 +77,6 @@ export class ModelConfigurationComponent {
   selectConfiguration(event: Event,modelId:number): void {
     this.onSelectedConfiguration.emit(modelId);
   }
+
+  protected readonly faInfoCircle = faInfoCircle;
 }
