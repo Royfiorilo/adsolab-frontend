@@ -1,7 +1,7 @@
-import { Component, inject, TemplateRef, EventEmitter } from '@angular/core';
-import {elementAt} from "rxjs";
+import {Component} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "./interface";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-investigation',
@@ -10,33 +10,37 @@ import {IModelConfiguration} from "./interface";
 })
 
 export class InvestigationComponent {
-  investigationId: number = 1;
+  investigationId: number | undefined;
   selectedFile: File | null = null;
   stepId: number = 1;
   models: Model[] = [];
   sheetData: any[] = [];
   sheetHeaders: string[] = [];
   selectedModels: number[] = [];
-  modelConfiguration: { [modelId: number]:  IModelConfiguration} = {};
+  modelConfiguration: { [modelId: number]: IModelConfiguration } = {};
 
-  setStepId(value: number){
+  constructor(private _snackBar: MatSnackBar) {
+  }
+
+  setStepId(value: number) {
     this.stepId = value;
   }
 
   selectFile(event: any) {
-    if (event.target == null){
+    if (event.target == null) {
       console.log("null file");
-    } else{
-        this.selectedFile = event.target.files[0];
+    } else {
+      this.selectedFile = event.target.files[0];
     }
   }
 
-  investigationCreated(investigationId: number){
+  investigationCreated(investigationId: number) {
     this.investigationId = investigationId;
     this.stepId = 2;
-    alert("Investigacion creada con exito")
+    this._snackBar.open("Investigación creada con éxito", "Aceptar");
   }
-  addModel(modelId: number){
+
+  addModel(modelId: number) {
     this.selectedModels.push(modelId);
     this.modelConfiguration[modelId] = {
       automatedParams: true,
@@ -47,10 +51,10 @@ export class InvestigationComponent {
   }
 
   onModelSelected(modelId: number) {
-  this.selectedModels.includes(modelId) ? this.selectedModels.splice(this.selectedModels.indexOf(modelId),1) : this.addModel(modelId);
+    this.selectedModels.includes(modelId) ? this.selectedModels.splice(this.selectedModels.indexOf(modelId), 1) : this.addModel(modelId);
   }
 
-  onLoadedModels(models: Model[]){
+  onLoadedModels(models: Model[]) {
     this.models = models;
   }
 

@@ -1,15 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
-.fiuba-institutional{
-  background-color: #008bce!important;
+.fiuba-institutional {
+  background-color: #008bce !important;
 }
 
-.fiuba-investigation{
-  background-color:  #8f3237!important;
+.fiuba-investigation-bg {
+  background-color: #8f3237 !important;
 }
 
-body{
+.fiuba-investigation-border {
+  border-color: #8f3237 !important;
+}
+
+.fiuba-investigation-text {
+  color: #8f3237 !important
+}
+
+
+body {
   font-family: "Helvetica Neue", sans-serif !important;
   margin: 0
 }
 
-html, body { height: 100%; }
+html, body {
+  height: 100%;
+}

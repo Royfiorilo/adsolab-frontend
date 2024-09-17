@@ -1,21 +1,55 @@
-<div class="container mt-5">
-<app-progress-bar [stepId]="stepId" (onStepIdChange)="setStepId($event)"></app-progress-bar>
-</div>
+<div class="container-fluid m-2">
+  <div class="row d-flex justify-content-center">
+    <div class="col-10">
+      <mat-stepper [linear]="true">
+        <mat-step label="Datos" [completed]="investigationId">
+          <app-data-selector (onDataSampleUploaded)="investigationCreated($event)"></app-data-selector>
+          <div class="float-end" *ngIf="investigationId">
+            <button mat-button matStepperNext mat-raised-button class="fiuba-investigation-bg text-white">
+              Continuar
+            </button>
+          </div>
+        </mat-step>
+        <mat-step label="Selección de Modelos" [completed]="selectedModels.length !== 0">
+          <app-model-selector [models]="models" [selectedModels]="selectedModels"
+                              (onLoadedModels)="onLoadedModels($event)"
+                              (onSelectedModels)="onModelSelected($event)"></app-model-selector>
 
-<div class="container-fluid d-flex justify-content-center">
-      <div *ngIf="stepId == 1" >
-      <app-data-selector (onDataSampleUploaded)="investigationCreated($event)"></app-data-selector>
+          <div class="float-start">
+            <button mat-button matStepperPrevious mat-stroked-button
+                    class="fiuba-investigation-border fiuba-investigation-text">
+              Volver
+            </button>
+          </div>
+          <div class="float-end" *ngIf="selectedModels.length !== 0">
+            <button mat-button matStepperNext mat-raised-button class="fiuba-investigation-bg text-white">
+              Continuar
+            </button>
+          </div>
+        </mat-step>
+        <mat-step label="Configuración de Modelos" [completed]="false">
+          <app-model-configuration [investigationId]="investigationId" [models]="models"
+                                   [modelConfiguration]="modelConfiguration"
+                                   (onSelectedConfiguration)="onSelectedConfiguration($event)"
+                                   [selectedModels]="selectedModels"></app-model-configuration>
+          <div class="float-start">
+            <button mat-button matStepperPrevious mat-stroked-button
+                    class="fiuba-investigation-border fiuba-investigation-text">
+              Volver
+            </button>
+          </div>
+          <!--      TODO: ver logica para avanzar en este step-->
+        </mat-step>
+        <mat-step label="Resultados">
+          <app-model-compare [selectedModels]="selectedModels"></app-model-compare>
+          <div class="float-start">
+            <button mat-button matStepperPrevious mat-stroked-button
+                    class="fiuba-investigation-border fiuba-investigation-text">
+              Volver
+            </button>
+          </div>
+        </mat-step>
+      </mat-stepper>
     </div>
-
-    <div *ngIf="stepId == 2"  >
-      <app-model-selector [models]="models" [selectedModels]="selectedModels" (onLoadedModels)="onLoadedModels($event)" (onSelectedModels)="onModelSelected($event)"></app-model-selector>
-    </div>
-
-    <div class="container-fluid" *ngIf="stepId == 3" >
-      <app-model-configuration [investigationId]="investigationId" [models]="models" [modelConfiguration]="modelConfiguration" (onSelectedConfiguration)="onSelectedConfiguration($event)"  [selectedModels]="selectedModels"></app-model-configuration>
-    </div>
-
-    <div *ngIf="stepId == 4">
-      <app-model-compare [selectedModels]="selectedModels"></app-model-compare>
-    </div>
+  </div>
 </div>
