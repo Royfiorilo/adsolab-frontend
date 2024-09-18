@@ -14,8 +14,8 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 })
 export class ModelConfigurationComponent {
   @Input() selectedModels!: number[];
-  @Input() investigationId!: number;
-  @Input() modelConfiguration!: { [modelId: number]:  IModelConfiguration};
+  @Input() investigationId: number | undefined;
+  @Input() modelConfiguration!: { [modelId: number]: IModelConfiguration };
   @Input() models!: Model[];
   @Output() onSelectedConfiguration = new EventEmitter<number>();
   protected linearizationGraphs: {[key: number]: ILinearizationGraph[]} = {};
@@ -32,38 +32,54 @@ export class ModelConfigurationComponent {
 
   runLinearization(modelId: number) {
     let model: Model = this.getModelById(modelId);
-    let request: ILinearizationRequest = {investigation_id: this.investigationId, models: [{
-        model: model.name,
-        linearizations: model.linearizations.map(linearization => linearization.name)
-      }]};
+    if (this.investigationId) {
+      let request: ILinearizationRequest = {
+        investigation_id: this.investigationId, models: [{
+          model: model.name,
+          linearizations: model.linearizations.map(linearization => linearization.name)
+        }]
+      };
 
-    this.modelConfigurationService.runLinearization(request).subscribe((response) => {
+      this.modelConfigurationService.runLinearization(request).subscribe((response) => {
 
-      this.linearizationGraphs[model._id] = [];
-      let linearizations = response.results[0].linearizations;
-      for ( const linearization of linearizations){
+        this.linearizationGraphs[model._id] = [];
+        let linearizations = response.results[0].linearizations;
+        for (const linearization of linearizations) {
 
-        let slope:number = linearization.slope;
-        let intercept:number= linearization.intercept;
-        let xTransformed = linearization.transformed.x;
-        let xMin:number= this.getMinValue(xTransformed!);
-        let xMax:number= this.getMaxValue(xTransformed!);
-        let linearizationGraph:ILinearizationGraph = {
-          parameters: linearization.parameters,
-          statistics: linearization.statistics,
-          isBestResult: linearization.name === response.results[0].best_result,
-          linearizationName: linearization.name,
-        graph: {
-          data: [
-            {x: xTransformed, y: linearization.transformed.y, type: 'scatter', mode: 'markers', marker: {color: 'red'}},
-            {x: [xMin, xMax], y: [(slope*xMin+intercept),(slope*xMax+intercept)], type: 'scatter', mode: 'line', marker: {color: 'blue'}},
-          ],
-            layout: {title: linearization.name}
+          let slope: number = linearization.slope;
+          let intercept: number = linearization.intercept;
+          let xTransformed = linearization.transformed.x;
+          let xMin: number = this.getMinValue(xTransformed!);
+          let xMax: number = this.getMaxValue(xTransformed!);
+          let linearizationGraph: ILinearizationGraph = {
+            parameters: linearization.parameters,
+            statistics: linearization.statistics,
+            isBestResult: linearization.name === response.results[0].best_result,
+            linearizationName: linearization.name,
+            graph: {
+              data: [
+                {
+                  x: xTransformed,
+                  y: linearization.transformed.y,
+                  type: 'scatter',
+                  mode: 'markers',
+                  marker: {color: 'red'}
+                },
+                {
+                  x: [xMin, xMax],
+                  y: [(slope * xMin + intercept), (slope * xMax + intercept)],
+                  type: 'scatter',
+                  mode: 'line',
+                  marker: {color: 'blue'}
+                },
+              ],
+              layout: {title: linearization.name}
+            }
+          }
+          this.linearizationGraphs[modelId].push(linearizationGraph);
         }
-        }
-        this.linearizationGraphs[modelId].push(linearizationGraph);
-      }
-    });
+      });
+    }
   }
 
   private getMaxValue(numbers: number[]) {
