@@ -5,7 +5,7 @@
         <mat-step label="Datos" [completed]="investigationId">
           <app-data-selector (onDataSampleUploaded)="investigationCreated($event)"></app-data-selector>
           <div class="float-end" *ngIf="investigationId">
-            <button mat-button matStepperNext mat-raised-button class="fiuba-investigation-bg text-white">
+            <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
               Continuar
             </button>
           </div>
@@ -17,12 +17,12 @@
 
           <div class="float-start">
             <button mat-button matStepperPrevious mat-stroked-button
-                    class="fiuba-investigation-border fiuba-investigation-text">
+                    class="fiuba-institutional-border fiuba-institutional-text">
               Volver
             </button>
           </div>
           <div class="float-end" *ngIf="selectedModels.length !== 0">
-            <button mat-button matStepperNext mat-raised-button class="fiuba-investigation-bg text-white">
+            <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
               Continuar
             </button>
           </div>
@@ -34,7 +34,7 @@
                                    [selectedModels]="selectedModels"></app-model-configuration>
           <div class="float-start">
             <button mat-button matStepperPrevious mat-stroked-button
-                    class="fiuba-investigation-border fiuba-investigation-text">
+                    class="fiuba-institutional-border fiuba-institutional-text">
               Volver
             </button>
           </div>
@@ -44,7 +44,7 @@
           <app-model-compare [selectedModels]="selectedModels"></app-model-compare>
           <div class="float-start">
             <button mat-button matStepperPrevious mat-stroked-button
-                    class="fiuba-investigation-border fiuba-investigation-text">
+                    class="fiuba-institutional-border fiuba-institutional-text">
               Volver
             </button>
           </div>

@@ -22,22 +22,13 @@ export class InvestigationComponent {
   constructor(private _snackBar: MatSnackBar) {
   }
 
-  setStepId(value: number) {
-    this.stepId = value;
-  }
-
-  selectFile(event: any) {
-    if (event.target == null) {
-      console.log("null file");
-    } else {
-      this.selectedFile = event.target.files[0];
-    }
-  }
-
   investigationCreated(investigationId: number) {
     this.investigationId = investigationId;
     this.stepId = 2;
-    this._snackBar.open("Investigación creada con éxito", "Aceptar");
+    this._snackBar.open("Investigación creada con éxito", "Aceptar", {
+      duration: 3000,
+      verticalPosition: 'top',
+    });
   }
 
   addModel(modelId: number) {
@@ -45,9 +36,10 @@ export class InvestigationComponent {
     this.modelConfiguration[modelId] = {
       automatedParams: true,
       paramValues: Object.keys(this.models.find(model => model._id === modelId)?.parameters || {})
-        .reduce((acc, key) => ({ ...acc, [key]: undefined }), {}),
+        .reduce((acc, key) => ({...acc, [key]: undefined}), {}),
       paramInfo: this.models.find(model => model._id === modelId)?.parameters || {},
-      selectedLinearizations: []};
+      selectedLinearizations: []
+    };
   }
 
   onModelSelected(modelId: number) {

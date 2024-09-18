@@ -1,6 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
-.fiuba-institutional {
+.fiuba-institutional-bg {
   background-color: #008bce !important;
+}
+
+.fiuba-institutional-border {
+  border-color: #008bce !important;
+}
+
+.fiuba-institutional-text {
+  color: #008bce !important;
 }
 
 .fiuba-investigation-bg {
