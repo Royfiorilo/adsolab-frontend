@@ -25,6 +25,8 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {LoadingComponent} from './components/loading/loading.component';
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 //Plotly.register(locale)
 
@@ -42,7 +44,8 @@ PlotlyModule.plotlyjs = Plotly;
     ModelCompareComponent,
     ProgressBarComponent,
     FileUploadComponent,
-    MainPageComponent
+    MainPageComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,8 @@ PlotlyModule.plotlyjs = Plotly;
     FontAwesomeModule,
     MatStepperModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinner
   ],
   providers: [
     provideAnimationsAsync()
