@@ -27,6 +27,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {LoadingComponent} from './components/loading/loading.component';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import { DataVisualizerComponent } from './components/data-visualizer/data-visualizer.component';
 
 //Plotly.register(locale)
 
@@ -45,7 +46,8 @@ PlotlyModule.plotlyjs = Plotly;
     ProgressBarComponent,
     FileUploadComponent,
     MainPageComponent,
-    LoadingComponent
+    LoadingComponent,
+    DataVisualizerComponent
   ],
   imports: [
     BrowserModule,

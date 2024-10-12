@@ -1,13 +1,16 @@
 <div class="row d-flex align-content-center justify-content-center">
   <div class="col-6">
-    <div class="card mt-3">
-      <div class="card-body">
+    <div class="card mt-3 mb-3">
+      <div class="card-body ">
         <app-file-upload (onDataSampleUploaded)="setDataSample($event)"></app-file-upload>
       </div>
-      <ng-container *ngIf="dataSample" class="mt-auto d-flex align-content-center justify-content-center">
-        <button class="btn fiuba-institutional mt-3" (click)="uploadDataSample()">Cargar Datos</button>
+      <ng-container *ngIf="dataSample" >
+        <div class="mt-auto d-flex justify-content-center align-content-center  ">
+          <button style="width: 150px; height: 50px;" class="btn fiuba-institutional m-3" (click)="uploadDataSample()">Cargar Datos</button>
+        </div>
       </ng-container>
     </div>
+    <app-data-visualizer *ngIf="dataSample" [data]="dataSample" ></app-data-visualizer>
   </div>
 </div>
 <ng-container *ngIf="loadingDataSample">
