@@ -1,9 +1,8 @@
-import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, TemplateRef} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "../investigation/interface";
-import {DataSelectorService} from "../data-selector/data-selector.service";
 import {ModelConfigurationService} from "./model-configuration.service";
-import {ILinearizationGraph, ILinearizationRequest, ILinearizationResponse} from "./interface";
+import {ILinearizationGraph, ILinearizationRequest} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
@@ -18,14 +17,17 @@ export class ModelConfigurationComponent {
   @Input() modelConfiguration!: { [modelId: number]: IModelConfiguration };
   @Input() models!: Model[];
   @Output() onSelectedConfiguration = new EventEmitter<number>();
-  protected linearizationGraphs: {[key: number]: ILinearizationGraph[]} = {};
+  protected linearizationGraphs: { [key: number]: ILinearizationGraph[] } = {};
   private modalService = inject(NgbModal);
+  protected runningLinearization: boolean = false;
 
-  constructor(private modelConfigurationService: ModelConfigurationService) {}
+  constructor(private modelConfigurationService: ModelConfigurationService) {
+  }
 
   getModelById(modelId: number): Model {
-   return this.models.filter(model => model._id === modelId).pop()!;
+    return this.models.filter(model => model._id === modelId).pop()!;
   }
+
   open(content: TemplateRef<any>) {
     this.modalService.open(content)
   }
@@ -40,7 +42,11 @@ export class ModelConfigurationComponent {
         }]
       };
 
+      this.runningLinearization = true;
+
       this.modelConfigurationService.runLinearization(request).subscribe((response) => {
+
+        this.runningLinearization = false;
 
         this.linearizationGraphs[model._id] = [];
         let linearizations = response.results[0].linearizations;
@@ -90,7 +96,7 @@ export class ModelConfigurationComponent {
     return Math.min(...numbers);
   }
 
-  selectConfiguration(event: Event,modelId:number): void {
+  selectConfiguration(event: Event, modelId: number): void {
     this.onSelectedConfiguration.emit(modelId);
   }
 

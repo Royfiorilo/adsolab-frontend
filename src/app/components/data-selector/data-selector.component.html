@@ -5,8 +5,11 @@
         <app-file-upload (onDataSampleUploaded)="setDataSample($event)"></app-file-upload>
       </div>
       <ng-container *ngIf="dataSample" class="mt-auto d-flex align-content-center justify-content-center">
-        <button class="btn btn-primary mt-3" (click)="uploadDataSample()">Cargar Datos</button>
+        <button class="btn fiuba-institutional mt-3" (click)="uploadDataSample()">Cargar Datos</button>
       </ng-container>
     </div>
   </div>
 </div>
+<ng-container *ngIf="loadingDataSample">
+  <app-loading></app-loading>
+</ng-container>

@@ -1,6 +1,7 @@
-<div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"  [class.dragging]="isDragging" >
-  <label for="fileUploader" class="btn btn-primary mt-3" >Seleccionar Archivo</label>
-  <input id="fileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv" />
+<div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+     [class.dragging]="isDragging">
+  <label for="fileUploader" class="btn fiuba-institutional mt-3">Seleccionar Archivo</label>
+  <input id="fileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv"/>
   <p>o</p>
   <p>Arrastre un archivo Excel o CSV aqui</p>
 </div>

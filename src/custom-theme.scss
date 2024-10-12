@@ -8,14 +8,96 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
+
+//#2D2926 pantone BLACK C
+//#373A36 pantone 447 C
+//#D9D9D6 pantone Cool Gray 1 C
+
+$dark-primary-text: #2D2926;
+$dark-secondary-text: #2D2926;
+$dark-disabled-text: #373A36;
+$dark-dividers: #2D2926;
+$dark-focused: #2D2926;
+$light-primary-text: #D9D9D6;
+$light-secondary-text: #D9D9D6;
+$light-disabled-text: #373A36;
+$light-dividers: #D9D9D6;
+$light-focused: #D9D9D6;
+
+$fiuba-institucional-palette: (
+  50: #008bce,
+  100: #008bce,
+  200: #008bce,
+  300: #008bce,
+  400: #008bce,
+  500: #008bce,
+  600: #008bce,
+  700: #008bce,
+  800: #008bce,
+  900: #008bce,
+  A100: #008bce,
+  A200: #008bce,
+  A400: #008bce,
+  A700: #008bce,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $dark-primary-text,
+    A700: $dark-primary-text,
+  )
+);
+
+$fiuba-investigacion-palette: (
+  50: #8f3237,
+  100: #8f3237,
+  200: #8f3237,
+  300: #8f3237,
+  400: #8f3237,
+  500: #8f3237,
+  600: #8f3237,
+  700: #8f3237,
+  800: #8f3237,
+  900: #8f3237,
+  A100: #8f3237,
+  A200: #8f3237,
+  A400: #8f3237,
+  A700: #8f3237,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $dark-primary-text,
+    A700: $dark-primary-text,
+  )
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$adsolab-primary: mat.define-palette(mat.$cyan-palette);
-$adsolab-accent: mat.define-palette(mat.$red-palette, A200, A100, A400);
+$adsolab-primary: mat.define-palette($fiuba-institucional-palette);
+$adsolab-accent: mat.define-palette($fiuba-institucional-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$adsolab-warn: mat.define-palette(mat.$yellow-palette);
+$adsolab-warn: mat.define-palette($fiuba-investigacion-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".

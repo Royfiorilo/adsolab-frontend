@@ -15,7 +15,8 @@
         <ng-template #content let-modal>
           <div class="modal-header">
             <h4 class="modal-title" id="modal-basic-title">Detalles del modelo</h4>
-            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+            <button type="button" class="btn-close" aria-label="Close"
+                    (click)="modal.dismiss('Cross click')"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
@@ -31,5 +32,7 @@
       </div>
     </div>
   </div>
-
 </div>
+<ng-container *ngIf="loadingModels">
+  <app-loading></app-loading>
+</ng-container>
