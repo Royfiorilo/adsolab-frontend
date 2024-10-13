@@ -25,6 +25,7 @@ export class DataSelectorService {
       console.log("Invalid data sample");
     }
 
-    return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, sample)
+    // return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, sample)
+    return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, {'ce':sample.ce,'qe':sample.qe})
   }
 }

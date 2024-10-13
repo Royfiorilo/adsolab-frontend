@@ -28,6 +28,11 @@ import {MatIconModule} from '@angular/material/icon';
 import {LoadingComponent} from './components/loading/loading.component';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import { DataVisualizerComponent } from './components/data-visualizer/data-visualizer.component';
+import {NgOptimizedImage} from "@angular/common";
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //Plotly.register(locale)
 
@@ -60,7 +65,12 @@ PlotlyModule.plotlyjs = Plotly;
     MatStepperModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinner
+    MatProgressSpinner,
+    NgOptimizedImage,
+    MatAutocompleteModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
     provideAnimationsAsync()

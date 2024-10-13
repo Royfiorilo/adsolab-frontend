@@ -5,6 +5,7 @@ import {ModelConfigurationService} from "./model-configuration.service";
 import {ILinearizationGraph, ILinearizationRequest} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {DataSample} from "../data-selector/data-sample";
 
 @Component({
   selector: 'app-model-configuration',
@@ -12,6 +13,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
   styleUrl: './model-configuration.component.css'
 })
 export class ModelConfigurationComponent {
+  @Input() dataSample: DataSample | undefined;
   @Input() selectedModels!: number[];
   @Input() investigationId: number | undefined;
   @Input() modelConfiguration!: { [modelId: number]: IModelConfiguration };

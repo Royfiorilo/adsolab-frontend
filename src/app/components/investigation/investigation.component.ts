@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "./interface";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {DataSample} from "../data-selector/data-sample";
 
 @Component({
   selector: 'app-investigation',
@@ -18,14 +19,14 @@ export class InvestigationComponent {
   sheetHeaders: string[] = [];
   selectedModels: number[] = [];
   modelConfiguration: { [modelId: number]: IModelConfiguration } = {};
-
+  dataSample: DataSample | undefined;
   constructor(private _snackBar: MatSnackBar) {
   }
 
   investigationCreated(investigationId: number) {
     this.investigationId = investigationId;
     this.stepId = 2;
-    this._snackBar.open("Investigación creada con éxito", "Aceptar", {
+    this._snackBar.open("Investigación cargada con éxito", "Aceptar", {
       duration: 3000,
       verticalPosition: 'top',
     });
@@ -52,5 +53,9 @@ export class InvestigationComponent {
 
   onSelectedConfiguration(modelId: number) {
     this.modelConfiguration[modelId].automatedParams = !this.modelConfiguration[modelId].automatedParams;
+  }
+
+  onSelectedDataSample(sample: DataSample) {
+    this.dataSample = sample;
   }
 }

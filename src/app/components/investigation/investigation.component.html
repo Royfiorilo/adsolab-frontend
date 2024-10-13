@@ -3,7 +3,7 @@
     <div class="col-10">
       <mat-stepper [linear]="true">
         <mat-step label="Datos" [completed]="investigationId">
-          <app-data-selector (onDataSampleUploaded)="investigationCreated($event)"></app-data-selector>
+          <app-data-selector (onSelectedDataSample)="onSelectedDataSample($event)" (onDataSampleUploaded)="investigationCreated($event)"></app-data-selector>
           <div class="float-end" *ngIf="investigationId">
             <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
               Continuar
@@ -34,7 +34,8 @@
             <app-model-configuration [investigationId]="investigationId" [models]="models"
                                      [modelConfiguration]="modelConfiguration"
                                      (onSelectedConfiguration)="onSelectedConfiguration($event)"
-                                     [selectedModels]="selectedModels"></app-model-configuration>
+                                     [selectedModels]="selectedModels"
+                                     [dataSample]="dataSample"></app-model-configuration>
             <div class="float-start">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
