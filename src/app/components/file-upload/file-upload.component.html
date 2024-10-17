@@ -1,9 +1,27 @@
 <div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
      [class.dragging]="isDragging">
-  <label for="fileUploader" class="btn fiuba-institutional mt-3">Seleccionar Archivo</label>
+  <div>
+    <fa-icon [icon]="faUpload" size="5x" class="fiuba-institutional-text m-2"></fa-icon>
+  </div>
+  <div class="fiuba-gray-text m-2">{{'FILE_UPLOAD.DRAG_FILE' | translate}}</div>
+  <div class="fiuba-gray-text m-2">{{'OR' | translate}}</div>
+  <label for="fileUploader"
+         class="btn fiuba-institutional-border fiuba-institutional-text">{{'FILE_UPLOAD.SELECT_FILE' | translate}}</label>
   <input id="fileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv"/>
-  <p>o</p>
-  <p>Arrastre un archivo Excel o CSV aqui</p>
+  <div *ngIf="uploadedFile"
+       class="fiuba-institutional-text mt-3 ">
+    <h5><span class="badge bg-secondary">{{ uploadedFile.name }}</span></h5>
+    <div *ngIf="!uploadedFile.valid && uploadedFile.reason" class="error-message">
+      <div>
+        <fa-icon [icon]="faXmarkCircle" size="2x" class="error-message"></fa-icon>
+      </div>
+      {{'FILE_UPLOAD.INVALID_FILE.' + uploadedFile.reason | translate}}
+    </div>
+    <div *ngIf="uploadedFile.valid" class="success-message">
+      <div>
+        <fa-icon [icon]="faCircleCheck" size="2x" class="success-message"></fa-icon>
+      </div>
+      {{'FILE_UPLOAD.VALID_FILE' | translate}}
+    </div>
+  </div>
 </div>
-<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-<!--<div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>-->

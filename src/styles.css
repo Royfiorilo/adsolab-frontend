@@ -24,6 +24,11 @@
   background-color: #008bce !important;
 }
 
+.fiuba-investigation {
+  color: white !important;
+  background-color: #8f3237 !important;
+}
+
 .fiuba-investigation-bg {
   background-color: #8f3237 !important;
 }
@@ -34,6 +39,10 @@
 
 .fiuba-investigation-text {
   color: #8f3237 !important
+}
+
+.fiuba-gray-text {
+  color: #373A36 !important;
 }
 
 /* Absolute Center Spinner */

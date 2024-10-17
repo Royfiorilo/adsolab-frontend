@@ -1,7 +1,40 @@
 {
+  "OR": "o",
   "MAIN_PAGE": {
-    "NEW_INVESTIGATION": "Nueva Investigación",
+    "NEW_INVESTIGATION": "Nueva investigación",
     "GRAPHS": "Gráficos",
     "CONFIG": "Configuración"
+  },
+  "INVESTIGATION": {
+    "CONTINUE": "Continuar",
+    "BACK": "Volver"
+  },
+  "FILE_UPLOAD": {
+    "SELECT_FILE": "Buscar archivo",
+    "DRAG_FILE": "Arrastrar un archivo Excel o CSV",
+    "VALID_FILE": "El archivo es válido",
+    "INVALID_FILE": {
+      "INVALID_FILE_TYPE": "Solo se admiten archivos en formato Excel o CSV",
+      "INVALID_FILE_STRUCTURE": "El archivo debe tener exactamente dos columnas",
+      "INVALID_DATA": "El archivo debe tener exclusivamente valores numéricos",
+      "READ_ERROR": "Error en la lectura del archivo"
+    }
+  },
+  "DATA_SELECTOR": {
+    "START_INVESTIGATION": "Comenzar investigación"
+  },
+  "MODEL_SELECTOR": {
+    "MODEL_DETAILS": "Detalles del modelo"
+  },
+  "MODEL_CONFIGURATION": {
+    "NOT_SELECTED_MODELS": "No se han seleccionado modelos",
+    "PARAM_TYPES": "Tipo de parámetros",
+    "AUTOMATED_PARAMS": "Parámetros automatizados",
+    "MANUAL_PARAMS": "Parámetros manuales",
+    "PARAM": "Parámetro {{ key }}",
+    "RUN_LINEARIZATION": "Ejecutar linealización"
+  },
+  "DATA_VISUALIZER": {
+    "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"
   }
 }

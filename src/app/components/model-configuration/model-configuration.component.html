@@ -1,6 +1,6 @@
 <ng-container *ngIf="selectedModels.length === 0">
   <div class="alert alert-warning" role="alert">
-    No se han seleccionado modelos
+    {{'MODEL_CONFIGURATION.NOT_SELECTED_MODELS' | translate}}
   </div>
 </ng-container>
 
@@ -16,12 +16,12 @@
           </div>
           <p class="card-text mt-2"></p>
           <div class="form-floating">
-            <select (change)="selectConfiguration($event,modelId)" [id]="modelId" aria-label="Tipo de parametros"
+            <select (change)="selectConfiguration($event,modelId)" [id]="modelId"
                     class="form-select">
-              <option value="true">Parametros automatizados</option>
-              <option value="false">Parametros manuales</option>
+              <option value="true">{{'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate}}</option>
+              <option value="false">{{'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate}}</option>
             </select>
-            <label [for]="modelId">Tipo de parametros</label>
+            <label [for]="modelId">{{'MODEL_CONFIGURATION.PARAM_TYPES' | translate}}</label>
           </div>
           <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
             <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue">
@@ -42,7 +42,8 @@
 
               <ng-template #content let-modal>
                 <div class="modal-header">
-                  <h4 class="modal-title" id="modal-basic-title">Parametro {{ param.key }}</h4>
+                  <h4 class="modal-title"
+                      id="modal-basic-title">{{'MODEL_CONFIGURATION.PARAM' | translate:param}}</h4>
                   <button (click)="modal.dismiss('Cross click')" aria-label="Close" class="btn-close"
                           type="button"></button>
                 </div>
@@ -64,7 +65,8 @@
               </div>
             </div>
             <div class="mt-auto d-flex align-content-center justify-content-center">
-              <button (click)="runLinearization(modelId)" class="btn btn-primary mt-3">Ejecutar Linealización</button>
+              <button (click)="runLinearization(modelId)"
+                      class="btn fiuba-institutional mt-3">{{'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate}}</button>
             </div>
 
             <div *ngFor="let item of linearizationGraphs[modelId]">
