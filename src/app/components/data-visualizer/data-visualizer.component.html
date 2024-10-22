@@ -1,0 +1,24 @@
+<div class="d-flex justify-content-center">
+  <button mat-raised-button class="m-3" (click)="this.isTableVisible = !this.isTableVisible">
+    Mostrar/Ocultar Muestra
+  </button>
+</div>
+
+  <div *ngIf="this.isTableVisible">
+  <table class="table  table-bordered table-striped border-primary">
+    <thead class="table-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Ce</th>
+      <th scope="col">Qe</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let ceValue of data.ce; let i = index">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ ceValue }}</td>
+      <td>{{ data.qe[i] }}</td>
+    </tr>
+    </tbody>
+  </table>
+  </div>

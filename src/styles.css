@@ -1,8 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
-.fiuba-institutional-bg {
-  background-color: #008bce !important;
+
+.main-header {
+  background-color: #1976D2;
+  font-size: 50px;
+  font-weight: bold;
+  height: 150px;
 }
 
+.fiuba-institutional-bg {
+  background-color: #008bce !important;
+  /*#0288D1*/
+}
 .fiuba-institutional-border {
   border-color: #008bce !important;
 }

@@ -93,6 +93,7 @@ export class FileUploadComponent {
   validateCSVContent(content: string): DataSample {
     const lines = content.split('\n');
     const dataSample: DataSample = {
+      description: undefined, sample_id: undefined, label: "",
       ce: [],
       qe: []
     }
