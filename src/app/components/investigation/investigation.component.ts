@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {IModelConfiguration} from "./interface";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {DataSample} from "../data-selector/data-sample";
+import {Investigation} from "../data-selector/data-sample";
 
 @Component({
   selector: 'app-investigation',
@@ -11,20 +11,17 @@ import {DataSample} from "../data-selector/data-sample";
 })
 
 export class InvestigationComponent {
-  investigationId: number | undefined;
-  selectedFile: File | null = null;
+  investigation: Investigation | undefined;
   stepId: number = 1;
   models: Model[] = [];
-  sheetData: any[] = [];
-  sheetHeaders: string[] = [];
   selectedModels: number[] = [];
   modelConfiguration: { [modelId: number]: IModelConfiguration } = {};
-  dataSample: DataSample | undefined;
+
   constructor(private _snackBar: MatSnackBar) {
   }
 
-  investigationCreated(investigationId: number) {
-    this.investigationId = investigationId;
+  investigationCreated(investigation: Investigation) {
+    this.investigation = investigation;
     this.stepId = 2;
     this._snackBar.open("Investigación cargada con éxito", "Aceptar", {
       duration: 3000,
@@ -55,7 +52,4 @@ export class InvestigationComponent {
     this.modelConfiguration[modelId].automatedParams = !this.modelConfiguration[modelId].automatedParams;
   }
 
-  onSelectedDataSample(sample: DataSample) {
-    this.dataSample = sample;
-  }
 }

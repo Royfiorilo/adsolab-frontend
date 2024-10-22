@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Output, OnInit, output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
-import {DataSample} from "./data-sample";
+import {DataSample, Investigation} from "./data-sample";
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
@@ -12,10 +12,9 @@ import {SampleSelectorService} from "./sample-selector.service";
   styleUrl: './data-selector.component.css'
 })
 export class DataSelectorComponent {
-  @Output() onDataSampleUploaded: EventEmitter<number> = new EventEmitter();
-  @Output() onSelectedDataSample: EventEmitter<DataSample> = new EventEmitter();
-    protected dataSample: DataSample | undefined;
-  protected dataSamples: DataSample[] = [];
+  @Output() onInvestigationCreated: EventEmitter<Investigation> = new EventEmitter();
+  protected dataSample: DataSample | undefined;
+  protected availableDataSamples: DataSample[] = [];
   protected loadingDataSample: boolean = false;
   protected inputControl = new FormControl();
   protected options: string[] = [];
@@ -27,10 +26,10 @@ export class DataSelectorComponent {
 
     if (this.options.length === 0) {
       this.sampleService.getSamples().subscribe(response => {
-        this.dataSamples.push(...response);
-        response.forEach(sample => {
-          if (sample.label) {
-            this.options.push(sample.label);
+        this.availableDataSamples.push(...response.samples);
+        response.samples.forEach(sample => {
+          if (sample.sample_id) {
+            this.options.push(sample.sample_id.toString());
           }
         });
       });
@@ -48,19 +47,17 @@ export class DataSelectorComponent {
   }
 
   getDataSampleByLabel(label: string): DataSample | undefined{
-    return this.dataSamples.find(sample => sample.label === label);
+    return this.availableDataSamples.find(sample => sample.sample_id?.toString() === label);
   }
 
 
   onOptionSelected(event: any) {
     this.inputControl.setValue(event.option.value);
     let sample = this.getDataSampleByLabel(event.option.value);
+    console.log(this.dataSample);
     if (sample) {
       this.setDataSample(sample);
-      this.onDataSampleUploaded.emit(sample.investigation_id);
-      this.onSelectedDataSample.emit(sample);
     }
-
   }
 
   private _filter(value: string): string[] {
@@ -68,19 +65,19 @@ export class DataSelectorComponent {
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
-  uploadDataSample() {
+  createInvestigation() {
     if (this.dataSample) {
       this.loadingDataSample = true;
       this.dataService
-        .setDataSample(this.dataSample)
+        .createInvestigation(this.dataSample)
         .subscribe((response) => {
+          let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
           this.loadingDataSample = false;
-          this.onDataSampleUploaded.emit(response.investigation_id);
-          this.onSelectedDataSample.emit(this.dataSample);
-
+          this.onInvestigationCreated.emit(investigation);
         });
     }
   }
+
   setUploadDataSample(dataSample: DataSample) {
   this.inputControl.setValue('');
   this.setDataSample(dataSample);

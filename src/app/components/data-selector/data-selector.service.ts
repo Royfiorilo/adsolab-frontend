@@ -19,13 +19,10 @@ export class DataSelectorService {
     return dataSample.ce.length !== dataSample.qe.length;
   }
 
-  setDataSample(sample: DataSample): Observable<CreateInvestigationResponse> {
-
+  createInvestigation(sample: DataSample): Observable<CreateInvestigationResponse> {
     if (this.validateSampleData(sample)){
       console.log("Invalid data sample");
     }
-
-    // return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, sample)
-    return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, {'ce':sample.ce,'qe':sample.qe})
+    return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, {ce:sample.ce,qe:sample.qe,sample_id:sample.sample_id})
   }
 }

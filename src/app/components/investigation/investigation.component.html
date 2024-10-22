@@ -2,9 +2,9 @@
   <div class="row d-flex justify-content-center">
     <div class="col-10">
       <mat-stepper [linear]="true">
-        <mat-step label="Datos" [completed]="investigationId">
-          <app-data-selector (onSelectedDataSample)="onSelectedDataSample($event)" (onDataSampleUploaded)="investigationCreated($event)"></app-data-selector>
-          <div class="float-end" *ngIf="investigationId">
+        <mat-step label="Datos" [completed]="investigation">
+          <app-data-selector (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
+          <div class="float-end" *ngIf="investigation">
             <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
               Continuar
             </button>
@@ -31,11 +31,11 @@
         </mat-step>
         <mat-step label="Configuración de Modelos" [completed]="false">
           <ng-template matStepContent>
-            <app-model-configuration [investigationId]="investigationId" [models]="models"
+            <app-model-configuration [investigationId]="investigation?.investigation_id" [models]="models"
                                      [modelConfiguration]="modelConfiguration"
                                      (onSelectedConfiguration)="onSelectedConfiguration($event)"
                                      [selectedModels]="selectedModels"
-                                     [dataSample]="dataSample"></app-model-configuration>
+                                     [dataSample]="investigation?.sample"></app-model-configuration>
             <div class="float-start">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
