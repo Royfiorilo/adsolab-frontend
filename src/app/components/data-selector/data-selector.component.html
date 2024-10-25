@@ -4,13 +4,14 @@
       <div class="card-body ">
         <app-file-upload (onDataSampleUploaded)="setUploadDataSample($event)"></app-file-upload>
       </div>
-      <ng-container *ngIf="dataSample" >
-        <div class="mt-auto d-flex justify-content-center align-content-center  ">
-          <button style="width: 150px; height: 50px;" class="btn fiuba-institutional m-3" (click)="createInvestigation()">Comenzar Investigacion</button>
+      <ng-container *ngIf="dataSample">
+        <div class="mt-auto d-flex justify-content-center align-content-center ">
+          <button class="btn fiuba-institutional m-3"
+                  (click)="createInvestigation()">{{'DATA_SELECTOR.START_INVESTIGATION' | translate}}</button>
         </div>
       </ng-container>
 
-      <ng-container *ngIf="options.length" >
+      <ng-container *ngIf="options.length">
         <div class="m-3">
           <mat-form-field style="width: 100%">
             <input matInput
@@ -18,7 +19,7 @@
                    [formControl]="inputControl"
                    [matAutocomplete]="auto">
 
-            <mat-autocomplete #auto="matAutocomplete"  (optionSelected)="onOptionSelected($event)">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
               <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                 {{ option }}
               </mat-option>
@@ -29,7 +30,7 @@
 
       </ng-container>
     </div>
-    <app-data-visualizer *ngIf="dataSample" [data]="dataSample" ></app-data-visualizer>
+    <app-data-visualizer *ngIf="dataSample" [data]="dataSample"></app-data-visualizer>
   </div>
 </div>
 <ng-container *ngIf="loadingDataSample">

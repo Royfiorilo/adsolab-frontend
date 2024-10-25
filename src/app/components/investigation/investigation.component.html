@@ -6,7 +6,7 @@
           <app-data-selector (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
           <div class="float-end" *ngIf="investigation">
             <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
-              Continuar
+              {{'INVESTIGATION.CONTINUE' | translate}}
             </button>
           </div>
         </mat-step>
@@ -19,12 +19,12 @@
             <div class="float-start" *ngIf="models.length !== 0">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
-                Volver
+                {{'INVESTIGATION.BACK' | translate}}
               </button>
             </div>
             <div class="float-end" *ngIf="selectedModels.length !== 0">
               <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
-                Continuar
+                {{'INVESTIGATION.CONTINUE' | translate}}
               </button>
             </div>
           </ng-template>
@@ -39,7 +39,7 @@
             <div class="float-start">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
-                Volver
+                {{'INVESTIGATION.BACK' | translate}}
               </button>
             </div>
             <!--      TODO: ver logica para avanzar en este step-->
@@ -51,7 +51,7 @@
             <div class="float-start">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
-                Volver
+                {{'INVESTIGATION.BACK' | translate}}
               </button>
             </div>
           </ng-template>

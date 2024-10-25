@@ -19,3 +19,10 @@ export interface CreateInvestigationResponse {
 export interface GetSampleResponse{
   samples: DataSample[];
 }
+
+export enum InvalidFileReason {
+  INVALID_FILE_TYPE = 'INVALID_FILE_TYPE',
+  INVALID_FILE_STRUCTURE = 'INVALID_FILE_STRUCTURE',
+  INVALID_DATA = 'INVALID_DATA',
+  READ_ERROR = 'READ_ERROR'
+}
