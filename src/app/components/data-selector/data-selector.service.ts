@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
@@ -15,14 +15,24 @@ export class DataSelectorService {
     this.backendBaseUrl = environment.backendBaseUrl;
   }
 
-  validateSampleData(dataSample: DataSample):boolean {
+  validateSampleData(dataSample: DataSample): boolean {
     return dataSample.ce.length !== dataSample.qe.length;
   }
 
   createInvestigation(sample: DataSample): Observable<CreateInvestigationResponse> {
-    if (this.validateSampleData(sample)){
+    if (this.validateSampleData(sample)) {
       console.log("Invalid data sample");
     }
-    return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, {ce:sample.ce,qe:sample.qe,sample_id:sample.sample_id})
+
+    if (sample.sample_id) {
+      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, {
+        sample_id: sample.sample_id
+      })
+    } else {
+      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation`, {
+        ce: sample.ce,
+        qe: sample.qe,
+      })
+    }
   }
 }
