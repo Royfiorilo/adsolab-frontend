@@ -14,17 +14,17 @@
 
         <ng-template #content let-modal>
           <div class="modal-header">
-            <h4 class="modal-title" id="modal-basic-title">{{'MODEL_SELECTOR.MODEL_DETAILS' | translate}}</h4>
+            <h4 class="modal-title" id="modal-basic-title">{{ 'MODEL_SELECTOR.MODEL_DETAILS' | translate }}</h4>
             <button type="button" class="btn-close" aria-label="Close"
                     (click)="modal.dismiss('Cross click')"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
               <div class="input-group">
-                {{model.description}}
+                {{ model.description }}
               </div>
               <div class="input-group">
-                {{model.formula}}
+                {{ model.formula }}
               </div>
             </div>
           </div>

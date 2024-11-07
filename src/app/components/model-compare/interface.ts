@@ -1,9 +1,9 @@
-import {IGraph, IParameter, IStatistics} from "../../common/common.interface";
+import {IGraph, IParameter} from "../../common/common.interface";
 
 export interface INoLinearGraph {
-  parameters: IParameter;
-  statistics: IStatistics;
-  graphs: IGraph[]
+  parameters: IParameter[];
+  statistics: INoLinearResultStats;
+  graph: IGraph
 }
 
 export interface INoLinearRequestSeed {
@@ -42,6 +42,7 @@ export interface AdjustmentMethod {
   params: IParameter[];
   stats: INoLinearResultStats;
   success: boolean;
+  yCalc: number[];
 }
 
 export interface AdjustmentMethods {
