@@ -1,11 +1,12 @@
 import {Component, EventEmitter, inject, Input, Output, TemplateRef} from '@angular/core';
 import {Model} from "../model-selector/model";
-import {IModelConfiguration} from "../investigation/interface";
 import {ModelConfigurationService} from "./model-configuration.service";
 import {ILinearizationGraph, ILinearizationRequest} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {DataSample} from "../data-selector/data-sample";
+import {CommonUtilsService} from "../../common/common.service";
+import {IModelsConfigurations} from "../../common/common.interface";
 
 @Component({
   selector: 'app-model-configuration',
@@ -16,18 +17,17 @@ export class ModelConfigurationComponent {
   @Input() dataSample: DataSample | undefined;
   @Input() selectedModels!: number[];
   @Input() investigationId: number | undefined;
-  @Input() modelConfiguration!: { [modelId: number]: IModelConfiguration };
+  @Input() modelConfiguration!: IModelsConfigurations;
   @Input() models!: Model[];
   @Output() onSelectedConfiguration = new EventEmitter<number>();
+  @Output() onSelectedParams = new EventEmitter<IModelsConfigurations>();
   protected linearizationGraphs: { [key: number]: ILinearizationGraph[] } = {};
   private modalService = inject(NgbModal);
   protected runningLinearization: boolean = false;
 
-  constructor(private modelConfigurationService: ModelConfigurationService) {
-  }
+  constructor(private modelConfigurationService: ModelConfigurationService,
+              protected commonUtilsService: CommonUtilsService) {
 
-  getModelById(modelId: number): Model {
-    return this.models.filter(model => model._id === modelId).pop()!;
   }
 
   open(content: TemplateRef<any>) {
@@ -35,7 +35,7 @@ export class ModelConfigurationComponent {
   }
 
   runLinearization(modelId: number) {
-    let model: Model = this.getModelById(modelId);
+    let model: Model = this.commonUtilsService.getModelById(modelId, this.models);
     if (this.investigationId) {
       let request: ILinearizationRequest = {
         investigation_id: this.investigationId, models: [{
@@ -52,6 +52,7 @@ export class ModelConfigurationComponent {
 
         this.linearizationGraphs[model._id] = [];
         let linearizations = response.results[0].linearizations;
+
         for (const linearization of linearizations) {
 
           let slope: number = linearization.slope;
@@ -84,8 +85,22 @@ export class ModelConfigurationComponent {
               layout: {title: linearization.name}
             }
           }
+
+          //asign param values
+          if (linearizationGraph.isBestResult) {
+            this.onSelectedParams
+            for (const parameter of linearization.parameters) {
+              this.modelConfiguration[modelId].paramValues[parameter.name] = parameter.value
+            }
+
+
+          }
+
           this.linearizationGraphs[modelId].push(linearizationGraph);
         }
+
+        this.onSelectedParams.emit(this.modelConfiguration);
+
       });
     }
   }

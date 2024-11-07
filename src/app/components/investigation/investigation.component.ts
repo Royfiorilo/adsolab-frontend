@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {Model} from "../model-selector/model";
-import {IModelConfiguration} from "./interface";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Investigation} from "../data-selector/data-sample";
+import {IModelsConfigurations} from "../../common/common.interface";
 
 @Component({
   selector: 'app-investigation',
@@ -15,7 +15,7 @@ export class InvestigationComponent {
   stepId: number = 1;
   models: Model[] = [];
   selectedModels: number[] = [];
-  modelConfiguration: { [modelId: number]: IModelConfiguration } = {};
+  modelConfiguration: IModelsConfigurations = {};
 
   constructor(private _snackBar: MatSnackBar) {
   }
@@ -50,6 +50,10 @@ export class InvestigationComponent {
 
   onSelectedConfiguration(modelId: number) {
     this.modelConfiguration[modelId].automatedParams = !this.modelConfiguration[modelId].automatedParams;
+  }
+
+  onSelectedParams(modelsConfigurations: IModelsConfigurations) {
+    this.modelConfiguration = modelsConfigurations;
   }
 
 }

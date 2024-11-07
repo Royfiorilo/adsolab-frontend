@@ -34,6 +34,7 @@
             <app-model-configuration [investigationId]="investigation?.investigation_id" [models]="models"
                                      [modelConfiguration]="modelConfiguration"
                                      (onSelectedConfiguration)="onSelectedConfiguration($event)"
+                                     (onSelectedParams)="onSelectedParams($event)"
                                      [selectedModels]="selectedModels"
                                      [dataSample]="investigation?.sample"></app-model-configuration>
             <div class="float-start">
@@ -47,7 +48,11 @@
         </mat-step>
         <mat-step label="Resultados">
           <ng-template matStepContent>
-            <app-model-compare [selectedModels]="selectedModels"></app-model-compare>
+            <app-model-compare
+              [investigationId]="investigation?.investigation_id"
+              [dataSample]="investigation?.sample"
+              [selectedModels]="selectedModels"
+              [modelConfiguration]="modelConfiguration"></app-model-compare>
             <div class="float-start">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
