@@ -29,15 +29,11 @@ export class ModelCompareService {
               "name": "metodo_A",
               "transformed": {
                 "x": [ // este es el mismo x original
-                  1.5,
-                  2.5,
-                  3.5
+                  0.015,
+                  0.025,
+                  0.035
                 ],
-                "y": [ // este y en realidad es y_pred
-                  1,
-                  2,
-                  3
-                ]
+                "y": [0.00973269, 0.01404109, 0.01492665, 0.01761241, 0.02404761, 0.02445208, 0.02483345, 0.02499031, 0.02501419]
               },
               "parameters": [
                 {"name": "qmax", "value": 0.54},

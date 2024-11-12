@@ -57,8 +57,8 @@ export class ModelCompareComponent {
 
     this.modelCompareService.runNoLinearModel(request).subscribe((response) => {
 
-      let xPointX = this.dataSample?.ce!
-      let yPointX = this.dataSample?.qe!
+      let xPointX = this.dataSample?.ce.sort()!
+      let yPointX = this.dataSample?.qe.sort()!
       for (const model of response.results) {
 
         this.noLinearResults[model.model] = []
@@ -81,10 +81,11 @@ export class ModelCompareComponent {
                 },
                 {
                   x: xPointX,
-                  y: adjustment.transformed.y,
+                  y: adjustment.transformed.y.sort(),
                   type: 'scatter',
-                  mode: 'line',
-                  marker: {color: 'blue'}
+                  mode: 'line+marker',
+                  line: {shape: 'spline', color: 'blue'},
+                  marker: {color: 'blue'},
                 },
               ],
               layout: {title: adjustment.name}

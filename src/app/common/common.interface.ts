@@ -7,6 +7,7 @@ export interface IModelsConfigurations {
 export interface IGraph {
   data: IGraphData[];
   layout: IGraphLayout;
+
 }
 
 export interface IGraphData {
@@ -15,6 +16,7 @@ export interface IGraphData {
   type: string;            // e.g., 'scatter'
   mode: string;            // e.g., 'markers', 'line'
   marker: IMarker;
+  line?: { [key: string]: any };
 }
 
 export interface IMarker {
