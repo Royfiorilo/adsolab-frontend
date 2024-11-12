@@ -11,36 +11,38 @@
           </div>
           <p class="card-text mt-2"></p>
 
-          <!--          <div *ngFor="let item of linearizationGraphs[modelId]">-->
-          <!--            <hr>-->
-          <!--            <div *ngIf="item.isBestResult" class="mt-3 alert alert-success" role="alert">-->
-          <!--              Best model: {{ item.linearizationName }}-->
-          <!--            </div>-->
-          <!--            <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"></plotly-plot>-->
+          <div *ngFor="let item of noLinearResults[modelId]">
+            <hr>
+            <div *ngIf="item.best" class="mt-3 alert alert-success" role="alert">
+              Best model: {{ item.adjustment_name }}
+            </div>
+            <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"></plotly-plot>
 
-          <!--            <div class="table-responsive">-->
-          <!--              <table class="table table-bordered table-striped border-primary">-->
-          <!--                <thead>-->
-          <!--                <tr>-->
-          <!--                  <th scope="col">#</th>-->
-          <!--                  <th *ngFor="let param of item.parameters" scope="col">{{ param.name }}</th>-->
-          <!--                  <th scope="col">r</th>-->
-          <!--                  <th scope="col">std err</th>-->
-          <!--                </tr>-->
-          <!--                </thead>-->
-          <!--                <tbody>-->
-          <!--                <tr>-->
-          <!--                  <th scope="row">1</th>-->
-          <!--                  <td *ngFor="let param of item.parameters">{{ param.value }}</td>-->
-          <!--                  <td> {{ item.statistics.r }}</td>-->
-          <!--                  <td> {{ item.statistics.std_err }}</td>-->
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped border-primary">
+                <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th *ngFor="let param of item.parameters" scope="col">{{ param.name }}</th>
+                  <th scope="col">r</th>
+                  <th scope="col">std err</th>
+                  <th scope="col">Chi squared</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td *ngFor="let param of item.parameters">{{ param.value }}</td>
+                  <td> {{ item.statistics.r }}</td>
+                  <td> {{ item.statistics.stderr }}</td>
+                  <td> {{ item.statistics.Chi_squared }}</td>
 
-          <!--                </tr>-->
-          <!--                </tbody>-->
-          <!--              </table>-->
+                </tr>
+                </tbody>
+              </table>
 
-          <!--            </div>-->
-          <!--          </div>-->
+            </div>
+          </div>
 
         </div>
       </div>

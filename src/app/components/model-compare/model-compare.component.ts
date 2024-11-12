@@ -2,13 +2,7 @@ import {Component, Input} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
-import {
-  AdjustmentMethod,
-  INoLinearGraph,
-  INoLinearRequest,
-  INoLinearRequestModel,
-  INoLinearRequestSeed
-} from "./interface";
+import {INoLinearGraph, INoLinearRequest, INoLinearRequestModel, INoLinearRequestSeed} from "./interface";
 import {ModelCompareService} from "./model-compare.service";
 import {IModelsConfigurations} from "../../common/common.interface";
 
@@ -23,7 +17,7 @@ export class ModelCompareComponent {
   @Input() models!: Model[];
   @Input() dataSample: DataSample | undefined;
   @Input() modelConfiguration!: IModelsConfigurations;
-  protected noLinearResults: { [key: string]: INoLinearGraph[] } = {};
+  protected noLinearResults: { [key: number]: INoLinearGraph[] } = {};
 
   constructor(protected commonUtilsService: CommonUtilsService,
               protected modelCompareService: ModelCompareService) {
@@ -69,12 +63,13 @@ export class ModelCompareComponent {
 
         this.noLinearResults[model.model] = []
 
-        for (const method of Object.keys(model.adjustment_methods)) {
+        for (const adjustment of model.adjustment_methods) {
 
-          let adjustment: AdjustmentMethod = model.adjustment_methods[method]
           let noLinearGraph: INoLinearGraph = {
-            parameters: [{name: "q", value: 2.23}],
-            statistics: adjustment.stats,
+            parameters: adjustment.parameters,
+            statistics: adjustment.statistics,
+            best: adjustment.name === model.best_adjust,
+            adjustment_name: adjustment.name,
             graph: {
               data: [
                 {
@@ -86,13 +81,13 @@ export class ModelCompareComponent {
                 },
                 {
                   x: xPointX,
-                  y: adjustment.yCalc,
+                  y: adjustment.transformed.y,
                   type: 'scatter',
                   mode: 'line',
                   marker: {color: 'blue'}
                 },
               ],
-              layout: {title: method}
+              layout: {title: adjustment.name}
             }
           }
 

@@ -34,3 +34,8 @@ export interface IStatistics {
   r: number;
   std_err: number;
 }
+
+export interface ITransformedData {
+  x: number[];
+  y: number[];
+}

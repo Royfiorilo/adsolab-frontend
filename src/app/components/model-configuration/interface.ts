@@ -1,4 +1,4 @@
-import {IGraph, IParameter, IStatistics} from "../../common/common.interface";
+import {IGraph, IParameter, IStatistics, ITransformedData} from "../../common/common.interface";
 
 export interface ILinearizationRequest {
   investigation_id: number;
@@ -29,11 +29,6 @@ export interface ILinearization {
   intercept: number;
   parameters: IParameter[];
   statistics: IStatistics;
-}
-
-export interface ITransformedData {
-  x: number[];
-  y: number[];
 }
 
 

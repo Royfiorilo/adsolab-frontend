@@ -1,9 +1,11 @@
-import {IGraph, IParameter} from "../../common/common.interface";
+import {IGraph, IParameter, ITransformedData} from "../../common/common.interface";
 
 export interface INoLinearGraph {
   parameters: IParameter[];
   statistics: INoLinearResultStats;
-  graph: IGraph
+  graph: IGraph;
+  best: boolean;
+  adjustment_name: string;
 }
 
 export interface INoLinearRequestSeed {
@@ -22,7 +24,7 @@ export interface INoLinearRequest {
 }
 
 export interface INoLinearResultStats {
-  CV_RMSE: number;
+  // CV_RMSE: number;
   Chi_squared: number;
   Chi_squared_reduced: number;
   HYBRID: number;
@@ -33,28 +35,25 @@ export interface INoLinearResultStats {
   Std_error: number;
   n_params: number;
   n_points: number;
+  r: number;
+  stderr: number
 }
 
 export interface AdjustmentMethod {
-  AIC: number;
-  BIC: number;
-  description: string;
-  params: IParameter[];
-  stats: INoLinearResultStats;
-  success: boolean;
-  yCalc: number[];
-}
-
-export interface AdjustmentMethods {
-  [method: string]: AdjustmentMethod;
+  name: string;
+  parameters: IParameter[];
+  statistics: INoLinearResultStats;
+  transformed: ITransformedData;
 }
 
 export interface INoLinearResult {
-  adjustment_methods: AdjustmentMethods;
-  model: string;
+  adjustment_methods: AdjustmentMethod[];
+  best_adjust: string,
+  model: number;
 }
 
 export interface INoLinearResponse {
   investigation_id: number;
+  best_model: string,
   results: INoLinearResult[];
 }
