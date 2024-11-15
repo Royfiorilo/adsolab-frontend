@@ -4,7 +4,7 @@ export interface INoLinearGraph {
   parameters: IParameter[];
   statistics: INoLinearResultStats;
   graph: IGraph;
-  best: boolean;
+  best?: boolean;
   adjustment_name: string;
 }
 
@@ -14,7 +14,7 @@ export interface INoLinearRequestSeed {
 }
 
 export interface INoLinearRequestModel {
-  model: string;
+  model: number;
   seeds: INoLinearRequestSeed[];
 }
 
@@ -24,23 +24,19 @@ export interface INoLinearRequest {
 }
 
 export interface INoLinearResultStats {
-  // CV_RMSE: number;
-  Chi_squared: number;
-  Chi_squared_reduced: number;
-  HYBRID: number;
-  R2: number;
-  R2_adjusted: number;
+  r_squared: number;
+  adjust_r_squared: number;
+  chi_squared: number;
+  adjust_chi_squeared: number;
   RMSE: number;
   SSE: number;
-  Std_error: number;
-  n_params: number;
-  n_points: number;
-  r: number;
-  stderr: number
+  HYBRID: number;
 }
 
 export interface AdjustmentMethod {
   name: string;
+  description: string;
+  status: boolean;
   parameters: IParameter[];
   statistics: INoLinearResultStats;
   transformed: ITransformedData;

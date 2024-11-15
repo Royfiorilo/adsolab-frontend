@@ -24,19 +24,26 @@
                 <tr>
                   <th scope="col">#</th>
                   <th *ngFor="let param of item.parameters" scope="col">{{ param.name }}</th>
-                  <th scope="col">r</th>
-                  <th scope="col">std err</th>
-                  <th scope="col">Chi squared</th>
+                  <th scope="col"> {{'STATISTICS.CHI_SQUARED' | translate }} </th>
+                  <th scope="col"> {{'STATISTICS.R_SQUARED' | translate }} </th>
+                  <th scope="col"> {{'STATISTICS.ADJUSTED_R_SQUARED' | translate }} </th>
+                  <th scope="col"> {{'STATISTICS.ADJUSTED_CHI_SQUARED' | translate }} </th>
+                  <th scope="col"> {{'STATISTICS.RMSE' | translate }} </th>
+                  <th scope="col"> {{'STATISTICS.SSE' | translate }} </th>
+                  <th scope="col"> {{'STATISTICS.HYBRID' | translate }} </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                   <th scope="row">1</th>
                   <td *ngFor="let param of item.parameters">{{ param.value }}</td>
-                  <td> {{ item.statistics.r }}</td>
-                  <td> {{ item.statistics.stderr }}</td>
-                  <td> {{ item.statistics.Chi_squared }}</td>
-
+                  <td> {{ item.statistics.chi_squared }}</td>
+                  <td> {{ item.statistics.r_squared }} </td>
+                  <td> {{ item.statistics.adjust_r_squared }} </td>
+                  <td> {{ item.statistics.adjust_chi_squeared }} </td>
+                  <td> {{ item.statistics.RMSE }} </td>
+                  <td> {{ item.statistics.SSE }} </td>
+                  <td> {{ item.statistics.HYBRID }} </td>
                 </tr>
                 </tbody>
               </table>

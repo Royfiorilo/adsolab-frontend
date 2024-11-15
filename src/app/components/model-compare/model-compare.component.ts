@@ -40,7 +40,7 @@ export class ModelCompareComponent {
       }
 
       const modelRequest: INoLinearRequestModel = {
-        model: this.commonUtilsService.getModelById(+modelId, this.models).name,
+        model: +modelId,
         seeds
       }
 
@@ -57,8 +57,8 @@ export class ModelCompareComponent {
 
     this.modelCompareService.runNoLinearModel(request).subscribe((response) => {
 
-      let xPointX = this.dataSample?.ce.sort()!
-      let yPointX = this.dataSample?.qe.sort()!
+      let xPointX = this.dataSample?.ce!
+      let yPointX = this.dataSample?.qe!
       for (const model of response.results) {
 
         this.noLinearResults[model.model] = []
@@ -68,7 +68,6 @@ export class ModelCompareComponent {
           let noLinearGraph: INoLinearGraph = {
             parameters: adjustment.parameters,
             statistics: adjustment.statistics,
-            best: adjustment.name === model.best_adjust,
             adjustment_name: adjustment.name,
             graph: {
               data: [
@@ -80,8 +79,8 @@ export class ModelCompareComponent {
                   marker: {color: 'red'}
                 },
                 {
-                  x: xPointX,
-                  y: adjustment.transformed.y.sort(),
+                  x: adjustment.transformed.x,
+                  y: adjustment.transformed.y,
                   type: 'scatter',
                   mode: 'line+marker',
                   line: {shape: 'spline', color: 'blue'},

@@ -36,5 +36,14 @@
   },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"
+  },
+  "STATISTICS": {
+    "CHI_SQUARED": "Chi Cuadrado",
+    "R_SQUARED": "R Cuadrado",
+    "ADJUSTED_R_SQUARED": "R Cuadrado Ajustado",
+    "ADJUSTED_CHI_SQUARED": "Chi Cuadrado Ajustado",
+    "RMSE": "RMSE",
+    "SSE": "SSE",
+    "HYBRID": "HYBRID"
   }
 }
