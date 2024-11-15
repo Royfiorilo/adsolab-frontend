@@ -6,7 +6,7 @@
           <app-data-selector (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
           <div class="float-end" *ngIf="investigation">
             <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
-              {{'INVESTIGATION.CONTINUE' | translate}}
+              {{ 'INVESTIGATION.CONTINUE' | translate }}
             </button>
           </div>
         </mat-step>
@@ -19,39 +19,49 @@
             <div class="float-start" *ngIf="models.length !== 0">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
-                {{'INVESTIGATION.BACK' | translate}}
+                {{ 'INVESTIGATION.BACK' | translate }}
               </button>
             </div>
             <div class="float-end" *ngIf="selectedModels.length !== 0">
               <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
-                {{'INVESTIGATION.CONTINUE' | translate}}
+                {{ 'INVESTIGATION.CONTINUE' | translate }}
               </button>
             </div>
           </ng-template>
         </mat-step>
-        <mat-step label="Configuración de Modelos" [completed]="false">
+        <mat-step label="Configuración de Modelos" [completed]="modelConfigurationDone">
           <ng-template matStepContent>
             <app-model-configuration [investigationId]="investigation?.investigation_id" [models]="models"
                                      [modelConfiguration]="modelConfiguration"
                                      (onSelectedConfiguration)="onSelectedConfiguration($event)"
+                                     (onSelectedParams)="onSelectedParams($event)"
                                      [selectedModels]="selectedModels"
                                      [dataSample]="investigation?.sample"></app-model-configuration>
             <div class="float-start">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
-                {{'INVESTIGATION.BACK' | translate}}
+                {{ 'INVESTIGATION.BACK' | translate }}
               </button>
             </div>
-            <!--      TODO: ver logica para avanzar en este step-->
+            <div class="float-end" *ngIf="modelConfigurationDone">
+              <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
+                {{ 'INVESTIGATION.CONTINUE' | translate }}
+              </button>
+            </div>
           </ng-template>
         </mat-step>
         <mat-step label="Resultados">
           <ng-template matStepContent>
-            <app-model-compare [selectedModels]="selectedModels"></app-model-compare>
+            <app-model-compare
+              [investigationId]="investigation?.investigation_id"
+              [dataSample]="investigation?.sample"
+              [selectedModels]="selectedModels"
+              [modelConfiguration]="modelConfiguration"
+              [models]="models"></app-model-compare>
             <div class="float-start">
               <button mat-button matStepperPrevious mat-stroked-button
                       class="fiuba-institutional-border fiuba-institutional-text">
-                {{'INVESTIGATION.BACK' | translate}}
+                {{ 'INVESTIGATION.BACK' | translate }}
               </button>
             </div>
           </ng-template>

@@ -1,10 +1,12 @@
+import {IGraph, IParameter, IStatistics, ITransformedData} from "../../common/common.interface";
+
 export interface ILinearizationRequest {
-  investigation_id :number;
+  investigation_id: number;
   models: IModelLinearizationRequest[];
 }
 
 export interface IModelLinearizationRequest {
-  model :string;
+  model: string;
   linearizations: string[];
 }
 
@@ -29,48 +31,12 @@ export interface ILinearization {
   statistics: IStatistics;
 }
 
-export interface ITransformedData {
-  x: number[];
-  y: number[];
-}
-
-export interface IParameter {
-  name: string;
-  value: number;
-}
-
-export interface IStatistics {
-  r: number;
-  std_err: number;
-}
-
 
 export interface ILinearizationGraph {
-  isBestResult:boolean;
+  isBestResult: boolean;
   parameters: IParameter[];
   statistics: IStatistics;
   linearizationName: string;
   graph: IGraph;
-}
-
-export interface IGraph {
-  data: IGraphData[];
-  layout: IGraphLayout;
-}
-
-export interface IGraphData {
-  x: (number)[];  // Supports both numbers and strings (for variables)
-  y: (number)[];
-  type: string;            // e.g., 'scatter'
-  mode: string;            // e.g., 'markers', 'line'
-  marker: IMarker;
-}
-
-export interface IMarker {
-  color: string;
-}
-
-export interface IGraphLayout {
-  title: string;
 }
 
