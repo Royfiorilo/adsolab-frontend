@@ -18,12 +18,21 @@ export class ModelCompareComponent {
   @Input() dataSample: DataSample | undefined;
   @Input() modelConfiguration!: IModelsConfigurations;
   protected noLinearResults: { [key: number]: INoLinearGraph[] } = {};
+  protected runningNoLinearAdjustment: boolean = false;
 
   constructor(protected commonUtilsService: CommonUtilsService,
               protected modelCompareService: ModelCompareService) {
   }
 
   ngOnInit() {
+
+    this.runNonLinearModels();
+
+  }
+
+  runNonLinearModels() {
+
+    this.runningNoLinearAdjustment = true
 
     const models: INoLinearRequestModel[] = [];
 
@@ -52,8 +61,6 @@ export class ModelCompareComponent {
       investigation_id: this.investigationId!,
       models
     }
-
-    console.info(request);
 
     this.modelCompareService.runNoLinearModel(request).subscribe((response) => {
 
@@ -95,9 +102,10 @@ export class ModelCompareComponent {
         }
 
       }
-      console.log(this.noLinearResults);
-    })
 
+      this.runningNoLinearAdjustment = false;
+
+    })
 
   }
 

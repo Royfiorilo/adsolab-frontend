@@ -29,7 +29,7 @@
             </div>
           </ng-template>
         </mat-step>
-        <mat-step label="Configuración de Modelos" [completed]="true">
+        <mat-step label="Configuración de Modelos" [completed]="modelConfigurationDone">
           <ng-template matStepContent>
             <app-model-configuration [investigationId]="investigation?.investigation_id" [models]="models"
                                      [modelConfiguration]="modelConfiguration"
@@ -43,8 +43,7 @@
                 {{ 'INVESTIGATION.BACK' | translate }}
               </button>
             </div>
-            <!--      TODO: ver logica para avanzar en este step-->
-            <div class="float-end">
+            <div class="float-end" *ngIf="modelConfigurationDone">
               <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
                 {{ 'INVESTIGATION.CONTINUE' | translate }}
               </button>

@@ -16,6 +16,7 @@ export class InvestigationComponent {
   models: Model[] = [];
   selectedModels: number[] = [];
   modelConfiguration: IModelsConfigurations = {};
+  modelConfigurationDone: boolean = false;
 
   constructor(private _snackBar: MatSnackBar) {
   }
@@ -58,6 +59,26 @@ export class InvestigationComponent {
 
   onSelectedParams(modelsConfigurations: IModelsConfigurations) {
     this.modelConfiguration = modelsConfigurations;
+
+    let configurationDone = true;
+
+    for (const modelId of Object.keys(this.modelConfiguration)) {
+
+      const params = this.modelConfiguration[+modelId]?.paramValues;
+
+      for (const paramName of Object.keys(params)) {
+
+        if (!params[paramName]) {
+          configurationDone = false;
+          return;
+        }
+
+      }
+
+    }
+
+    this.modelConfigurationDone = configurationDone;
+
   }
 
 }
