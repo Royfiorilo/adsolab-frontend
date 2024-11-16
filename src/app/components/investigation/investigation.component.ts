@@ -32,9 +32,6 @@ export class InvestigationComponent {
 
   addModel(modelId: number) {
     this.selectedModels.push(modelId);
-    console.log(modelId)
-
-    console.log(this.selectedModels);
     this.modelConfiguration[modelId] = {
       automatedParams: true,
       paramValues: Object.keys(this.models.find(model => model._id === modelId)?.parameters || {})

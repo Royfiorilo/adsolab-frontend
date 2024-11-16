@@ -115,4 +115,13 @@ export class ModelConfigurationComponent {
   }
 
   protected readonly faInfoCircle = faInfoCircle;
+
+  onChange(event: Event, modelId: number, key: string) {
+
+    this.modelConfiguration[modelId].paramValues[key] = +(event.target as HTMLInputElement).value
+
+
+    this.onSelectedParams.emit(this.modelConfiguration)
+
+  }
 }
