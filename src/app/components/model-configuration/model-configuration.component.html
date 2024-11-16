@@ -1,6 +1,6 @@
 <ng-container *ngIf="selectedModels.length === 0">
   <div class="alert alert-warning" role="alert">
-    {{'MODEL_CONFIGURATION.NOT_SELECTED_MODELS' | translate}}
+    {{ 'MODEL_CONFIGURATION.NOT_SELECTED_MODELS' | translate }}
   </div>
 </ng-container>
 
@@ -19,19 +19,21 @@
           <div class="form-floating">
             <select (change)="selectConfiguration($event,modelId)" [id]="modelId"
                     class="form-select">
-              <option value="true">{{'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate}}</option>
-              <option value="false">{{'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate}}</option>
+              <option value="true">{{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}</option>
+              <option value="false">{{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}</option>
             </select>
-            <label [for]="modelId">{{'MODEL_CONFIGURATION.PARAM_TYPES' | translate}}</label>
+            <label [for]="modelId">{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</label>
           </div>
           <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
             <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue">
               <div class="input-group mt-3">
-                <input [ngModel]="modelConfiguration[modelId].paramValues[param.key]"
-                       class="form-control"
-                       id="{{param.key}}"
-                       placeholder="Parametro {{param.key}}"
-                       type="number">
+                <input
+                  [value]=[modelConfiguration[modelId].paramValues[param.key]]
+                  (change)="onChange($event,modelId, param.key)"
+                  class="form-control"
+                  id="{{param.key}}"
+                  placeholder="Parametro {{param.key}}"
+                  type="number">
                 <span class="input-group-text">
                   <fa-icon (click)="open(content); $event.stopPropagation()"
                            [icon]="faInfoCircle"
@@ -44,7 +46,7 @@
               <ng-template #content let-modal>
                 <div class="modal-header">
                   <h4 class="modal-title"
-                      id="modal-basic-title">{{'MODEL_CONFIGURATION.PARAM' | translate:param}}</h4>
+                      id="modal-basic-title">{{ 'MODEL_CONFIGURATION.PARAM' | translate:param }}</h4>
                   <button (click)="modal.dismiss('Cross click')" aria-label="Close" class="btn-close"
                           type="button"></button>
                 </div>
@@ -68,7 +70,8 @@
             </div>
             <div class="mt-auto d-flex align-content-center justify-content-center">
               <button (click)="runLinearization(modelId)"
-                      class="btn fiuba-institutional mt-3">{{'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate}}</button>
+                      class="btn fiuba-institutional mt-3">{{ 'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
+              </button>
             </div>
 
             <div *ngFor="let item of linearizationGraphs[modelId]">

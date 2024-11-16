@@ -32,9 +32,6 @@ export class InvestigationComponent {
 
   addModel(modelId: number) {
     this.selectedModels.push(modelId);
-    console.log(modelId)
-
-    console.log(this.selectedModels);
     this.modelConfiguration[modelId] = {
       automatedParams: true,
       paramValues: Object.keys(this.models.find(model => model._id === modelId)?.parameters || {})
@@ -45,11 +42,16 @@ export class InvestigationComponent {
   }
 
   onModelSelected(modelId: number) {
-    this.selectedModels.includes(modelId) ? this.selectedModels.splice(this.selectedModels.indexOf(modelId), 1) : this.addModel(modelId);
+    if (this.selectedModels.includes(modelId)) {
+      this.removeModel(modelId)
+    } else {
+      this.addModel(modelId);
+    }
+    this.checkConfigurationDone();
+    
   }
 
   onLoadedModels(models: Model[]) {
-    console.log("onLoadedModels", models)
     this.models = models;
   }
 
@@ -59,7 +61,10 @@ export class InvestigationComponent {
 
   onSelectedParams(modelsConfigurations: IModelsConfigurations) {
     this.modelConfiguration = modelsConfigurations;
+    this.checkConfigurationDone();
+  }
 
+  private checkConfigurationDone() {
     let configurationDone = true;
 
     for (const modelId of Object.keys(this.modelConfiguration)) {
@@ -70,15 +75,16 @@ export class InvestigationComponent {
 
         if (!params[paramName]) {
           configurationDone = false;
-          return;
         }
 
       }
 
     }
-
     this.modelConfigurationDone = configurationDone;
-
   }
 
+  private removeModel(modelId: number) {
+    this.selectedModels.splice(this.selectedModels.indexOf(modelId), 1)
+    delete this.modelConfiguration[modelId]
+  }
 }

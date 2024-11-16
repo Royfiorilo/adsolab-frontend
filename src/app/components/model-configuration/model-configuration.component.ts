@@ -88,12 +88,9 @@ export class ModelConfigurationComponent {
 
           //asign param values
           if (linearizationGraph.isBestResult) {
-            this.onSelectedParams
             for (const parameter of linearization.parameters) {
               this.modelConfiguration[modelId].paramValues[parameter.name] = parameter.value
             }
-
-
           }
 
           this.linearizationGraphs[modelId].push(linearizationGraph);
@@ -118,4 +115,13 @@ export class ModelConfigurationComponent {
   }
 
   protected readonly faInfoCircle = faInfoCircle;
+
+  onChange(event: Event, modelId: number, key: string) {
+
+    this.modelConfiguration[modelId].paramValues[key] = +(event.target as HTMLInputElement).value
+
+
+    this.onSelectedParams.emit(this.modelConfiguration)
+
+  }
 }
