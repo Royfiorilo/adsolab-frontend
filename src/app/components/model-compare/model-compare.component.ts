@@ -19,7 +19,7 @@ export class ModelCompareComponent {
   @Input() modelConfiguration!: IModelsConfigurations;
   protected noLinearResults: { [key: number]: INoLinearGraph[] } = {};
   protected runningNoLinearAdjustment: boolean = false;
-  protected summaryGraph: IGraph | undefined;
+  protected summaryGraph: { [key: number]: IGraph } = {};
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
     leastsq: "#8f3237",
@@ -82,14 +82,13 @@ export class ModelCompareComponent {
         marker: {color: 'red'}
       }
 
-      this.summaryGraph = {
-        data: [baseData], layout: {title: "Resumen de resultados"}
-      }
 
       for (const model of response.results) {
 
         this.noLinearResults[model.model] = []
-
+        this.summaryGraph[model.model] = {
+          data: [baseData], layout: {title: "Resumen de resultados"}
+        }
         for (const adjustment of model.adjustment_methods) {
 
           let resultData = {
@@ -102,7 +101,7 @@ export class ModelCompareComponent {
             marker: {color: this.colorByMethod[adjustment.name]},
           }
 
-          this.summaryGraph.data.push(resultData)
+          this.summaryGraph[model.model].data.push(resultData)
           let noLinearGraph: INoLinearGraph = {
             parameters: adjustment.parameters,
             statistics: adjustment.statistics,

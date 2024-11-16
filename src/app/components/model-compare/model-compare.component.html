@@ -41,7 +41,7 @@
             </tbody>
           </table>
           <div *ngIf="summaryGraph">
-            <plotly-plot [data]="summaryGraph.data" [layout]="summaryGraph.layout"></plotly-plot>
+            <plotly-plot [data]="summaryGraph[modelId].data" [layout]="summaryGraph[modelId].layout"></plotly-plot>
           </div>
 
 
