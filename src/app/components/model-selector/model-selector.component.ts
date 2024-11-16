@@ -36,7 +36,6 @@ export class ModelSelectorComponent {
   }
 
   selectModel(modelId: number) {
-    console.log(modelId)
     this.onSelectedModels.emit(modelId);
   }
 

@@ -49,7 +49,6 @@ export class InvestigationComponent {
   }
 
   onLoadedModels(models: Model[]) {
-    console.log("onLoadedModels", models)
     this.models = models;
   }
 

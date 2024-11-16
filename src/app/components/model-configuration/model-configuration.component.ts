@@ -88,12 +88,9 @@ export class ModelConfigurationComponent {
 
           //asign param values
           if (linearizationGraph.isBestResult) {
-            this.onSelectedParams
             for (const parameter of linearization.parameters) {
               this.modelConfiguration[modelId].paramValues[parameter.name] = parameter.value
             }
-
-
           }
 
           this.linearizationGraphs[modelId].push(linearizationGraph);

@@ -11,6 +11,40 @@
           </div>
           <p class="card-text mt-2"></p>
 
+
+          <table class="table  table-bordered table-striped border-primary">
+            <thead class="table-dark">
+            <tr>
+              <th scope="col">Ajuste</th>
+              <th *ngFor="let param of noLinearResults[modelId][0].parameters" scope="col">{{ param.name }}</th>
+              <th scope="col"> {{ 'STATISTICS.CHI_SQUARED' | translate }}</th>
+              <th scope="col"> {{ 'STATISTICS.R_SQUARED' | translate }}</th>
+              <th scope="col"> {{ 'STATISTICS.ADJUSTED_R_SQUARED' | translate }}</th>
+              <th scope="col"> {{ 'STATISTICS.ADJUSTED_CHI_SQUARED' | translate }}</th>
+              <th scope="col"> {{ 'STATISTICS.RMSE' | translate }}</th>
+              <th scope="col"> {{ 'STATISTICS.SSE' | translate }}</th>
+              <th scope="col"> {{ 'STATISTICS.HYBRID' | translate }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of noLinearResults[modelId]">
+              <th scope="row"> {{ item.adjustment_name }}</th>
+              <td *ngFor="let param of item.parameters">{{ param.value }}</td>
+              <td> {{ item.statistics.chi_squared }}</td>
+              <td> {{ item.statistics.r_squared }}</td>
+              <td> {{ item.statistics.adjust_r_squared }}</td>
+              <td> {{ item.statistics.adjust_chi_squeared }}</td>
+              <td> {{ item.statistics.RMSE }}</td>
+              <td> {{ item.statistics.SSE }}</td>
+              <td> {{ item.statistics.HYBRID }}</td>
+            </tr>
+            </tbody>
+          </table>
+          <div *ngIf="summaryGraph">
+            <plotly-plot [data]="summaryGraph.data" [layout]="summaryGraph.layout"></plotly-plot>
+          </div>
+
+
           <div *ngFor="let item of noLinearResults[modelId]">
             <hr>
             <div *ngIf="item.best" class="mt-3 alert alert-success" role="alert">
@@ -24,13 +58,13 @@
                 <tr>
                   <th scope="col">#</th>
                   <th *ngFor="let param of item.parameters" scope="col">{{ param.name }}</th>
-                  <th scope="col"> {{'STATISTICS.CHI_SQUARED' | translate }} </th>
-                  <th scope="col"> {{'STATISTICS.R_SQUARED' | translate }} </th>
-                  <th scope="col"> {{'STATISTICS.ADJUSTED_R_SQUARED' | translate }} </th>
-                  <th scope="col"> {{'STATISTICS.ADJUSTED_CHI_SQUARED' | translate }} </th>
-                  <th scope="col"> {{'STATISTICS.RMSE' | translate }} </th>
-                  <th scope="col"> {{'STATISTICS.SSE' | translate }} </th>
-                  <th scope="col"> {{'STATISTICS.HYBRID' | translate }} </th>
+                  <th scope="col"> {{ 'STATISTICS.CHI_SQUARED' | translate }}</th>
+                  <th scope="col"> {{ 'STATISTICS.R_SQUARED' | translate }}</th>
+                  <th scope="col"> {{ 'STATISTICS.ADJUSTED_R_SQUARED' | translate }}</th>
+                  <th scope="col"> {{ 'STATISTICS.ADJUSTED_CHI_SQUARED' | translate }}</th>
+                  <th scope="col"> {{ 'STATISTICS.RMSE' | translate }}</th>
+                  <th scope="col"> {{ 'STATISTICS.SSE' | translate }}</th>
+                  <th scope="col"> {{ 'STATISTICS.HYBRID' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,17 +72,18 @@
                   <th scope="row">1</th>
                   <td *ngFor="let param of item.parameters">{{ param.value }}</td>
                   <td> {{ item.statistics.chi_squared }}</td>
-                  <td> {{ item.statistics.r_squared }} </td>
-                  <td> {{ item.statistics.adjust_r_squared }} </td>
-                  <td> {{ item.statistics.adjust_chi_squeared }} </td>
-                  <td> {{ item.statistics.RMSE }} </td>
-                  <td> {{ item.statistics.SSE }} </td>
-                  <td> {{ item.statistics.HYBRID }} </td>
+                  <td> {{ item.statistics.r_squared }}</td>
+                  <td> {{ item.statistics.adjust_r_squared }}</td>
+                  <td> {{ item.statistics.adjust_chi_squeared }}</td>
+                  <td> {{ item.statistics.RMSE }}</td>
+                  <td> {{ item.statistics.SSE }}</td>
+                  <td> {{ item.statistics.HYBRID }}</td>
                 </tr>
                 </tbody>
               </table>
 
             </div>
+
           </div>
 
         </div>
