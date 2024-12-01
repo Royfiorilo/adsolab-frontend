@@ -1,13 +1,13 @@
 .upload-area {
-  border: 2px dashed #ccc;
+  border: 1px dashed #008bce;
   padding: 20px;
   text-align: center;
-  cursor: pointer;
   background-color: #f9f9f9;
+  border-radius: 5px;
 }
 
 .upload-area.dragging {
-  background-color: #e6e6e6;
+  background-color: #D9D9D6;
 }
 
 .error-message {
@@ -17,6 +17,7 @@
 .success-message {
   color: green;
 }
-.hide{
+
+.hide {
   display: none !important;
 }

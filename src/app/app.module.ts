@@ -8,7 +8,7 @@ import {GraphComponent} from './components/graph/graph.component';
 import Plotly from 'plotly.js-dist-min';
 //import locale from 'plotly.js-locales/es';
 import {PlotlyModule} from 'angular-plotly.js';
-import {HttpClientModule} from "@angular/common/http";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NavigationComponent} from './components/navigation/navigation.component';
 import {InvestigationComponent} from './components/investigation/investigation.component';
@@ -33,10 +33,16 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 
 //Plotly.register(locale)
 
 PlotlyModule.plotlyjs = Plotly;
+
+export function HttpLoaderFactory(httpClient: HttpClient) {
+  return new TranslateHttpLoader(httpClient);
+}
 
 @NgModule({
   declarations: [
@@ -70,7 +76,16 @@ PlotlyModule.plotlyjs = Plotly;
     MatAutocompleteModule,
     MatInputModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatProgressSpinner,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      },
+      defaultLanguage: 'es'
+    })
   ],
   providers: [
     provideAnimationsAsync()

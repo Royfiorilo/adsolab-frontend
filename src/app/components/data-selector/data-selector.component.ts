@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
 
 @Component({
@@ -29,7 +29,7 @@ export class DataSelectorComponent {
         this.availableDataSamples.push(...response.samples);
         response.samples.forEach(sample => {
           if (sample.sample_id) {
-            this.options.push(sample.sample_id.toString());
+            this.options.push(sample.sample_id.toString());//Despues hay que cambiar sampleId por el Label cuando se empiece a usar
           }
         });
       });
@@ -46,18 +46,15 @@ export class DataSelectorComponent {
     );
   }
 
-  getDataSampleByLabel(label: string): DataSample | undefined{
-    return this.availableDataSamples.find(sample => sample.sample_id?.toString() === label);
+  getDataSampleByLabel(label: string): DataSample | undefined {
+    return this.availableDataSamples.find(sample => sample.sample_id?.toString() === label);//Despues hay que cambiar sampleId por el Label cuando se empiece a usar
   }
 
 
   onOptionSelected(event: any) {
     this.inputControl.setValue(event.option.value);
     let sample = this.getDataSampleByLabel(event.option.value);
-    console.log(this.dataSample);
-    if (sample) {
-      this.setDataSample(sample);
-    }
+    this.setDataSample(sample);
   }
 
   private _filter(value: string): string[] {
@@ -79,12 +76,12 @@ export class DataSelectorComponent {
   }
 
   setUploadDataSample(dataSample: DataSample) {
-  this.inputControl.setValue('');
-  this.setDataSample(dataSample);
+    this.inputControl.setValue('');
+    this.setDataSample(dataSample);
   }
 
   setDataSample(dataSample: DataSample | undefined) {
-    if (dataSample){
+    if (dataSample) {
       this.dataSample = dataSample;
       console.log("se ha seleccionado la siguiente muestra: ", dataSample)
     }
