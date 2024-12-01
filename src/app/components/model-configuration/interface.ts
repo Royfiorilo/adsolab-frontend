@@ -6,8 +6,8 @@ export interface ILinearizationRequest {
 }
 
 export interface IModelLinearizationRequest {
-  model: string;
-  linearizations: string[];
+  model: number;
+  linearizations: number[];
 }
 
 export interface ILinearizationResponse {
@@ -22,6 +22,7 @@ export interface IResult {
 }
 
 export interface ILinearization {
+  id: number;
   name: string;
   formula: string;
   transformed: ITransformedData;
