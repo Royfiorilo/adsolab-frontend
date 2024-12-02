@@ -7,7 +7,7 @@ export interface DataSample {
   ce: number[];
   qe: number[];
   sample_id?: number | undefined;
-  label: string;
+  label: string | undefined;
   description: string | undefined;
 }
 
@@ -16,7 +16,7 @@ export interface CreateInvestigationResponse {
   sample_id: number
 }
 
-export interface GetSampleResponse{
+export interface GetSampleResponse {
   samples: DataSample[];
 }
 

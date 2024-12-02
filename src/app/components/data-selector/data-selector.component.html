@@ -4,10 +4,12 @@
       <div class="card-body ">
         <app-file-upload (onDataSampleUploaded)="setUploadDataSample($event)"></app-file-upload>
       </div>
+
       <ng-container *ngIf="dataSample">
         <div class="mt-auto d-flex justify-content-center align-content-center ">
           <button class="btn fiuba-institutional m-3"
-                  (click)="createInvestigation()">{{'DATA_SELECTOR.START_INVESTIGATION' | translate}}</button>
+                  (click)="createInvestigation()">{{ 'DATA_SELECTOR.START_INVESTIGATION' | translate }}
+          </button>
         </div>
       </ng-container>
 

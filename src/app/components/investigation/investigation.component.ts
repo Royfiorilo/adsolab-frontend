@@ -32,11 +32,12 @@ export class InvestigationComponent {
 
   addModel(modelId: number) {
     this.selectedModels.push(modelId);
+    const model = this.models.find(model => model._id === modelId);
     this.modelConfiguration[modelId] = {
-      automatedParams: true,
-      paramValues: Object.keys(this.models.find(model => model._id === modelId)?.parameters || {})
+      automatedParams: !!model?.linearizations && model.linearizations.length > 0,
+      paramValues: Object.keys(model?.parameters || {})
         .reduce((acc, key) => ({...acc, [key]: undefined}), {}),
-      paramInfo: this.models.find(model => model._id === modelId)?.parameters || {},
+      paramInfo: model?.parameters || {},
       selectedLinearizations: []
     };
   }
@@ -48,7 +49,7 @@ export class InvestigationComponent {
       this.addModel(modelId);
     }
     this.checkConfigurationDone();
-    
+
   }
 
   onLoadedModels(models: Model[]) {
