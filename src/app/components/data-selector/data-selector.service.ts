@@ -32,6 +32,7 @@ export class DataSelectorService {
       return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation`, {
         ce: sample.ce,
         qe: sample.qe,
+        //agregar label
       })
     }
   }

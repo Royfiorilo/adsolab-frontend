@@ -19,8 +19,21 @@
           <div class="form-floating">
             <select (change)="selectConfiguration($event,modelId)" [id]="modelId"
                     class="form-select">
-              <option value="true">{{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}</option>
-              <option value="false">{{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}</option>
+              <ng-container *ngIf="commonUtilsService.getModelById(modelId, models).linearizations.length else
+                           onlyManualParams">
+                <option
+                  value="true">{{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}
+                </option>
+                <option value="false">{{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}</option>
+
+              </ng-container>
+
+              <ng-template #onlyManualParams>
+                <option value="false">{{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}</option>
+
+              </ng-template>
+
+
             </select>
             <label [for]="modelId">{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</label>
           </div>

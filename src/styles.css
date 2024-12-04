@@ -1,16 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+.footer-color {
+  height: 20%;
+  background-image: url("assets/Header_Footer_Adsolab.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
-.main-header {
-  background-color: #1976D2;
+.adsolab {
   font-size: 50px;
   font-weight: bold;
-  height: 150px;
+  margin-left: 3%;
+}
+
+.main-body {
+  height: 85%;
+}
+
+.main-header {
+  background-image: url("assets/logo_front.png");
+  background-size: auto;
+  background-position: calc(100% - 5%) center;
+  background-repeat: no-repeat;
+  background-color: #1976D2;
+
+  height: 15%;
+
 }
 
 .fiuba-institutional-bg {
   background-color: #008bce !important;
   /*#0288D1*/
 }
+
 .fiuba-institutional-border {
   border-color: #008bce !important;
 }

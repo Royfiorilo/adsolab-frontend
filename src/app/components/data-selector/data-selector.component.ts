@@ -76,14 +76,16 @@ export class DataSelectorComponent {
   }
 
   setUploadDataSample(dataSample: DataSample) {
-    this.inputControl.setValue('');
-    this.setDataSample(dataSample);
+    if (dataSample.label !== undefined && dataSample.label !== '') {
+      this.inputControl.setValue('');
+      this.setDataSample(dataSample);
+    } else {
+      this.setDataSample(undefined);
+    }
+
   }
 
   setDataSample(dataSample: DataSample | undefined) {
-    if (dataSample) {
-      this.dataSample = dataSample;
-      console.log("se ha seleccionado la siguiente muestra: ", dataSample)
-    }
+    this.dataSample = dataSample;
   }
 }

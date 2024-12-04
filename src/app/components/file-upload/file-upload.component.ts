@@ -18,6 +18,11 @@ export class FileUploadComponent {
   protected faCircleCheck = faCircleCheck;
   protected faXmarkCircle = faXmarkCircle;
   protected uploadedFile: { name?: string, valid?: boolean, reason?: InvalidFileReason } = {};
+  protected dataSample: DataSample = {
+    description: undefined, sample_id: undefined, label: undefined,
+    ce: [],
+    qe: []
+  }
 
   constructor(private translate: TranslateService) {
   }
@@ -82,7 +87,7 @@ export class FileUploadComponent {
           const sheet = workbook.Sheets[sheetName];
           content = XLSX.utils.sheet_to_csv(sheet);
         }
-        this.onDataSampleUploaded.emit(this.validateCSVContent(content));
+        this.validateCSVContent(content)
       } catch (e: any) {
         this.setInvalidUploadedFile(InvalidFileReason.READ_ERROR);
       }
@@ -106,13 +111,10 @@ export class FileUploadComponent {
     this.uploadedFile.reason = reason;
   }
 
-  validateCSVContent(content: string): DataSample | undefined {
+  validateCSVContent(content: string): void {
     const lines = content.split('\n');
-    const dataSample: DataSample = {
-      description: undefined, sample_id: undefined, label: "",
-      ce: [],
-      qe: []
-    }
+    this.dataSample.ce = [];
+    this.dataSample.qe = [];
 
     for (const line of lines) {
       const columns = line.split(',');
@@ -123,10 +125,16 @@ export class FileUploadComponent {
         this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA)
         return undefined;
       }
-      dataSample.ce.push(Number(columns[0]))
-      dataSample.qe.push(Number(columns[1]))
+      this.dataSample.ce.push(Number(columns[0]))
+      this.dataSample.qe.push(Number(columns[1]))
     }
     this.uploadedFile.valid = true;
-    return dataSample;
   }
+
+  onChange(event: Event) {
+
+    this.dataSample.label = (event.target as HTMLInputElement).value
+    this.onDataSampleUploaded.emit(this.dataSample);
+  }
+
 }

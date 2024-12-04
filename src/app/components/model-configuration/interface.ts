@@ -22,6 +22,7 @@ export interface IResult {
 }
 
 export interface ILinearization {
+  id: number;
   name: string;
   formula: string;
   transformed: ITransformedData;
