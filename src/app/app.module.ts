@@ -12,7 +12,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NavigationComponent} from './components/navigation/navigation.component';
 import {InvestigationComponent} from './components/investigation/investigation.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {DataSelectorComponent} from "./components/data-selector/data-selector.component";
 import {ModelSelectorComponent} from './components/model-selector/model-selector.component';
@@ -27,14 +27,14 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {LoadingComponent} from './components/loading/loading.component';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import { DataVisualizerComponent } from './components/data-visualizer/data-visualizer.component';
+import {DataVisualizerComponent} from './components/data-visualizer/data-visualizer.component';
 import {NgOptimizedImage} from "@angular/common";
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatInputModule} from '@angular/material/input';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {MatButtonToggle, MatButtonToggleGroup} from "@angular/material/button-toggle";
 
 //Plotly.register(locale)
 
@@ -85,7 +85,9 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
         deps: [HttpClient]
       },
       defaultLanguage: 'es'
-    })
+    }),
+    MatButtonToggle,
+    MatButtonToggleGroup
   ],
   providers: [
     provideAnimationsAsync()
