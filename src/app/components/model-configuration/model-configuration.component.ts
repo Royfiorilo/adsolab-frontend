@@ -39,8 +39,8 @@ export class ModelConfigurationComponent {
     if (this.investigationId) {
       let request: ILinearizationRequest = {
         investigation_id: this.investigationId, models: [{
-          model: model._id,
-          linearizations: model.linearizations.map(linearization => linearization.linearization_id)
+          model: model.name,
+          linearizations: model.linearizations.map(linearization => linearization.name)
         }]
       };
 
@@ -63,7 +63,7 @@ export class ModelConfigurationComponent {
           let linearizationGraph: ILinearizationGraph = {
             parameters: linearization.parameters,
             statistics: linearization.statistics,
-            isBestResult: linearization.id === +response.results[0].best_result,
+            isBestResult: linearization.name === response.results[0].best_result,
             linearizationName: linearization.name,
             graph: {
               data: [
