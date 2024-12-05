@@ -3,6 +3,7 @@ import {IGraph, IParameter, ITransformedData} from "../../common/common.interfac
 export interface INoLinearGraph {
   parameters: IParameter[];
   statistics: INoLinearResultStats;
+  residuals: IResiduals;
   graph: IGraph;
   best?: boolean;
   adjustment_name: string;
@@ -23,15 +24,6 @@ export interface INoLinearRequest {
   models: INoLinearRequestModel[];
 }
 
-export interface INoLinearResultStats {
-  r_squared: number;
-  adjust_r_squared: number;
-  chi_squared: number;
-  adjust_chi_squeared: number;
-  RMSE: number;
-  SSE: number;
-  HYBRID: number;
-}
 
 export interface IResiduals {
   normality_pvalue: number;
@@ -42,6 +34,20 @@ export interface IResiduals {
   passes_independence: number;
   values: number[];
 }
+
+
+export interface INoLinearResultStats {
+  r_squared: number;
+  adjust_r_squared: number;
+  chi_squared: number;
+  adjust_chi_squeared: number;
+  RMSE: number;
+  SSE: number;
+  HYBRID: number;
+  AIC: string;
+  BIC: string;
+}
+
 
 export interface AdjustmentMethod {
   name: string;

@@ -42,6 +42,45 @@ export class ModelCompareComponent {
 
   }
 
+  parseResiduals(residualValue: number): string | number {
+    if (residualValue === 0) {
+      return "False"
+    } else if (residualValue === 1) {
+      return "True"
+    } else {
+      return residualValue
+    }
+  }
+
+  getStatisticsRows(): string[] {
+    const sampleStats = this.noLinearResults[this.selectedModels[0]]?.adjustments[0]?.statistics || {};
+    return Object.keys(sampleStats);
+  }
+
+  getResidualsRows(): string[] {
+    const sampleResiduals = this.noLinearResults[this.selectedModels[0]]?.adjustments[0]?.residuals || {};
+    return Object.keys(sampleResiduals);
+  }
+
+  bestResidualValue(modelId: number, residualName: string): number {
+    const adjustments = this.noLinearResults[modelId].adjustments;
+    const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
+    const bestFit = adjustments.find(
+      (adjustment) => adjustment.adjustment_name === bestAdjustment
+    );
+    return bestFit ? (bestFit.residuals as any)[residualName] : 0
+  }
+
+
+  bestStatisticValue(modelId: number, statName: string): number {
+    const adjustments = this.noLinearResults[modelId].adjustments;
+    const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
+    const bestFit = adjustments.find(
+      (adjustment) => adjustment.adjustment_name === bestAdjustment
+    );
+    return bestFit ? (bestFit.statistics as any)[statName] : 0
+  }
+
   toggleChange(value: string) {
     this.toggleValue = value;
   }
@@ -136,6 +175,7 @@ export class ModelCompareComponent {
             parameters: adjustment.parameters,
             statistics: adjustment.statistics,
             adjustment_name: adjustment.name,
+            residuals: adjustment.residuals,
             graph: {
               data: [
                 baseData,
@@ -158,4 +198,5 @@ export class ModelCompareComponent {
   }
 
 
+  protected readonly Object = Object;
 }
