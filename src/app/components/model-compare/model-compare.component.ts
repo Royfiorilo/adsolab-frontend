@@ -42,6 +42,15 @@ export class ModelCompareComponent {
 
   }
 
+  bestTransformedValue(modelId: number, index: number): number {
+    const adjustments = this.noLinearResults[modelId].adjustments;
+    const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
+    const bestFit = adjustments.find(
+      (adjustment) => adjustment.adjustment_name === bestAdjustment
+    );
+    return bestFit ? bestFit.graph.data[1].y[index] : 0
+  }
+
   parseResiduals(residualValue: number): string | number {
     if (residualValue === 0) {
       return "False"
