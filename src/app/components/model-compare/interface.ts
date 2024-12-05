@@ -3,6 +3,7 @@ import {IGraph, IParameter, ITransformedData} from "../../common/common.interfac
 export interface INoLinearGraph {
   parameters: IParameter[];
   statistics: INoLinearResultStats;
+  residuals: IResiduals;
   graph: IGraph;
   best?: boolean;
   adjustment_name: string;
@@ -23,6 +24,18 @@ export interface INoLinearRequest {
   models: INoLinearRequestModel[];
 }
 
+
+export interface IResiduals {
+  normality_pvalue: number;
+  homoscedasticity_pvalue: number;
+  durbin_watson: number;
+  passes_normality: number;
+  passes_homoscedasticity: number;
+  passes_independence: number;
+  values: number[];
+}
+
+
 export interface INoLinearResultStats {
   r_squared: number;
   adjust_r_squared: number;
@@ -31,7 +44,10 @@ export interface INoLinearResultStats {
   RMSE: number;
   SSE: number;
   HYBRID: number;
+  AIC: string;
+  BIC: string;
 }
+
 
 export interface AdjustmentMethod {
   name: string;
@@ -40,6 +56,7 @@ export interface AdjustmentMethod {
   parameters: IParameter[];
   statistics: INoLinearResultStats;
   transformed: ITransformedData;
+  residuals: IResiduals;
 }
 
 export interface INoLinearResult {
@@ -50,6 +67,34 @@ export interface INoLinearResult {
 
 export interface INoLinearResponse {
   investigation_id: number;
-  best_model: string,
   results: INoLinearResult[];
+  comparison: IComparison;
+}
+
+
+export interface ModelHeuristicResult {
+  model: number;
+  score: number;
+}
+
+export interface ModelRidgeResult {
+  model: number;
+  coef: number;
+}
+
+export interface Heuristic {
+  best_model: number;
+  results: ModelHeuristicResult[];
+}
+
+export interface Ridge {
+  best_model: number;
+  y_pred: number[];
+  statistics: INoLinearResultStats;
+  results: ModelRidgeResult[];
+}
+
+export interface IComparison {
+  heuristic: Heuristic;
+  ridge: Ridge;
 }

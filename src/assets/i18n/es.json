@@ -1,4 +1,6 @@
 {
+  "TRUE": "SI",
+  "FALSE": "NO",
   "OR": "o",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
@@ -39,12 +41,22 @@
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"
   },
   "STATISTICS": {
-    "CHI_SQUARED": "Chi Cuadrado",
-    "R_SQUARED": "R Cuadrado",
-    "ADJUSTED_R_SQUARED": "R Cuadrado Ajustado",
-    "ADJUSTED_CHI_SQUARED": "Chi Cuadrado Ajustado",
+    "chi_squared": "Chi Cuadrado",
+    "r_squared": "R Cuadrado",
+    "adjust_r_squared": "R Cuadrado Ajustado",
+    "adjust_chi_squeared": "Chi Cuadrado Ajustado",
     "RMSE": "RMSE",
     "SSE": "SSE",
-    "HYBRID": "HYBRID"
+    "HYBRID": "HYBRID",
+    "AIC": "AIC",
+    "BIC": "BIC"
+  },
+  "RESIDUALS": {
+    "normality_pvalue": "Pvalor de normalidad",
+    "homoscedasticity_pvalue": "Pvalor de homocedasticidad",
+    "durbin_watson": "Estadístico de Durbin-Watson",
+    "passes_normality": "Cumple normalidad",
+    "passes_homoscedasticity": "Cumple homocedasticidad",
+    "passes_independence": "Cumple independencia"
   }
 }

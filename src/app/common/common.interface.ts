@@ -30,6 +30,7 @@ export interface IGraphLayout {
 export interface IParameter {
   name: string;
   value: number;
+  std_err: number;
 }
 
 export interface IStatistics {

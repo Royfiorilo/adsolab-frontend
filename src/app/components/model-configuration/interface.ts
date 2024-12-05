@@ -6,8 +6,8 @@ export interface ILinearizationRequest {
 }
 
 export interface IModelLinearizationRequest {
-  model: string;
-  linearizations: string[];
+  model: number;
+  linearizations: number[];
 }
 
 export interface ILinearizationResponse {
