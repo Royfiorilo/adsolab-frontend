@@ -128,7 +128,50 @@ export class ModelCompareComponent {
 
     this.modelCompareService.runNoLinearModel(request).subscribe((response) => {
 
+      response.comparison = {
+        heuristic: {
+          best_model: 2,
+          results: [
+            {
+              model: 1,
+              score: 0.5
+            },
+            {
+              model: 2,
+              score: 0.5
+            }
+          ]
+        },
+        ridge: {
+          best_model: 1,
+          statistics: {
+            r_squared: 0.5,
+            adjust_r_squared: 0.5,
+            chi_squared: 0.5,
+            adjust_chi_squeared: 0.5,
+            RMSE: 0.5,
+            SSE: 0.5,
+            HYBRID: 0.5,
+            AIC: 0.5,
+            BIC: 0.5
+          },
+          y_pred: [0.0251, 0.0249, 0.0253, 0.0234, 0.0240, 0.0180, 0.0160, 0.0154, 0.0070],
+          results: [
+            {
+              model: 1,
+              coef: 0.5
+            },
+            {
+              model: 1,
+              coef: 0.2
+            },
+          ]
+        }
+
+      }
+
       this.noLinearCompareResult = response.comparison;
+
       let xPointX = this.dataSample?.ce!
       let yPointX = this.dataSample?.qe!
 
@@ -203,6 +246,19 @@ export class ModelCompareComponent {
       this.runningNoLinearAdjustment = false;
 
     })
+
+  }
+
+  getBestComparisonModelOverall(): string {
+
+    if (this.noLinearCompareResult?.heuristic.best_model === this.noLinearCompareResult?.ridge.best_model) {
+
+      return this.commonUtilsService.getModelById(this.noLinearCompareResult?.heuristic.best_model!, this.models).name;
+
+    } else {
+
+      return 'Indefinido'
+    }
 
   }
 
