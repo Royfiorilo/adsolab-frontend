@@ -183,8 +183,20 @@ export class ModelCompareComponent {
         name: "Muestra",
         marker: {color: 'red'}
       }
+
+      let ridgeData = {
+        x: xPointX,
+        y: response.comparison.ridge.y_pred,
+        type: 'scatter',
+        mode: 'line+marker',
+        name: 'Ridge',
+        line: {shape: 'spline', color: 'grey'},
+        marker: {color: 'grey'},
+
+      }
+
       this.compareGraph = {
-        data: [baseData], layout: {title: "Mejor ajuste por modelo"}
+        data: [baseData, ridgeData], layout: {title: "Mejor ajuste por modelo"}
       }
 
       for (const model of response.results) {
@@ -260,6 +272,11 @@ export class ModelCompareComponent {
       return 'Indefinido'
     }
 
+  }
+
+  getRidgeStatistic(statName: string) {
+
+    return (this.noLinearCompareResult!.ridge!.statistics as any)[statName]
   }
 
 

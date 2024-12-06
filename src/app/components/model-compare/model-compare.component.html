@@ -129,8 +129,6 @@
 
           <!--          Resumen del por que de la eleccion del mejor-->
 
-          <!--          Mostrar los detalles del resultado de la heuristica y de Ridge para cada modelo-->
-
           <div class="card m-3">
             <div
               class="card-body p-3 shadow-sm  align-items-center text-center">
@@ -213,6 +211,7 @@
             <th *ngFor="let modelId of Object.keys(noLinearResults)">
               {{ commonUtilsService.getModelById(+modelId, models).name }}
             </th>
+            <th>Ridge</th>
           </tr>
           </thead>
           <tbody>
@@ -221,6 +220,7 @@
             <td *ngFor="let modelId of selectedModels">
               {{ bestStatisticValue(modelId, statName) || 'N/A' }}
             </td>
+            <td>{{getRidgeStatistic(statName)}}</td>
           </tr>
           </tbody>
         </table>
