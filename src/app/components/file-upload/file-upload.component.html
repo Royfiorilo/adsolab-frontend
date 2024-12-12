@@ -17,6 +17,14 @@
          class="btn fiuba-institutional-border fiuba-institutional-text">{{ 'FILE_UPLOAD.SELECT_FILE' | translate }}</label>
   <input id="fileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv"/>
 
+  <div class="mt-3">
+    <a href="assets/Template-AdsoLab-data.xlsx" download="Template-AdsoLab-data.xlsx" class="text-body-tertiary"
+       style="text-decoration:none">
+      {{ 'FILE_UPLOAD.DOWNLOAD_EXAMPLE_FILE' | translate }}
+      <fa-icon [icon]="faDownload" class="m-2"></fa-icon>
+    </a>
+  </div>
+
 
   <input *ngIf="uploadedFile.valid" matInput class="m-2 form-control"
          [placeholder]=" 'FILE_UPLOAD.SAMPLE_LABEL' | translate "
