@@ -17,14 +17,13 @@
 }
 
 .main-header {
-  background-image: url("assets/logo_front.png");
-  background-size: auto;
-  background-position: calc(100% - 5%) center;
-  background-repeat: no-repeat;
   background-color: #1976D2;
-
   height: 15%;
+}
 
+.responsive-img {
+  max-width: 100%;
+  height: auto;
 }
 
 .fiuba-institutional-bg {
