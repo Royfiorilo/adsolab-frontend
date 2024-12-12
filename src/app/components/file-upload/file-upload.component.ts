@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import * as XLSX from 'xlsx';
 import {DataSample, InvalidFileReason} from "../data-selector/data-sample";
-import {faCircleCheck, faFileUpload, faXmarkCircle} from '@fortawesome/free-solid-svg-icons';
+import {faCircleCheck, faFileDownload, faFileUpload, faXmarkCircle} from '@fortawesome/free-solid-svg-icons';
 import {TranslateService} from "@ngx-translate/core";
 
 @Component({
@@ -15,6 +15,7 @@ export class FileUploadComponent {
   successMessage: string | null = null;
   @Output() onDataSampleUploaded: EventEmitter<DataSample> = new EventEmitter();
   protected faUpload = faFileUpload;
+  protected faDownload = faFileDownload;
   protected faCircleCheck = faCircleCheck;
   protected faXmarkCircle = faXmarkCircle;
   protected uploadedFile: { name?: string, valid?: boolean, reason?: InvalidFileReason } = {};
@@ -137,4 +138,14 @@ export class FileUploadComponent {
     this.onDataSampleUploaded.emit(this.dataSample);
   }
 
+  downloadTemplateFile() {
+
+    let link = document.createElement('a');
+    link.setAttribute('type', 'hidden');
+    link.href = '/assets/Template AdsoLab data.xlsx';
+    link.download = 'Template AdsoLab data.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
 }

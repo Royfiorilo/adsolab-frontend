@@ -21,7 +21,8 @@
       "INVALID_FILE_STRUCTURE": "El archivo debe tener exactamente dos columnas",
       "INVALID_DATA": "El archivo debe tener exclusivamente valores numéricos",
       "READ_ERROR": "Error en la lectura del archivo"
-    }
+    },
+    "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo"
   },
   "DATA_SELECTOR": {
     "START_INVESTIGATION": "Comenzar investigación"
