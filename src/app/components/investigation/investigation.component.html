@@ -2,68 +2,65 @@
   <div class="row d-flex justify-content-center">
     <div class="col-10">
       <mat-stepper [linear]="true">
-        <mat-step label="Datos" [completed]="investigation">
-          <app-data-selector (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
-          <div class="float-end" *ngIf="investigation">
-            <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
-              {{ 'INVESTIGATION.CONTINUE' | translate }}
+        <mat-step label="Datos" [completed]="investigation" class="d-flex">
+          <div *ngIf="investigation" class="float-end">
+            <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
+              <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
+          <app-data-selector (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
         </mat-step>
         <mat-step label="Selección de Modelos" [completed]="selectedModels.length !== 0">
           <ng-template matStepContent>
+            <div class="float-start" *ngIf="models.length !== 0">
+              <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+            </div>
+            <div class="float-end" *ngIf="selectedModels.length !== 0">
+              <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
             <app-model-selector [models]="models" [selectedModels]="selectedModels"
                                 (onLoadedModels)="onLoadedModels($event)"
                                 (onSelectedModels)="onModelSelected($event)"></app-model-selector>
 
-            <div class="float-start" *ngIf="models.length !== 0">
-              <button mat-button matStepperPrevious mat-stroked-button
-                      class="fiuba-institutional-border fiuba-institutional-text">
-                {{ 'INVESTIGATION.BACK' | translate }}
-              </button>
-            </div>
-            <div class="float-end" *ngIf="selectedModels.length !== 0">
-              <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
-                {{ 'INVESTIGATION.CONTINUE' | translate }}
-              </button>
-            </div>
           </ng-template>
         </mat-step>
         <mat-step label="Configuración de Modelos" [completed]="modelConfigurationDone">
           <ng-template matStepContent>
+            <div class="float-start">
+              <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+            </div>
+            <div class="float-end" *ngIf="modelConfigurationDone">
+              <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
             <app-model-configuration [investigationId]="investigation?.investigation_id" [models]="models"
                                      [modelConfiguration]="modelConfiguration"
                                      (onSelectedConfiguration)="onSelectedConfiguration($event)"
                                      (onSelectedParams)="onSelectedParams($event)"
                                      [selectedModels]="selectedModels"
                                      [dataSample]="investigation?.sample"></app-model-configuration>
-            <div class="float-start">
-              <button mat-button matStepperPrevious mat-stroked-button
-                      class="fiuba-institutional-border fiuba-institutional-text">
-                {{ 'INVESTIGATION.BACK' | translate }}
-              </button>
-            </div>
-            <div class="float-end" *ngIf="modelConfigurationDone">
-              <button mat-button matStepperNext mat-raised-button class="fiuba-institutional-bg text-white">
-                {{ 'INVESTIGATION.CONTINUE' | translate }}
-              </button>
-            </div>
           </ng-template>
         </mat-step>
         <mat-step label="Resultados">
           <ng-template matStepContent>
+            <div class="float-start">
+              <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+            </div>
             <app-model-compare
               [investigationId]="investigation?.investigation_id"
               [dataSample]="investigation?.sample"
               [selectedModels]="selectedModels"
               [modelConfiguration]="modelConfiguration"
               [models]="models"></app-model-compare>
-            <div class="float-start">
-              <button mat-button matStepperPrevious mat-stroked-button
-                      class="fiuba-institutional-border fiuba-institutional-text">
-                {{ 'INVESTIGATION.BACK' | translate }}
-              </button>
-            </div>
           </ng-template>
         </mat-step>
       </mat-stepper>
