@@ -44,8 +44,8 @@ export interface INoLinearResultStats {
   RMSE: number;
   SSE: number;
   HYBRID: number;
-  AIC: string;
-  BIC: string;
+  AIC: string | number;
+  BIC: string | number;
 }
 
 

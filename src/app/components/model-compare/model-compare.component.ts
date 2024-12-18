@@ -129,6 +129,7 @@ export class ModelCompareComponent {
     this.modelCompareService.runNoLinearModel(request).subscribe((response) => {
 
       this.noLinearCompareResult = response.comparison;
+
       let xPointX = this.dataSample?.ce!
       let yPointX = this.dataSample?.qe!
 
@@ -140,8 +141,20 @@ export class ModelCompareComponent {
         name: "Muestra",
         marker: {color: 'red'}
       }
+
+      let ridgeData = {
+        x: xPointX,
+        y: response.comparison.ridge.y_pred,
+        type: 'scatter',
+        mode: 'line+marker',
+        name: 'Ridge',
+        line: {shape: 'spline', color: 'grey'},
+        marker: {color: 'grey'},
+
+      }
+
       this.compareGraph = {
-        data: [baseData], layout: {title: "Mejor ajuste por modelo"}
+        data: [baseData, ridgeData], layout: {title: "Mejor ajuste por modelo"}
       }
 
       for (const model of response.results) {
@@ -193,17 +206,35 @@ export class ModelCompareComponent {
               layout: {title: adjustment.name}
             }
           }
-
+          console.log("Model: ", model.model);
           this.noLinearResults[model.model].adjustments.push(noLinearGraph)
         }
 
       }
 
-
+      console.log(this.noLinearResults)
       this.runningNoLinearAdjustment = false;
 
     })
 
+  }
+
+  getBestComparisonModelOverall(): string {
+
+    if (this.noLinearCompareResult?.heuristic.best_model === this.noLinearCompareResult?.ridge.best_model) {
+
+      return this.commonUtilsService.getModelById(this.noLinearCompareResult?.heuristic.best_model!, this.models).name;
+
+    } else {
+
+      return 'Indefinido'
+    }
+
+  }
+
+  getRidgeStatistic(statName: string) {
+
+    return (this.noLinearCompareResult!.ridge!.statistics as any)[statName]
   }
 
 
