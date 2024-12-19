@@ -38,6 +38,15 @@
     "PARAM": "Parámetro {{ key }}",
     "RUN_LINEARIZATION": "Ejecutar linealización"
   },
+  "MODEL_COMPARE": {
+    "COMPARISON": "Comparación",
+    "ALL_RESULTS": "Todos los resultados",
+    "BEST_MODEL": "Mejor modelo",
+    "HEURISTIC": "Heurística",
+    "RIDGE": "Ridge",
+    "SCORE": "Puntaje",
+    "COEFFICIENT": "Coeficiente"
+  },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"
   },
