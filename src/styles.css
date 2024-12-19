@@ -91,6 +91,18 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.stepper-button-right {
+  position: fixed;
+  top: 50%;
+  right: 5%;
+}
+
+.stepper-button-left {
+  position: fixed;
+  top: 50%;
+  left: 5%;
+}
+
 body {
   font-family: "Helvetica Neue", sans-serif !important;
   margin: 0
