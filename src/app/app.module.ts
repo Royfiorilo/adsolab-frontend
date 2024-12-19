@@ -34,7 +34,8 @@ import {MatInputModule} from '@angular/material/input';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
-import {MatButtonToggle, MatButtonToggleGroup} from "@angular/material/button-toggle";
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatTabsModule} from '@angular/material/tabs';
 
 //Plotly.register(locale)
 
@@ -78,6 +79,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatProgressSpinner,
+    MatButtonToggleModule,
+    MatTabsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -85,9 +88,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
         deps: [HttpClient]
       },
       defaultLanguage: 'es'
-    }),
-    MatButtonToggle,
-    MatButtonToggleGroup
+    })
   ],
   providers: [
     provideAnimationsAsync()

@@ -133,6 +133,8 @@ export class ModelCompareComponent {
       let xPointX = this.dataSample?.ce!
       let yPointX = this.dataSample?.qe!
 
+      let xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
+
       let baseData = {
         x: xPointX,
         y: yPointX,
@@ -143,7 +145,7 @@ export class ModelCompareComponent {
       }
 
       let ridgeData = {
-        x: xPointX,
+        x: xForCurvePlot,
         y: response.comparison.ridge.y_pred,
         type: 'scatter',
         mode: 'line+marker',
