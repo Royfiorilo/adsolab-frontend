@@ -28,8 +28,8 @@ export class DataSelectorComponent {
       this.sampleService.getSamples().subscribe(response => {
         this.availableDataSamples.push(...response.samples);
         response.samples.forEach(sample => {
-          if (sample.sample_id) {
-            this.options.push(sample.sample_id.toString());//Despues hay que cambiar sampleId por el Label cuando se empiece a usar
+          if (sample.title) {
+            this.options.push(sample.title);
           }
         });
       });
@@ -46,14 +46,14 @@ export class DataSelectorComponent {
     );
   }
 
-  getDataSampleByLabel(label: string): DataSample | undefined {
-    return this.availableDataSamples.find(sample => sample.sample_id?.toString() === label);//Despues hay que cambiar sampleId por el Label cuando se empiece a usar
+  getDataSampleByTitle(title: string): DataSample | undefined {
+    return this.availableDataSamples.find(sample => sample.title?.toString() === title);
   }
 
 
   onOptionSelected(event: any) {
     this.inputControl.setValue(event.option.value);
-    let sample = this.getDataSampleByLabel(event.option.value);
+    let sample = this.getDataSampleByTitle(event.option.value);
     this.setDataSample(sample);
   }
 
@@ -76,7 +76,7 @@ export class DataSelectorComponent {
   }
 
   setUploadDataSample(dataSample: DataSample) {
-    if (dataSample.label !== undefined && dataSample.label !== '') {
+    if (dataSample.title !== undefined && dataSample.title !== '') {
       this.inputControl.setValue('');
       this.setDataSample(dataSample);
     } else {

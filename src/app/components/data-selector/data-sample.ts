@@ -7,7 +7,7 @@ export interface DataSample {
   ce: number[];
   qe: number[];
   sample_id?: number | undefined;
-  label: string | undefined;
+  title: string | undefined;
   description: string | undefined;
 }
 

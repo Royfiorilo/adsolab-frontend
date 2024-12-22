@@ -20,7 +20,7 @@ export class FileUploadComponent {
   protected faXmarkCircle = faXmarkCircle;
   protected uploadedFile: { name?: string, valid?: boolean, reason?: InvalidFileReason } = {};
   protected dataSample: DataSample = {
-    description: undefined, sample_id: undefined, label: undefined,
+    description: undefined, sample_id: undefined, title: undefined,
     ce: [],
     qe: []
   }
@@ -134,7 +134,7 @@ export class FileUploadComponent {
 
   onChange(event: Event) {
 
-    this.dataSample.label = (event.target as HTMLInputElement).value
+    this.dataSample.title = (event.target as HTMLInputElement).value
     this.onDataSampleUploaded.emit(this.dataSample);
   }
 

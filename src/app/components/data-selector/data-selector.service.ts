@@ -32,7 +32,7 @@ export class DataSelectorService {
       return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation`, {
         ce: sample.ce,
         qe: sample.qe,
-        title: "Investigation",
+        title: sample.title,
         description: "Es una muestra"
       })
     }

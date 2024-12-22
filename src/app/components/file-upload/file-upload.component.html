@@ -28,7 +28,7 @@
 
   <input *ngIf="uploadedFile.valid" matInput class="m-2 form-control"
          [placeholder]=" 'FILE_UPLOAD.SAMPLE_LABEL' | translate "
-         [value]=[dataSample.label]
+         [value]=[dataSample.title]
          (change)="onChange($event)"
   >
 
