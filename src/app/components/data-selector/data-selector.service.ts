@@ -33,7 +33,9 @@ export class DataSelectorService {
         ce: sample.ce,
         qe: sample.qe,
         title: sample.title,
-        description: "Es una muestra"
+        description: sample.description
+//        ,unit: sample.unit,
+//        temperature: sample.temperature,
       })
     }
   }
