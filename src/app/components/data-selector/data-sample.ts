@@ -9,6 +9,8 @@ export interface DataSample {
   sample_id?: number | undefined;
   title: string | undefined;
   description: string | undefined;
+  temperature: number | undefined;
+  unit: string | undefined;
 }
 
 export interface CreateInvestigationResponse {

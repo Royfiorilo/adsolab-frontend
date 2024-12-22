@@ -15,7 +15,10 @@
     "SELECT_FILE": "Buscar archivo",
     "DRAG_FILE": "Arrastrar un archivo Excel o CSV",
     "VALID_FILE": "El archivo es válido",
-    "SAMPLE_LABEL": "Ingrese un nombre para identificar la muestra",
+    "SAMPLE_TITLE": "Ingrese un nombre para identificar la muestra",
+    "SAMPLE_DESCRIPTION": "Ingrese una descripcion de la muestra",
+    "SAMPLE_TEMPERATURE": "Temperatura",
+    "SAMPLE_UNIT": "Unidad de medida",
     "INVALID_FILE": {
       "INVALID_FILE_TYPE": "Solo se admiten archivos en formato Excel o CSV",
       "INVALID_FILE_STRUCTURE": "El archivo debe tener exactamente dos columnas",

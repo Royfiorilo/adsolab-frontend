@@ -26,11 +26,46 @@
   </div>
 
 
-  <input *ngIf="uploadedFile.valid" matInput class="m-2 form-control"
-         [placeholder]=" 'FILE_UPLOAD.SAMPLE_LABEL' | translate "
-         [value]=[dataSample.title]
-         (change)="onChange($event)"
-  >
+  <form *ngIf="uploadedFile.valid" class="w-100 d-flex flex-column gap-3 mt-2">
+    <mat-form-field class="example-full-width">
+      <mat-label> {{ 'FILE_UPLOAD.SAMPLE_TITLE' | translate }}</mat-label>
+      <input id="title" matInput placeholder="Ej. Muestra Carbon 20241225" [value]=[dataSample.title]
+             (change)="onChange($event)"
+      >
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label> {{ 'FILE_UPLOAD.SAMPLE_DESCRIPTION' | translate }}</mat-label>
+      <textarea id="description" matInput [value]=[dataSample.description] (change)="onChange($event)"></textarea>
+    </mat-form-field>
+
+    <div class="d-flex gap-3">
+      <mat-form-field class="w-50">
+        <mat-label>{{ 'FILE_UPLOAD.SAMPLE_TEMPERATURE' | translate }}</mat-label>
+        <input
+          id="temperature"
+          matInput
+          type="number"
+          placeholder="Ej. 25"
+          [value]=[dataSample.temperature]
+          (change)="onChange($event)"
+        >
+      </mat-form-field>
+
+      <mat-form-field class="w-50">
+        <mat-label>{{ 'FILE_UPLOAD.SAMPLE_UNIT' | translate }}</mat-label>
+        <input
+          id="unit"
+          matInput
+          placeholder="Ej. Celsius"
+          [value]=[dataSample.unit]
+          (change)="onChange($event)"
+        >
+      </mat-form-field>
+    </div>
+
+
+  </form>
 
 
   <div *ngIf="uploadedFile"

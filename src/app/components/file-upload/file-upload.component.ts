@@ -20,6 +20,7 @@ export class FileUploadComponent {
   protected faXmarkCircle = faXmarkCircle;
   protected uploadedFile: { name?: string, valid?: boolean, reason?: InvalidFileReason } = {};
   protected dataSample: DataSample = {
+    temperature: undefined, unit: undefined,
     description: undefined, sample_id: undefined, title: undefined,
     ce: [],
     qe: []
@@ -133,9 +134,10 @@ export class FileUploadComponent {
   }
 
   onChange(event: Event) {
-
-    this.dataSample.title = (event.target as HTMLInputElement).value
+    // @ts-ignore
+    this.dataSample[(event.target as HTMLInputElement).id] = (event.target as HTMLInputElement).value
     this.onDataSampleUploaded.emit(this.dataSample);
+    console.log(this.dataSample)
   }
 
   downloadTemplateFile() {
