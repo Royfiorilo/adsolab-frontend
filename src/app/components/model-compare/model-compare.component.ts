@@ -2,7 +2,14 @@ import {Component, Input} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
-import {IComparison, INoLinearGraph, INoLinearRequest, INoLinearRequestModel, INoLinearRequestSeed} from "./interface";
+import {
+  IComparison,
+  INoLinearGraph,
+  INoLinearRequest,
+  INoLinearRequestModel,
+  INoLinearRequestSeed,
+  ViewOption
+} from "./interface";
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 
@@ -24,6 +31,8 @@ export class ModelCompareComponent {
   protected summaryGraph: { [key: number]: IGraph } = {};
   protected compareGraph: IGraph | undefined;
   protected toggleValue: string = 'results';
+  protected selectedViewOption: ViewOption = ViewOption.SIMPLIFIED;
+  protected viewOptions = ViewOption;
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
     leastsq: "#8f3237",
@@ -241,6 +250,10 @@ export class ModelCompareComponent {
   getRidgeStatistic(statName: string) {
 
     return (this.noLinearCompareResult!.ridge!.statistics as any)[statName]
+  }
+
+  toggleView(viewOption: ViewOption): void {
+    this.selectedViewOption = viewOption;
   }
 
 

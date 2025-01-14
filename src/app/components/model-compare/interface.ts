@@ -98,3 +98,9 @@ export interface IComparison {
   heuristic: Heuristic;
   ridge: Ridge;
 }
+
+export enum ViewOption {
+  DETAILED = 'DETAILED',
+  SIMPLIFIED = 'SIMPLIFIED'
+}
+
