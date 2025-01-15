@@ -75,8 +75,12 @@ export class DataSelectorComponent {
     }
   }
 
+  validateUploadedDataSample(dataSample: DataSample): boolean {
+    return dataSample.title !== undefined && dataSample.title !== '' && dataSample.description !== undefined && dataSample.description !== '' && dataSample.adsorbent_id !== undefined && true && dataSample.temperature !== undefined;
+  }
+
   setUploadDataSample(dataSample: DataSample) {
-    if (dataSample.title !== undefined && dataSample.title !== '') {
+    if (this.validateUploadedDataSample(dataSample)) {
       this.inputControl.setValue('');
       this.setDataSample(dataSample);
     } else {

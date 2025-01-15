@@ -34,8 +34,7 @@ export class DataSelectorService {
         qe: sample.qe,
         title: sample.title,
         description: sample.description
-//        ,unit: sample.unit,
-//        temperature: sample.temperature,
+//        cuando este listo el back, mandar la sample completa directamente.
       })
     }
   }

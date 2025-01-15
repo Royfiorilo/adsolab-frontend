@@ -171,7 +171,6 @@ export class ModelCompareComponent {
           data: [], layout: {title: "Resumen de resultados"}
         }
 
-
         for (const adjustment of model.adjustment_methods) {
 
           let resultData = {
@@ -195,6 +194,7 @@ export class ModelCompareComponent {
           }
 
           this.summaryGraph[model.model].data.push(resultData)
+
           let noLinearGraph: INoLinearGraph = {
             parameters: adjustment.parameters,
             statistics: adjustment.statistics,
@@ -202,8 +202,8 @@ export class ModelCompareComponent {
             residuals: adjustment.residuals,
             graph: {
               data: [
-                baseData,
                 resultData,
+                baseData
               ],
               layout: {title: adjustment.name}
             }
@@ -212,9 +212,10 @@ export class ModelCompareComponent {
           this.noLinearResults[model.model].adjustments.push(noLinearGraph)
         }
 
-        this.summaryGraph[model.model].data.push(...this.summaryGraph[model.model].data, baseData);
+        this.summaryGraph[model.model].data.push(baseData)
+
       }
-      this.compareGraph.data.push(...this.compareGraph.data, baseData);
+      this.compareGraph.data.push(baseData);
 
       console.log(this.noLinearResults)
       this.runningNoLinearAdjustment = false;
@@ -222,6 +223,7 @@ export class ModelCompareComponent {
     })
 
   }
+
 
   getBestComparisonModelOverall(): string {
 

@@ -19,6 +19,9 @@
     "SAMPLE_DESCRIPTION": "Ingrese una descripcion de la muestra",
     "SAMPLE_TEMPERATURE": "Temperatura",
     "SAMPLE_UNIT": "Unidad de medida",
+    "SAMPLE_SPEC": "Especificaciones sobre la muestra",
+    "ADSORBENT": "Seleccione un adsorbente",
+    "ADSORBATE": "Seleccione un adsorbato",
     "INVALID_FILE": {
       "INVALID_FILE_TYPE": "Solo se admiten archivos en formato Excel o CSV",
       "INVALID_FILE_STRUCTURE": "El archivo debe tener exactamente dos columnas",
