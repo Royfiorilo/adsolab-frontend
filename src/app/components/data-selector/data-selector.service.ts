@@ -32,8 +32,9 @@ export class DataSelectorService {
       return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation`, {
         ce: sample.ce,
         qe: sample.qe,
-        title: "Investigation",
-        description: "Es una muestra"
+        title: sample.title,
+        description: sample.description
+//        cuando este listo el back, mandar la sample completa directamente.
       })
     }
   }

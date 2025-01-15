@@ -36,6 +36,7 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatSelect} from "@angular/material/select";
 
 //Plotly.register(locale)
 
@@ -88,7 +89,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
         deps: [HttpClient]
       },
       defaultLanguage: 'es'
-    })
+    }),
+    MatSelect
   ],
   providers: [
     provideAnimationsAsync()

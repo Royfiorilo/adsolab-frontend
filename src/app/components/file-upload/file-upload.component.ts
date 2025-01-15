@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import {DataSample, InvalidFileReason} from "../data-selector/data-sample";
 import {faCircleCheck, faFileDownload, faFileUpload, faXmarkCircle} from '@fortawesome/free-solid-svg-icons';
 import {TranslateService} from "@ngx-translate/core";
+import {SampleSelectorService} from "../data-selector/sample-selector.service";
 
 @Component({
   selector: 'app-file-upload',
@@ -20,12 +21,24 @@ export class FileUploadComponent {
   protected faXmarkCircle = faXmarkCircle;
   protected uploadedFile: { name?: string, valid?: boolean, reason?: InvalidFileReason } = {};
   protected dataSample: DataSample = {
-    description: undefined, sample_id: undefined, label: undefined,
+    adsorbate_id: undefined, adsorbent_id: undefined,
+    temperature: undefined, unit: undefined,
+    description: undefined, sample_id: undefined, title: undefined,
     ce: [],
     qe: []
   }
 
-  constructor(private translate: TranslateService) {
+  //temporal
+  protected adsorbents: { name?: string, id?: number } [] = [{name: 'Zeolitas', id: 1},
+    {name: 'Carbon Actvado', id: 2},
+    {name: 'Carbon vegetal', id: 3}]
+
+  protected adsorbates: { name?: string, id?: number } [] = [{name: 'Dióxido de Carbono (CO₂)', id: 1},
+    {name: 'Metano (CH₄)', id: 2},
+    {name: 'CAmoníaco (NH₃)', id: 3}]
+
+
+  constructor(private translate: TranslateService, private sampleService: SampleSelectorService) {
   }
 
   onDragOver(event: DragEvent) {
@@ -130,11 +143,30 @@ export class FileUploadComponent {
       this.dataSample.qe.push(Number(columns[1]))
     }
     this.uploadedFile.valid = true;
+    //this.loadMaterials();
   }
 
-  onChange(event: Event) {
+  loadMaterials(): void {
+    this.sampleService.getMaterials().subscribe(response => {
+      //set materials
+    });
+  }
 
-    this.dataSample.label = (event.target as HTMLInputElement).value
+  onUnitChange(event: any, type: string): void {
+    const selectedValue = event.value;
+    if (type === 'adsorbate') {
+      this.dataSample.adsorbate_id = selectedValue;
+    } else if (type === 'adsorbent') {
+      this.dataSample.adsorbent_id = selectedValue;
+    }
+    this.onDataSampleUploaded.emit(this.dataSample);
+
+  }
+
+
+  onChange(event: Event) {
+    // @ts-ignore
+    this.dataSample[(event.target as HTMLInputElement).id] = (event.target as HTMLInputElement).value
     this.onDataSampleUploaded.emit(this.dataSample);
   }
 

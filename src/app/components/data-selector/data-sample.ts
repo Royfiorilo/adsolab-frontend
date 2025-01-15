@@ -7,8 +7,13 @@ export interface DataSample {
   ce: number[];
   qe: number[];
   sample_id?: number | undefined;
-  label: string | undefined;
+  title: string | undefined;
   description: string | undefined;
+  temperature: number | undefined;
+  unit: string | undefined;
+  adsorbate_id: number | undefined;
+  adsorbent_id: number | undefined;
+
 }
 
 export interface CreateInvestigationResponse {
@@ -18,6 +23,11 @@ export interface CreateInvestigationResponse {
 
 export interface GetSampleResponse {
   samples: DataSample[];
+}
+
+export interface GetMaterialsResponse {
+  adsorbates: string[] | undefined;
+  adsorbents: string[] | undefined;
 }
 
 export enum InvalidFileReason {
