@@ -93,8 +93,8 @@
         <plotly-plot [data]="compareGraph.data" [layout]="compareGraph.layout" [useResizeHandler]="true"></plotly-plot>
       </div>
 
-      <table class="table  table-bordered table-striped border-primary">
-        <thead class="table-dark">
+      <table class="table table-striped">
+        <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col">Ce</th>
@@ -116,7 +116,7 @@
 
 
       <div class="table-responsive">
-        <table class="table table-bordered table-striped border-primary">
+        <table class="table table-striped">
           <thead>
           <tr>
             <th>Statistics</th>
@@ -139,7 +139,7 @@
       </div>
 
       <div class="table-responsive">
-        <table class="table table-bordered table-striped border-primary">
+        <table class="table table-striped">
           <thead>
           <tr>
             <th>RESIDUALS</th>
@@ -265,8 +265,8 @@
                     <p class="card-text mt-2"></p>
                     <div class="table-responsive">
 
-                      <table class="table  table-bordered table-striped border-primary">
-                        <thead class="table-dark">
+                      <table class="table table-striped">
+                        <thead>
                         <tr>
                           <th scope="col">Ajuste</th>
                           <th *ngFor="let param of noLinearResults[modelId].adjustments[0].parameters"
@@ -311,7 +311,7 @@
                                    [useResizeHandler]="true"></plotly-plot>
 
                       <div class="table-responsive">
-                        <table class="table table-bordered table-striped border-primary">
+                        <table class="table table-striped">
                           <thead>
                           <tr>
                             <th scope="col">#</th>
