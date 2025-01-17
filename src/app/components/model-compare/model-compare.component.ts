@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
@@ -12,6 +12,7 @@ import {
 } from "./interface";
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
+import {MatAccordion} from "@angular/material/expansion";
 
 
 @Component({
@@ -20,6 +21,8 @@ import {IGraph, IModelsConfigurations} from "../../common/common.interface";
   styleUrl: './model-compare.component.css',
 })
 export class ModelCompareComponent {
+  // @ts-ignore
+  @ViewChild(MatAccordion) accordion: MatAccordion;
   @Input() investigationId: number | undefined;
   @Input() selectedModels!: number[];
   @Input() models!: Model[];
@@ -243,6 +246,21 @@ export class ModelCompareComponent {
     } else {
 
       return 'Indefinido'
+    }
+
+  }
+
+  getBestAdjustmentDataByModel(modelId: number) {
+
+    const adjustments = this.noLinearResults[modelId].adjustments;
+    const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
+    const bestFit = adjustments.find(
+      (adjustment) => adjustment.adjustment_name === bestAdjustment
+    );
+    if (bestFit) {
+      return bestFit;
+    } else {
+      throw new Error("Best Fit not found")
     }
 
   }
