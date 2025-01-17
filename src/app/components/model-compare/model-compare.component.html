@@ -1,6 +1,6 @@
 <div class="container-fluid m-3">
   <app-data-visualizer *ngIf="this.dataSample" [data]="this.dataSample"></app-data-visualizer>
-  <div class="d-flex justify-content-end">
+  <div class="d-flex justify-content-end" *ngIf="!runningNoLinearAdjustment">
     <button mat-button color="primary" class="m-2" (click)="runNonLinearModels()">
       <mat-icon>refresh</mat-icon>
       Volver a ejecutar comparación
