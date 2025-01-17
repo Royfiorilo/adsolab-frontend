@@ -51,7 +51,15 @@
     "HEURISTIC": "Heurística",
     "RIDGE": "Ridge",
     "SCORE": "Puntaje",
-    "COEFFICIENT": "Coeficiente"
+    "COEFFICIENT": "Coeficiente",
+    "RERUN_COMPARISON": "Volver a ejecutar comparación",
+    "SIMPLIFIED_VIEW": "Vista simplificada",
+    "DETAILED_VIEW": "Vista detallada",
+    "PARAMS": "Parámetros",
+    "BEST_FIT": "Mejor ajuste",
+    "EXPAND_ALL": "Expandir todos",
+    "COLLAPSE_ALL": "Colapsar todos",
+    "FIT": "Ajuste"
   },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"

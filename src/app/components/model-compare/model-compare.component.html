@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-end" *ngIf="!runningNoLinearAdjustment">
     <button mat-button color="primary" class="m-2" (click)="runNonLinearModels()">
       <mat-icon>refresh</mat-icon>
-      Volver a ejecutar comparación
+      {{'MODEL_COMPARE.RERUN_COMPARISON' | translate}}
     </button>
   </div>
 
@@ -196,13 +196,13 @@
       <div class="d-flex justify-content-end mb-3">
         <button mat-icon-button color="primary"
                 [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.SIMPLIFIED}"
-                matTooltip="Vista simplificada"
+                matTooltip="{{'MODEL_COMPARE.SIMPLIFIED_VIEW' | translate}}"
                 (click)="toggleView(viewOptions.SIMPLIFIED)">
           <mat-icon>grid_view</mat-icon>
         </button>
         <button mat-icon-button color="primary"
                 [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.DETAILED}"
-                matTooltip="Vista detallada" (click)="toggleView(viewOptions.DETAILED)">
+                matTooltip="{{'MODEL_COMPARE.DETAILED_VIEW' | translate}}" (click)="toggleView(viewOptions.DETAILED)">
           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#008bce">
             <path
               d="m296-80-56-56 276-277 140 140 207-207 57 57-264 263-140-140L296-80Zm-136-40q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v168H160v472Zm0-552h560v-88H160v88Zm0 0v-88 88Z"/>
@@ -227,7 +227,7 @@
                   <div class="col-6">
                     <div class="row">
                       <div class="col mt-0">
-                        <span class="text-muted">Parámetros</span>
+                        <span class="text-muted">{{'MODEL_COMPARE.PARAMS' | translate}}</span>
                       </div>
                     </div>
                     <div class="row">
@@ -246,7 +246,7 @@
                   <div class="col-6">
                     <div class="row">
                       <div class="col mt-0">
-                        <span class="card-title text-muted float-end">Mejor Ajuste</span>
+                        <span class="card-title text-muted float-end">{{'MODEL_COMPARE.BEST_FIT' | translate}}</span>
                       </div>
                     </div>
                     <div class="row">
@@ -271,9 +271,10 @@
         <div class="row justify-content-center m-3" *ngIf="selectedViewOption === viewOptions.DETAILED">
 
           <div class="m-2">
-            <button mat-button color="primary" (click)="accordion.openAll()">Expandir todos
+            <button mat-button color="primary" (click)="accordion.openAll()">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
             </button>
-            <button mat-button color="primary" (click)="accordion.closeAll()">Colapsar todos
+            <button mat-button color="primary"
+                    (click)="accordion.closeAll()">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
             </button>
           </div>
 
@@ -297,7 +298,7 @@
                       <table class="table table-striped">
                         <thead>
                         <tr>
-                          <th scope="col">Ajuste</th>
+                          <th scope="col">{{'MODEL_COMPARE.FIT' | translate}}</th>
                           <th *ngFor="let param of noLinearResults[modelId].adjustments[0].parameters"
                               scope="col">{{ param.name }}
                           </th>
