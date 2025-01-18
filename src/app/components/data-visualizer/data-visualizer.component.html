@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-center">
-  <button mat-raised-button class="m-3" (click)="this.isTableVisible = !this.isTableVisible">
+  <button mat-button color="primary" class="m-3" (click)="this.isTableVisible = !this.isTableVisible">
     {{ 'DATA_VISUALIZER.SHOW_OR_HIDE_SAMPLE' | translate }}
   </button>
 </div>
 
 <div *ngIf="this.isTableVisible">
-  <table class="table  table-bordered table-striped border-primary">
+  <table class="table table-striped">
     <thead class="table-dark">
     <tr>
       <th scope="col">#</th>

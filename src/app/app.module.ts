@@ -37,6 +37,8 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSelect} from "@angular/material/select";
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 //Plotly.register(locale)
 
@@ -82,6 +84,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatProgressSpinner,
     MatButtonToggleModule,
     MatTabsModule,
+    MatExpansionModule,
+    MatTooltipModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

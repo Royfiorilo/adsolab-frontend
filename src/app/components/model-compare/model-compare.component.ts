@@ -1,10 +1,18 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
-import {IComparison, INoLinearGraph, INoLinearRequest, INoLinearRequestModel, INoLinearRequestSeed} from "./interface";
+import {
+  IComparison,
+  INoLinearGraph,
+  INoLinearRequest,
+  INoLinearRequestModel,
+  INoLinearRequestSeed,
+  ViewOption
+} from "./interface";
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
+import {MatAccordion} from "@angular/material/expansion";
 
 
 @Component({
@@ -13,6 +21,7 @@ import {IGraph, IModelsConfigurations} from "../../common/common.interface";
   styleUrl: './model-compare.component.css',
 })
 export class ModelCompareComponent {
+  @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @Input() investigationId: number | undefined;
   @Input() selectedModels!: number[];
   @Input() models!: Model[];
@@ -24,6 +33,8 @@ export class ModelCompareComponent {
   protected summaryGraph: { [key: number]: IGraph } = {};
   protected compareGraph: IGraph | undefined;
   protected toggleValue: string = 'results';
+  protected selectedViewOption: ViewOption = ViewOption.SIMPLIFIED;
+  protected viewOptions = ViewOption;
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
     leastsq: "#8f3237",
@@ -95,6 +106,8 @@ export class ModelCompareComponent {
   }
 
   runNonLinearModels() {
+
+    this.noLinearResults = {};
 
     this.runningNoLinearAdjustment = true
 
@@ -208,7 +221,6 @@ export class ModelCompareComponent {
               layout: {title: adjustment.name}
             }
           }
-          console.log("Model: ", model.model);
           this.noLinearResults[model.model].adjustments.push(noLinearGraph)
         }
 
@@ -217,7 +229,6 @@ export class ModelCompareComponent {
       }
       this.compareGraph.data.push(baseData);
 
-      console.log(this.noLinearResults)
       this.runningNoLinearAdjustment = false;
 
     })
@@ -238,11 +249,41 @@ export class ModelCompareComponent {
 
   }
 
+  getBestAdjustmentDataByModel(modelId: number) {
+
+    const adjustments = this.noLinearResults[modelId].adjustments;
+    const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
+    const bestFit = adjustments.find(
+      (adjustment) => adjustment.adjustment_name === bestAdjustment
+    );
+    if (bestFit) {
+      return bestFit;
+    } else {
+      throw new Error("Best Fit not found")
+    }
+
+  }
+
   getRidgeStatistic(statName: string) {
 
     return (this.noLinearCompareResult!.ridge!.statistics as any)[statName]
   }
 
+  toggleView(viewOption: ViewOption): void {
+    this.selectedViewOption = viewOption;
+  }
+
+  toggleAccordion(index: number, action: string): void {
+    const accordionArray = this.accordions.toArray();
+    if (accordionArray[index]) {
+      const accordion = accordionArray[index];
+      if (action === 'collapse') {
+        accordion.closeAll();
+      } else {
+        accordion.openAll();
+      }
+    }
+  }
 
   protected readonly Object = Object;
 }
