@@ -107,6 +107,8 @@ export class ModelCompareComponent {
 
   runNonLinearModels() {
 
+    this.noLinearResults = {};
+
     this.runningNoLinearAdjustment = true
 
     const models: INoLinearRequestModel[] = [];
@@ -228,7 +230,6 @@ export class ModelCompareComponent {
       }
       this.compareGraph.data.push(baseData);
 
-      console.log(this.noLinearResults)
       this.runningNoLinearAdjustment = false;
 
     })
