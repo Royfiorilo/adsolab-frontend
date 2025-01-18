@@ -13,24 +13,33 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="options.length">
-        <div class="m-3">
-          <mat-form-field style="width: 100%">
-            <input matInput
-                   placeholder="Buscar muestra por nombre"
-                   [formControl]="inputControl"
-                   [matAutocomplete]="auto">
+      <div class="m-3 card">
+        <div class="card-body">
+          <h5 class="card-title">{{ 'DATA_SELECTOR.USE_PREVIOUS_SAMPLE' | translate }}</h5>
+          <ng-container *ngIf="options.length; else noDataSamplesYet">
+            <mat-form-field style="width: 100%">
+              <input matInput
+                     placeholder="Buscar muestra por nombre"
+                     [formControl]="inputControl"
+                     [matAutocomplete]="auto">
 
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                {{ option }}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </ng-container>
+
+          <ng-template #noDataSamplesYet>
+            <div>
+              <p class="text-muted">{{ 'DATA_SELECTOR.NO_DATA_SAMPLES_YET' | translate }}</p>
+            </div>
+          </ng-template>
         </div>
 
+      </div>
 
-      </ng-container>
     </div>
     <app-data-visualizer *ngIf="dataSample" [data]="dataSample"></app-data-visualizer>
   </div>

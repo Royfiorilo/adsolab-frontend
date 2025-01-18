@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
-import {Observable} from 'rxjs';
+import {catchError, Observable, of} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
@@ -16,7 +16,7 @@ export class DataSelectorComponent {
   protected dataSample: DataSample | undefined;
   protected availableDataSamples: DataSample[] = [];
   protected creatingInvestigation: boolean = false;
-  protected loadingDataSamples: boolean = true;
+  protected loadingDataSamples: boolean = false;
   protected inputControl = new FormControl();
   protected options: string[] = [];
   protected filteredOptions!: Observable<string[]>;
@@ -26,15 +26,20 @@ export class DataSelectorComponent {
     private sampleService: SampleSelectorService) {
 
     if (this.options.length === 0) {
-      this.sampleService.getSamples().subscribe(response => {
-        this.availableDataSamples.push(...response.samples);
-        response.samples.forEach(sample => {
-          if (sample.title) {
-            this.options.push(sample.title);
-          }
+      this.loadingDataSamples = true;
+      this.sampleService.getSamples()
+        .pipe(catchError((error) => {
+          return of({samples: []})
+        }))
+        .subscribe(response => {
+          this.loadingDataSamples = false;
+          this.availableDataSamples.push(...response.samples);
+          response.samples.forEach(sample => {
+            if (sample.title) {
+              this.options.push(sample.title);
+            }
+          });
         });
-        this.loadingDataSamples = false;
-      });
     }
   }
 

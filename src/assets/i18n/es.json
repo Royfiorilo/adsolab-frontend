@@ -31,7 +31,9 @@
     "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo"
   },
   "DATA_SELECTOR": {
-    "START_INVESTIGATION": "Comenzar investigación"
+    "START_INVESTIGATION": "Comenzar investigación",
+    "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
+    "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente"
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo"
