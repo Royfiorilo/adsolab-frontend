@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
-import {Observable} from 'rxjs';
+import {catchError, Observable, of} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
@@ -15,7 +15,8 @@ export class DataSelectorComponent {
   @Output() onInvestigationCreated: EventEmitter<Investigation> = new EventEmitter();
   protected dataSample: DataSample | undefined;
   protected availableDataSamples: DataSample[] = [];
-  protected loadingDataSample: boolean = false;
+  protected creatingInvestigation: boolean = false;
+  protected loadingDataSamples: boolean = false;
   protected inputControl = new FormControl();
   protected options: string[] = [];
   protected filteredOptions!: Observable<string[]>;
@@ -25,14 +26,20 @@ export class DataSelectorComponent {
     private sampleService: SampleSelectorService) {
 
     if (this.options.length === 0) {
-      this.sampleService.getSamples().subscribe(response => {
-        this.availableDataSamples.push(...response.samples);
-        response.samples.forEach(sample => {
-          if (sample.title) {
-            this.options.push(sample.title);
-          }
+      this.loadingDataSamples = true;
+      this.sampleService.getSamples()
+        .pipe(catchError((error) => {
+          return of({samples: []})
+        }))
+        .subscribe(response => {
+          this.loadingDataSamples = false;
+          this.availableDataSamples.push(...response.samples);
+          response.samples.forEach(sample => {
+            if (sample.title) {
+              this.options.push(sample.title);
+            }
+          });
         });
-      });
     }
   }
 
@@ -64,12 +71,12 @@ export class DataSelectorComponent {
 
   createInvestigation() {
     if (this.dataSample) {
-      this.loadingDataSample = true;
+      this.creatingInvestigation = true;
       this.dataService
         .createInvestigation(this.dataSample)
         .subscribe((response) => {
           let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
-          this.loadingDataSample = false;
+          this.creatingInvestigation = false;
           this.onInvestigationCreated.emit(investigation);
         });
     }
