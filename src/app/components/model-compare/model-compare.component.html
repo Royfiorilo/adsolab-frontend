@@ -92,7 +92,16 @@
         <plotly-plot [data]="compareGraph.data" [layout]="compareGraph.layout" [useResizeHandler]="true"></plotly-plot>
       </div>
 
-      <mat-accordion multi>
+      <mat-accordion multi id="0">
+
+        <div class="m-2">
+          <button mat-button color="primary"
+                  (click)="toggleAccordion(0, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
+          </button>
+          <button mat-button color="primary"
+                  (click)="toggleAccordion(0, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
+          </button>
+        </div>
 
         <mat-expansion-panel [expanded]="true">
           <mat-expansion-panel-header>
@@ -270,15 +279,16 @@
 
         <div class="row justify-content-center m-3" *ngIf="selectedViewOption === viewOptions.DETAILED">
 
-          <div class="m-2">
-            <button mat-button color="primary" (click)="accordion.openAll()">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
-            </button>
-            <button mat-button color="primary"
-                    (click)="accordion.closeAll()">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
-            </button>
-          </div>
+          <mat-accordion multi id="1">
 
-          <mat-accordion multi>
+            <div class="m-2">
+              <button mat-button color="primary"
+                      (click)="toggleAccordion(1, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
+              </button>
+              <button mat-button color="primary"
+                      (click)="toggleAccordion(1, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
+              </button>
+            </div>
 
             <div *ngFor="let modelId of selectedModels" class="col-12">
 
@@ -387,6 +397,7 @@
 
             </div>
           </mat-accordion>
+
         </div>
 
       </div>

@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
@@ -21,8 +21,7 @@ import {MatAccordion} from "@angular/material/expansion";
   styleUrl: './model-compare.component.css',
 })
 export class ModelCompareComponent {
-  // @ts-ignore
-  @ViewChild(MatAccordion) accordion: MatAccordion;
+  @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @Input() investigationId: number | undefined;
   @Input() selectedModels!: number[];
   @Input() models!: Model[];
@@ -274,6 +273,17 @@ export class ModelCompareComponent {
     this.selectedViewOption = viewOption;
   }
 
+  toggleAccordion(index: number, action: string): void {
+    const accordionArray = this.accordions.toArray();
+    if (accordionArray[index]) {
+      const accordion = accordionArray[index];
+      if (action === 'collapse') {
+        accordion.closeAll();
+      } else {
+        accordion.openAll();
+      }
+    }
+  }
 
   protected readonly Object = Object;
 }
