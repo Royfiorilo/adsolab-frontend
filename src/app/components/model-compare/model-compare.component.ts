@@ -221,7 +221,6 @@ export class ModelCompareComponent {
               layout: {title: adjustment.name}
             }
           }
-          console.log("Model: ", model.model);
           this.noLinearResults[model.model].adjustments.push(noLinearGraph)
         }
 
