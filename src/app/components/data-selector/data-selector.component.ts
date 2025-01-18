@@ -15,7 +15,8 @@ export class DataSelectorComponent {
   @Output() onInvestigationCreated: EventEmitter<Investigation> = new EventEmitter();
   protected dataSample: DataSample | undefined;
   protected availableDataSamples: DataSample[] = [];
-  protected loadingDataSample: boolean = false;
+  protected creatingInvestigation: boolean = false;
+  protected loadingDataSamples: boolean = true;
   protected inputControl = new FormControl();
   protected options: string[] = [];
   protected filteredOptions!: Observable<string[]>;
@@ -32,6 +33,7 @@ export class DataSelectorComponent {
             this.options.push(sample.title);
           }
         });
+        this.loadingDataSamples = false;
       });
     }
   }
@@ -64,12 +66,12 @@ export class DataSelectorComponent {
 
   createInvestigation() {
     if (this.dataSample) {
-      this.loadingDataSample = true;
+      this.creatingInvestigation = true;
       this.dataService
         .createInvestigation(this.dataSample)
         .subscribe((response) => {
           let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
-          this.loadingDataSample = false;
+          this.creatingInvestigation = false;
           this.onInvestigationCreated.emit(investigation);
         });
     }

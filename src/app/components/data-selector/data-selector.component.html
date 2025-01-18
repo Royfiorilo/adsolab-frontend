@@ -35,6 +35,6 @@
     <app-data-visualizer *ngIf="dataSample" [data]="dataSample"></app-data-visualizer>
   </div>
 </div>
-<ng-container *ngIf="loadingDataSample">
+<ng-container *ngIf="creatingInvestigation || loadingDataSamples">
   <app-loading></app-loading>
 </ng-container>
