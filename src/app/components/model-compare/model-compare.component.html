@@ -1,4 +1,4 @@
-<div class="container-fluid m-3">
+<div class="container-fluid m-3" *ngIf="!runningNoLinearAdjustment">
   <app-data-visualizer *ngIf="this.dataSample" [data]="this.dataSample"></app-data-visualizer>
   <div class="d-flex justify-content-end" *ngIf="!runningNoLinearAdjustment">
     <button mat-button color="primary" class="m-2" (click)="runNonLinearModels()">
@@ -7,7 +7,7 @@
     </button>
   </div>
 
-  <mat-tab-group *ngIf="!runningNoLinearAdjustment" mat-stretch-tabs="false" mat-align-tabs="center">
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
     <mat-tab selected label="{{'MODEL_COMPARE.COMPARISON' | translate}}">
 
       <div class="row justify-content-center m-3">
