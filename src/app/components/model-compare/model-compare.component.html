@@ -305,7 +305,7 @@
                     <p class="card-text mt-2"></p>
                     <div class="table-responsive">
 
-                      <table class="table table-striped">
+                      <table class="table">
                         <thead>
                         <tr>
                           <th scope="col">{{'MODEL_COMPARE.FIT' | translate}}</th>
@@ -322,7 +322,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let item of noLinearResults[modelId].adjustments">
+                        <tr *ngFor="let item of noLinearResults[modelId].adjustments"
+                            [ngClass]="{'table-active fw-bold': noLinearResults[modelId].bestAdjustment === item.adjustment_name}">
                           <th scope="row"> {{ item.adjustment_name }}</th>
                           <td *ngFor="let param of item.parameters">{{ param.value }}</td>
                           <td> {{ item.statistics.chi_squared }}</td>

@@ -30,12 +30,11 @@ export interface IGraphLayout {
 export interface IParameter {
   name: string;
   value: number;
-  std_err: number;
+  stderr: number;
 }
 
-export interface IStatistics {
-  r: number;
-  std_err: number;
+export interface ILinearStatistics {
+  r_squared: number;
 }
 
 export interface ITransformedData {
