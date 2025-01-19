@@ -95,28 +95,67 @@
               <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
                            [useResizeHandler]="true"></plotly-plot>
 
-              <div class="table-responsive">
-                <table class="table table-bordered table-striped border-primary">
-                  <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th *ngFor="let param of item.parameters" scope="col">{{ param.name }}</th>
-                    <th scope="col">r</th>
-                    <th scope="col">std err</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td *ngFor="let param of item.parameters">{{ param.value }}</td>
-                    <td> {{ item.statistics.r }}</td>
-                    <td> {{ item.statistics.std_err }}</td>
+              <div class="card">
+                <div class="card-body d-flex flex-column">
 
-                  </tr>
-                  </tbody>
-                </table>
+                  <div class="row">
+                    <div class="col">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <span class="text-muted">{{'MODEL_COMPARE.PARAMS' | translate}}</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col mt-0" *ngFor="let param of item.parameters">
+                          <div class="mb-0">
+                            <span class="fiuba-institutional-text me-2">{{param.name}}</span>
+                            <span class="text-muted text-body-emphasis">
+                              <h5>{{param.value}} <h6 class="text-muted">({{param.stderr}})</h6></h5>
+                              </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <span class="card-title text-muted">R cuadrado</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col mt-0">
+                          <h5>{{item.statistics.r_squared}}</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
 
               </div>
+
+              <!--              <div class="table-responsive">-->
+              <!--                <table class="table table-striped">-->
+              <!--                  <thead>-->
+              <!--                  <tr>-->
+              <!--                    <th *ngFor="let param of item.parameters" scope="col">{{ param.name }}</th>-->
+              <!--                    &lt;!&ndash;                    <th scope="col">std err</th>&ndash;&gt;-->
+              <!--                    <th scope="col">r</th>-->
+              <!--                  </tr>-->
+              <!--                  </thead>-->
+              <!--                  <tbody>-->
+              <!--                  <tr>-->
+              <!--                    <td *ngFor="let param of item.parameters">{{ param.value }}</td>-->
+              <!--                    <td> {{ item.statistics.r_squared }}</td>-->
+
+              <!--                  </tr>-->
+              <!--                  </tbody>-->
+              <!--                </table>-->
+
+              <!--              </div>-->
             </div>
 
           </ng-template>
