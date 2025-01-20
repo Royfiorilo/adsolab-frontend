@@ -3,8 +3,17 @@
   <div class="d-flex justify-content-end" *ngIf="!runningNoLinearAdjustment">
     <button mat-button color="primary" class="m-2" (click)="runNonLinearModels()">
       <mat-icon>refresh</mat-icon>
-      {{'MODEL_COMPARE.RERUN_COMPARISON' | translate}}
+      {{ 'MODEL_COMPARE.RERUN_COMPARISON' | translate }}
     </button>
+
+    <div>
+      <button mat-button color="primary" class="m-2" (click)="downloadExcelWithMultipleSheets()">
+        <fa-icon [icon]="faDownload" class="m-2"></fa-icon>
+        {{ 'MODEL_COMPARE.DOWNLOAD_RESULTS' | translate }}
+      </button>
+    </div>
+
+
   </div>
 
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
@@ -15,7 +24,7 @@
           <div class="card-body d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center">
               <h5
-                class="card-title mb-0 flex-grow-1 text-center">{{'MODEL_COMPARE.BEST_MODEL' | translate}}</h5>
+                class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
             </div>
 
             <h2 class="text-center">
@@ -30,7 +39,7 @@
             <div class="card m-3">
               <div
                 class="card-body p-3 shadow-sm  align-items-center text-center">
-                <h5 class="card-title mb-2">{{'MODEL_COMPARE.HEURISTIC' | translate}}</h5>
+                <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.HEURISTIC' | translate }}</h5>
 
                 <div class="row justify-content-center">
 
@@ -58,7 +67,7 @@
             <div class="card m-3">
               <div
                 class="card-body p-3 shadow-sm  align-items-center text-center">
-                <h5 class="card-title mb-2">{{'MODEL_COMPARE.RIDGE' | translate}}</h5>
+                <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h5>
 
                 <div class="row justify-content-center">
 
@@ -96,10 +105,10 @@
 
         <div class="m-2">
           <button mat-button color="primary"
-                  (click)="toggleAccordion(0, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
+                  (click)="toggleAccordion(0, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
           </button>
           <button mat-button color="primary"
-                  (click)="toggleAccordion(0, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
+                  (click)="toggleAccordion(0, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
           </button>
         </div>
 
@@ -236,16 +245,16 @@
                   <div class="col-6">
                     <div class="row">
                       <div class="col mt-0">
-                        <span class="text-muted">{{'MODEL_COMPARE.PARAMS' | translate}}</span>
+                        <span class="text-muted">{{ 'MODEL_COMPARE.PARAMS' | translate }}</span>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col mt-0">
                         <div *ngFor="let param of getBestAdjustmentDataByModel(modelId).parameters"
                              class="mb-0">
-                          <span class="fiuba-institutional-text me-2">{{param.name}}</span>
+                          <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
                           <span class="text-muted text-body-emphasis">
-                                <h5>{{param.value}}</h5>
+                                <h5>{{ param.value }}</h5>
                               </span>
                         </div>
                       </div>
@@ -255,7 +264,7 @@
                   <div class="col-6">
                     <div class="row">
                       <div class="col mt-0">
-                        <span class="card-title text-muted float-end">{{'MODEL_COMPARE.BEST_FIT' | translate}}</span>
+                        <span class="card-title text-muted float-end">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
                       </div>
                     </div>
                     <div class="row">
@@ -283,10 +292,10 @@
 
             <div class="m-2">
               <button mat-button color="primary"
-                      (click)="toggleAccordion(1, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
+                      (click)="toggleAccordion(1, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
               </button>
               <button mat-button color="primary"
-                      (click)="toggleAccordion(1, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
+                      (click)="toggleAccordion(1, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
               </button>
             </div>
 
@@ -308,7 +317,7 @@
                       <table class="table">
                         <thead>
                         <tr>
-                          <th scope="col">{{'MODEL_COMPARE.FIT' | translate}}</th>
+                          <th scope="col">{{ 'MODEL_COMPARE.FIT' | translate }}</th>
                           <th *ngFor="let param of noLinearResults[modelId].adjustments[0].parameters"
                               scope="col">{{ param.name }}
                           </th>
