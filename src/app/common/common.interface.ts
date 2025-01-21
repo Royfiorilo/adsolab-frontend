@@ -25,6 +25,7 @@ export interface IMarker {
 
 export interface IGraphLayout {
   title: string;
+  autosize: boolean;
 }
 
 export interface IParameter {
@@ -35,6 +36,18 @@ export interface IParameter {
 
 export interface ILinearStatistics {
   r_squared: number;
+}
+
+export interface IStatistics {
+  r_squared: number;
+  adjust_r_squared: number;
+  chi_squared: number;
+  adjust_chi_squeared: number;
+  RMSE: number;
+  SSE: number;
+  HYBRID: number;
+  AIC: string | number;
+  BIC: string | number;
 }
 
 export interface ITransformedData {

@@ -82,7 +82,7 @@ export class ModelConfigurationComponent {
                   marker: {color: 'blue'}
                 },
               ],
-              layout: {title: linearization.name}
+              layout: {title: linearization.name, autosize: true}
             }
           }
 

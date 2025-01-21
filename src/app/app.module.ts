@@ -39,6 +39,11 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatSelect} from "@angular/material/select";
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatTableModule} from "@angular/material/table";
+import {MatCardModule} from "@angular/material/card";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatDividerModule} from "@angular/material/divider";
+import { FitResultComponent } from './components/fit-result/fit-result.component';
 
 //Plotly.register(locale)
 
@@ -62,7 +67,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     FileUploadComponent,
     MainPageComponent,
     LoadingComponent,
-    DataVisualizerComponent
+    DataVisualizerComponent,
+    FitResultComponent
   ],
   imports: [
     BrowserModule,
@@ -86,6 +92,10 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatTabsModule,
     MatExpansionModule,
     MatTooltipModule,
+    MatTableModule,
+    MatCardModule,
+    MatProgressBarModule,
+    MatDividerModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -169,7 +169,7 @@ export class ModelCompareComponent {
       }
 
       this.compareGraph = {
-        data: [ridgeData], layout: {title: "Mejor ajuste por modelo"}
+        data: [ridgeData], layout: {title: "Mejor ajuste por modelo", autosize: true}
       }
 
       for (const model of response.results) {
@@ -181,7 +181,7 @@ export class ModelCompareComponent {
 
 
         this.summaryGraph[model.model] = {
-          data: [], layout: {title: "Resumen de resultados"}
+          data: [], layout: {title: "Resumen de resultados", autosize: true}
         }
 
         for (const adjustment of model.adjustment_methods) {
@@ -202,7 +202,7 @@ export class ModelCompareComponent {
             let modelName = this.commonUtilsService.getModelById(model.model, this.models).name;
             compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
             compareData.marker = {color: this.colorByMethod[modelName]}
-            compareData.name = modelName
+            compareData.name = modelName + ` (${model.best_adjust})`
             this.compareGraph.data.push(compareData);
           }
 
@@ -218,7 +218,7 @@ export class ModelCompareComponent {
                 resultData,
                 baseData
               ],
-              layout: {title: adjustment.name}
+              layout: {title: '', autosize: true} //TODO: poner algun titulo
             }
           }
           this.noLinearResults[model.model].adjustments.push(noLinearGraph)

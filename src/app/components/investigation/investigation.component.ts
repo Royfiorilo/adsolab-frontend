@@ -24,7 +24,7 @@ export class InvestigationComponent {
   investigationCreated(investigation: Investigation) {
     this.investigation = investigation;
     this.stepId = 2;
-    this._snackBar.open("Investigación cargada con éxito", "Aceptar", {
+    this._snackBar.open("Investigación creada con éxito", "Aceptar", {
       duration: 3000,
       verticalPosition: 'top',
     });

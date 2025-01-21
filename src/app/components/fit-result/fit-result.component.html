@@ -1,0 +1,45 @@
+<div class="container-fluid p-3">
+  <div class="row">
+    <div class="col">
+      <div class="row">
+        <div class="col">
+          <h5 class="text-muted">{{'MODEL_COMPARE.PARAMS' | translate}}</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" *ngFor="let param of parameters">
+          <div>
+            <span class="fiuba-institutional-text">{{param.name}}</span>
+            <span class="text-muted text-body-emphasis">
+              <h5>{{param.value}} <small class="text-muted">± {{param.stderr}}</small></h5>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="row">
+    <div class="row">
+      <div class="col mt-2">
+        <h5 class="text-muted">{{'MODEL_COMPARE.STATISTICS' | translate}}</h5>
+      </div>
+    </div>
+    <div class="col-3" *ngFor="let statistic of getStatisticsInOrder()">
+      <div class="row">
+        <div class="col mt-0">
+          <span class="card-title text-muted">{{ 'STATISTICS.' + statistic[0] | translate }}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col mt-0">
+          <h5>{{statistic[1]}}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
