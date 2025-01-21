@@ -1,9 +1,9 @@
 <div class="container-fluid m-2">
   <div class="row d-flex justify-content-center">
     <div class="col-10">
-      <mat-stepper [linear]="true">
+      <mat-stepper [linear]="true" [animationDuration]="'0'" (selectedIndexChange)="onStepChange($event)">
         <mat-step label="Datos" [completed]="investigation" class="d-flex">
-          <div *ngIf="investigation" class="float-end">
+          <div *ngIf="investigation" class="stepper-button-right">
             <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
               <mat-icon>arrow_forward</mat-icon>
             </button>
@@ -12,12 +12,12 @@
         </mat-step>
         <mat-step label="Selección de Modelos" [completed]="selectedModels.length !== 0">
           <ng-template matStepContent>
-            <div class="float-start" *ngIf="models.length !== 0">
+            <div class="stepper-button-left" *ngIf="models.length !== 0">
               <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_back</mat-icon>
               </button>
             </div>
-            <div class="float-end" *ngIf="selectedModels.length !== 0">
+            <div class="stepper-button-right" *ngIf="selectedModels.length !== 0">
               <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_forward</mat-icon>
               </button>
@@ -30,12 +30,12 @@
         </mat-step>
         <mat-step label="Configuración de Modelos" [completed]="modelConfigurationDone">
           <ng-template matStepContent>
-            <div class="float-start">
+            <div class="stepper-button-left">
               <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_back</mat-icon>
               </button>
             </div>
-            <div class="float-end" *ngIf="modelConfigurationDone">
+            <div class="stepper-button-right" *ngIf="modelConfigurationDone">
               <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_forward</mat-icon>
               </button>
@@ -50,7 +50,7 @@
         </mat-step>
         <mat-step label="Resultados">
           <ng-template matStepContent>
-            <div class="float-start">
+            <div class="stepper-button-left">
               <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_back</mat-icon>
               </button>
@@ -60,6 +60,7 @@
               [dataSample]="investigation?.sample"
               [selectedModels]="selectedModels"
               [modelConfiguration]="modelConfiguration"
+              [stepId]="stepId"
               [models]="models"></app-model-compare>
           </ng-template>
         </mat-step>

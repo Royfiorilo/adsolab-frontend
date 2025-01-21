@@ -23,7 +23,6 @@ export class InvestigationComponent {
 
   investigationCreated(investigation: Investigation) {
     this.investigation = investigation;
-    this.stepId = 2;
     this._snackBar.open("Investigación creada con éxito", "Aceptar", {
       duration: 3000,
       verticalPosition: 'top',
@@ -31,7 +30,7 @@ export class InvestigationComponent {
   }
 
   addModel(modelId: number) {
-    this.selectedModels.push(modelId);
+    this.selectedModels = [...this.selectedModels, modelId]
     const model = this.models.find(model => model._id === modelId);
     this.modelConfiguration[modelId] = {
       automatedParams: !!model?.linearizations && model.linearizations.length > 0,
@@ -85,7 +84,11 @@ export class InvestigationComponent {
   }
 
   private removeModel(modelId: number) {
-    this.selectedModels.splice(this.selectedModels.indexOf(modelId), 1)
+    this.selectedModels = this.selectedModels.filter(selectedModel => selectedModel !== modelId)
     delete this.modelConfiguration[modelId]
+  }
+
+  onStepChange($event: number) {
+    this.stepId = $event;
   }
 }

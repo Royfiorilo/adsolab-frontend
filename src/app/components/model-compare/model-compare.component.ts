@@ -1,4 +1,4 @@
-import {Component, Input, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, QueryList, SimpleChanges, ViewChildren} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
@@ -27,6 +27,7 @@ export class ModelCompareComponent {
   @Input() models!: Model[];
   @Input() dataSample: DataSample | undefined;
   @Input() modelConfiguration!: IModelsConfigurations;
+  @Input() stepId!: number;
   protected noLinearResults: { [key: number]: { bestAdjustment: string, adjustments: INoLinearGraph[] } } = {};
   protected noLinearCompareResult: IComparison | undefined;
   protected runningNoLinearAdjustment: boolean = false;
@@ -35,6 +36,8 @@ export class ModelCompareComponent {
   protected toggleValue: string = 'results';
   protected selectedViewOption: ViewOption = ViewOption.SIMPLIFIED;
   protected viewOptions = ViewOption;
+  protected selectedModelsChanged: boolean = false;
+
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
     leastsq: "#8f3237",
@@ -50,6 +53,19 @@ export class ModelCompareComponent {
   ngOnInit() {
 
     this.runNonLinearModels();
+
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+
+
+    if (changes['selectedModels'] && changes['selectedModels'].currentValue !== changes['selectedModels'].previousValue) {
+      this.selectedModelsChanged = true;
+    }
+
+    if (changes['stepId'] && changes['stepId'].currentValue === 3 && this.selectedModelsChanged) {
+      this.runNonLinearModels();
+    }
 
   }
 
@@ -106,6 +122,8 @@ export class ModelCompareComponent {
   }
 
   runNonLinearModels() {
+
+    this.selectedModelsChanged = false;
 
     this.noLinearResults = {};
 
