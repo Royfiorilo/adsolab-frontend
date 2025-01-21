@@ -58,7 +58,6 @@ export class ModelCompareComponent {
 
   ngOnChanges(changes: SimpleChanges) {
 
-
     if (changes['selectedModels'] && changes['selectedModels'].currentValue !== changes['selectedModels'].previousValue) {
       this.selectedModelsChanged = true;
     }
