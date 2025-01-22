@@ -31,7 +31,7 @@ export interface IGraphLayout {
 export interface IParameter {
   name: string;
   value: number;
-  stderr: number;
+  std_err: number;
 }
 
 export interface ILinearStatistics {
