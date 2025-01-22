@@ -111,3 +111,30 @@ body {
 html, body {
   height: 100%;
 }
+
+.model-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.model-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.model-card.selected {
+  border: 2px solid #8f3237;
+  /*background-color: rgba(63, 81, 181, 0.05);*/
+}
+
+.selection-icon {
+  color: #8f3237;
+}
+
+.selection-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #8f3237;
+}
+

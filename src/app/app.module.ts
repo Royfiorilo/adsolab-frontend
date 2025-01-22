@@ -43,7 +43,9 @@ import {MatTableModule} from "@angular/material/table";
 import {MatCardModule} from "@angular/material/card";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDividerModule} from "@angular/material/divider";
-import { FitResultComponent } from './components/fit-result/fit-result.component';
+import {FitResultComponent} from './components/fit-result/fit-result.component';
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatRippleModule} from "@angular/material/core";
 
 //Plotly.register(locale)
 
@@ -96,6 +98,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatCardModule,
     MatProgressBarModule,
     MatDividerModule,
+    MatGridListModule,
+    MatRippleModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
