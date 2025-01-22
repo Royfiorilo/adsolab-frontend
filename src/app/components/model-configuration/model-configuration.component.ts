@@ -100,7 +100,7 @@ export class ModelConfigurationComponent {
                   marker: {color: 'blue'}
                 },
               ],
-              layout: {title: linearization.name, autosize: true}
+              layout: {title: '', autosize: true}
             }
           }
 
@@ -128,7 +128,7 @@ export class ModelConfigurationComponent {
     return Math.min(...numbers);
   }
 
-  selectConfiguration(event: Event, modelId: number): void {
+  selectConfiguration(event: any, modelId: number): void {
     this.onSelectedConfiguration.emit(modelId);
   }
 

@@ -10,51 +10,45 @@
 
     <div *ngFor="let modelId of selectedModels" class="col-6">
       <div class="card">
+        <div class="card-header fiuba-institutional mb-1">
+          <h4
+            class="card-title text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
+        </div>
         <div class="card-body d-flex flex-column">
-          <div class="d-flex justify-content-between align-items-center">
-            <h5
-              class="card-title mb-0 flex-grow-1 text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h5>
-          </div>
-          <p class="card-text mt-2"></p>
-          <div class="form-floating">
-            <select (change)="selectConfiguration($event,modelId)" [id]="modelId"
-                    class="form-select">
-              <ng-container *ngIf="commonUtilsService.getModelById(modelId, models).linearizations.length else
-                           onlyManualParams">
-                <option
-                  value="true">{{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}
-                </option>
-                <option value="false">{{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}</option>
+
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
+            <mat-select
+              (selectionChange)="selectConfiguration($event,modelId)" [id]="modelId.toString()"
+            >
+
+              <ng-container *ngIf="commonUtilsService.getModelById(modelId, models).linearizations.length">
+
+                <mat-option [value]="true">
+                  {{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}
+                </mat-option>
 
               </ng-container>
 
-              <ng-template #onlyManualParams>
-                <option value="false">{{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}</option>
+              <mat-option [value]="!commonUtilsService.getModelById(modelId, models).linearizations.length">
+                {{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}
+              </mat-option>
 
-              </ng-template>
+            </mat-select>
+          </mat-form-field>
 
-
-            </select>
-            <label [for]="modelId">{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</label>
-          </div>
           <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
-            <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue">
-              <div class="input-group mt-3">
-                <input
-                  [value]=[modelConfiguration[modelId].paramValues[param.key]]
-                  (change)="onChange($event,modelId, param.key)"
-                  class="form-control"
-                  id="{{param.key}}"
-                  placeholder="Parametro {{param.key}}"
-                  type="number">
-                <span class="input-group-text">
-                  <fa-icon (click)="open(content); $event.stopPropagation()"
-                           [icon]="faInfoCircle"
-                           class="text-muted"
-                           style="cursor: pointer; font-size: 1.2rem;"></fa-icon>
-                </span>
-              </div>
+            <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="text-center">
 
+              <mat-form-field class="w-100">
+                <mat-label> {{ param.key }}</mat-label>
+                <input matInput
+                       [value]=[modelConfiguration[modelId].paramValues[param.key]]
+                       (change)="onChange($event,modelId, param.key)"
+                       id="{{param.key}}"
+                       type="number"/>
+                <mat-icon matSuffix (click)="open(content); $event.stopPropagation()">info</mat-icon>
+              </mat-form-field>
 
               <ng-template #content let-modal>
                 <div class="modal-header">
@@ -75,28 +69,36 @@
           </ng-container>
           <ng-template #automatedParams>
 
-            <div *ngFor="let linearization of commonUtilsService.getModelById(modelId,models).linearizations"
-                 class="card m-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0 flex-grow-1 text-center">{{ linearization.name }}</h5>
+            <div class="row" *ngIf="!linearizationGraphs[modelId]">
+              <div class="col">
+                <small class="text-muted">{{ 'MODEL_CONFIGURATION.AVAILABLE_LINEARIZATIONS' | translate }}</small>
+                <div *ngFor="let linearization of commonUtilsService.getModelById(modelId,models).linearizations">
+                  <h6 class="text-muted">- {{ linearization.name }}</h6>
+                </div>
+                <div class="mt-auto d-flex align-content-center justify-content-center">
+                  <button (click)="runLinearization(modelId)"
+                          class="btn fiuba-institutional mt-3">{{ 'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="mt-auto d-flex align-content-center justify-content-center">
-              <button (click)="runLinearization(modelId)"
-                      class="btn fiuba-institutional mt-3">{{ 'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
-              </button>
             </div>
 
-            <div *ngFor="let item of linearizationGraphs[modelId]">
-              <hr>
-              <div *ngIf="item.isBestResult" class="mt-3 alert alert-success" role="alert">
-                Best model: {{ item.linearizationName }}
+            <div class="row m-3" *ngFor="let item of linearizationGraphs[modelId]">
+
+              <div class="col text-center">
+                <h5 class="text-center">
+                  {{ item.linearizationName }}
+                </h5>
+                <small class="text-center" *ngIf="item.isBestResult"
+                       class="badge fiuba-institutional-bg text-white">
+                  {{'MODEL_CONFIGURATION.BEST_LINEARIZATION' | translate}}
+                </small>
               </div>
+
               <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
                            [useResizeHandler]="true" [style]="{width: '100%', height: '100%'}"></plotly-plot>
 
               <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
-
             </div>
 
           </ng-template>
