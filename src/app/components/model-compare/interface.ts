@@ -1,8 +1,8 @@
-import {IGraph, IParameter, ITransformedData} from "../../common/common.interface";
+import {IGraph, IParameter, IStatistics, ITransformedData} from "../../common/common.interface";
 
 export interface INoLinearGraph {
   parameters: IParameter[];
-  statistics: INoLinearResultStats;
+  statistics: IStatistics;
   residuals: IResiduals;
   graph: IGraph;
   best?: boolean;
@@ -54,7 +54,7 @@ export interface AdjustmentMethod {
   description: string;
   status: boolean;
   parameters: IParameter[];
-  statistics: INoLinearResultStats;
+  statistics: IStatistics;
   transformed: ITransformedData;
   residuals: IResiduals;
 }
@@ -90,7 +90,7 @@ export interface Heuristic {
 export interface Ridge {
   best_model: number;
   y_pred: number[];
-  statistics: INoLinearResultStats;
+  statistics: IStatistics;
   results: ModelRidgeResult[];
 }
 

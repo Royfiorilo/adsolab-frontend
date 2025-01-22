@@ -7,267 +7,280 @@
     </button>
   </div>
 
-  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" *ngIf="!selectedModelsChanged">
     <mat-tab selected label="{{'MODEL_COMPARE.COMPARISON' | translate}}">
 
-      <div class="row justify-content-center m-3">
-        <div class="card col-lg-8 col-md-10">
-          <div class="card-body d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center">
-              <h5
-                class="card-title mb-0 flex-grow-1 text-center">{{'MODEL_COMPARE.BEST_MODEL' | translate}}</h5>
-            </div>
+      <ng-template matTabContent>
 
-            <h2 class="text-center">
+        <div class="row justify-content-center m-3">
+          <div class="card col-lg-8 col-md-10">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5
+                  class="card-title mb-0 flex-grow-1 text-center">{{'MODEL_COMPARE.BEST_MODEL' | translate}}</h5>
+              </div>
+
+              <h2 class="text-center">
               <span
                 [ngClass]="getBestComparisonModelOverall() !== 'Indefinido' ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
               {{ getBestComparisonModelOverall() }}
               </span>
-            </h2>
+              </h2>
 
-            <!--          Resumen del por que de la eleccion del mejor-->
+              <!--          Resumen del por que de la eleccion del mejor-->
 
-            <div class="card m-3">
-              <div
-                class="card-body p-3 shadow-sm  align-items-center text-center">
-                <h5 class="card-title mb-2">{{'MODEL_COMPARE.HEURISTIC' | translate}}</h5>
+              <div class="card m-3">
+                <div
+                  class="card-body p-3 shadow-sm  align-items-center text-center">
+                  <h5 class="card-title mb-2">{{'MODEL_COMPARE.HEURISTIC' | translate}}</h5>
 
-                <div class="row justify-content-center">
+                  <div class="row justify-content-center">
 
-                  <div *ngFor="let result of noLinearCompareResult!.heuristic!.results" class="col-md-6 col-lg-3">
+                    <div *ngFor="let result of noLinearCompareResult!.heuristic!.results" class="col-md-6 col-lg-3">
 
-                    <div
-                      [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                      {{ commonUtilsService.getModelById(result.model, models).name }}
-                    </div>
+                      <div
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        {{ commonUtilsService.getModelById(result.model, models).name }}
+                      </div>
 
-                    <div
-                      [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                      <div>{{ result.score }}</div>
-                    </div>
+                      <div
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        <div>{{ result.score }}</div>
+                      </div>
 
-                  </div>
-
-                </div>
-
-
-              </div>
-
-            </div>
-
-            <div class="card m-3">
-              <div
-                class="card-body p-3 shadow-sm  align-items-center text-center">
-                <h5 class="card-title mb-2">{{'MODEL_COMPARE.RIDGE' | translate}}</h5>
-
-                <div class="row justify-content-center">
-
-                  <div *ngFor="let result of noLinearCompareResult!.ridge!.results" class="col-md-6 col-lg-3">
-
-                    <div
-                      [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                      {{ commonUtilsService.getModelById(result.model, models).name }}
-                    </div>
-
-                    <div
-                      [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                      <div>{{ result.coef }}</div>
                     </div>
 
                   </div>
 
+
                 </div>
 
+              </div>
+
+              <div class="card m-3">
+                <div
+                  class="card-body p-3 shadow-sm  align-items-center text-center">
+                  <h5 class="card-title mb-2">{{'MODEL_COMPARE.RIDGE' | translate}}</h5>
+
+                  <div class="row justify-content-center">
+
+                    <div *ngFor="let result of noLinearCompareResult!.ridge!.results" class="col-md-6 col-lg-3">
+
+                      <div
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        {{ commonUtilsService.getModelById(result.model, models).name }}
+                      </div>
+
+                      <div
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        <div>{{ result.coef }}</div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                </div>
 
               </div>
 
             </div>
-
           </div>
         </div>
-      </div>
 
 
-      <div *ngIf="compareGraph">
-        <plotly-plot [data]="compareGraph.data" [layout]="compareGraph.layout" [useResizeHandler]="true"></plotly-plot>
-      </div>
-
-      <mat-accordion multi id="0">
-
-        <div class="m-2">
-          <button mat-button color="primary"
-                  (click)="toggleAccordion(0, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
-          </button>
-          <button mat-button color="primary"
-                  (click)="toggleAccordion(0, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
-          </button>
+        <div *ngIf="compareGraph">
+          <plotly-plot [data]="compareGraph.data" [layout]="compareGraph.layout"
+                       [useResizeHandler]="true" [style]="{width: '100%', height: '100%'}"></plotly-plot>
         </div>
 
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <h4 class="text-center">Puntos calculados</h4>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+        <mat-accordion multi id="0">
 
-          <table class="table table-striped">
-            <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Ce</th>
-              <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                {{ commonUtilsService.getModelById(+modelId, models).name }}
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let ceValue of dataSample?.ce; let i = index">
-              <th scope="row">{{ i + 1 }}</th>
-              <td>{{ ceValue }}</td>
-              <td *ngFor="let modelId of selectedModels">
-                {{ bestTransformedValue(modelId, i) || 'N/A' }}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-
-
-        </mat-expansion-panel>
-
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <h4 class="text-center">Estadísticos</h4>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-              <tr>
-                <th>Nombre</th>
-                <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                  {{ commonUtilsService.getModelById(+modelId, models).name }}
-                </th>
-                <th>Ridge</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let statName of getStatisticsRows()">
-                <td>{{ 'STATISTICS.' + statName | translate }}</td>
-                <td *ngFor="let modelId of selectedModels">
-                  {{ bestStatisticValue(modelId, statName) || 'N/A' }}
-                </td>
-                <td>{{ getRidgeStatistic(statName) }}</td>
-              </tr>
-              </tbody>
-            </table>
+          <div class="m-2">
+            <button mat-button color="primary"
+                    (click)="toggleAccordion(0, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
+            </button>
+            <button mat-button color="primary"
+                    (click)="toggleAccordion(0, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
+            </button>
           </div>
 
-        </mat-expansion-panel>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="text-center">Puntos calculados</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
 
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <h4 class="text-center">Residuos</h4>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+            <ng-template matExpansionPanelContent>
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Ce</th>
+                  <th *ngFor="let modelId of Object.keys(noLinearResults)">
+                    {{ commonUtilsService.getModelById(+modelId, models).name }}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let ceValue of dataSample?.ce; let i = index">
+                  <th scope="row">{{ i + 1 }}</th>
+                  <td>{{ ceValue }}</td>
+                  <td *ngFor="let modelId of selectedModels">
+                    {{ bestTransformedValue(modelId, i) || 'N/A' }}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </ng-template>
 
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-              <tr>
-                <th>Nombre</th>
-                <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                  {{ commonUtilsService.getModelById(+modelId, models).name }}
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let residualName of getResidualsRows()">
-                <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
-                <td *ngFor="let modelId of selectedModels">
-                  {{ parseResiduals(bestResidualValue(modelId, residualName)) || 'N/A' }}
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
+          </mat-expansion-panel>
 
-        </mat-expansion-panel>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="text-center">Estadísticos</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
 
-      </mat-accordion>
+            <ng-template matExpansionPanelContent>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>{{'MODEL_COMPARE.NAME' | translate}}</th>
+                    <th *ngFor="let modelId of Object.keys(noLinearResults)">
+                      {{ commonUtilsService.getModelById(+modelId, models).name }}
+                    </th>
+                    <th>{{'MODEL_COMPARE.RIDGE' | translate}}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let statName of getStatisticsRows()">
+                    <td>{{ 'STATISTICS.' + statName | translate }}</td>
+                    <td *ngFor="let modelId of selectedModels">
+                      {{ bestStatisticValue(modelId, statName) || 'N/A' }}
+                    </td>
+                    <td>{{ getRidgeStatistic(statName) }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-template>
+
+          </mat-expansion-panel>
+
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="text-center">Residuos</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>{{'MODEL_COMPARE.NAME' | translate}}</th>
+                    <th *ngFor="let modelId of Object.keys(noLinearResults)">
+                      {{ commonUtilsService.getModelById(+modelId, models).name }}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let residualName of getResidualsRows()">
+                    <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                    <td *ngFor="let modelId of selectedModels">
+                      {{ parseResiduals(bestResidualValue(modelId, residualName)) || 'N/A' }}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-template>
+
+          </mat-expansion-panel>
+
+        </mat-accordion>
+
+      </ng-template>
 
     </mat-tab>
 
     <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
 
-      <div class="d-flex justify-content-end mb-3">
-        <button mat-icon-button color="primary"
-                [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.SIMPLIFIED}"
-                matTooltip="{{'MODEL_COMPARE.SIMPLIFIED_VIEW' | translate}}"
-                (click)="toggleView(viewOptions.SIMPLIFIED)">
-          <mat-icon>grid_view</mat-icon>
-        </button>
-        <button mat-icon-button color="primary"
-                [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.DETAILED}"
-                matTooltip="{{'MODEL_COMPARE.DETAILED_VIEW' | translate}}" (click)="toggleView(viewOptions.DETAILED)">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#008bce">
-            <path
-              d="m296-80-56-56 276-277 140 140 207-207 57 57-264 263-140-140L296-80Zm-136-40q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v168H160v472Zm0-552h560v-88H160v88Zm0 0v-88 88Z"/>
-          </svg>
-        </button>
-      </div>
+      <ng-template matTabContent>
+        <div class="d-flex justify-content-end mb-3">
+          <button mat-icon-button color="primary"
+                  [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.SIMPLIFIED}"
+                  matTooltip="{{'MODEL_COMPARE.SIMPLIFIED_VIEW' | translate}}"
+                  (click)="toggleView(viewOptions.SIMPLIFIED)">
+            <mat-icon>grid_view</mat-icon>
+          </button>
+          <button mat-icon-button color="primary"
+                  [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.DETAILED}"
+                  matTooltip="{{'MODEL_COMPARE.DETAILED_VIEW' | translate}}" (click)="toggleView(viewOptions.DETAILED)">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#008bce">
+              <path
+                d="m296-80-56-56 276-277 140 140 207-207 57 57-264 263-140-140L296-80Zm-136-40q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v168H160v472Zm0-552h560v-88H160v88Zm0 0v-88 88Z"/>
+            </svg>
+          </button>
+        </div>
 
-      <div *ngIf="!runningNoLinearAdjustment">
+        <div *ngIf="!runningNoLinearAdjustment">
 
-        <div class="row justify-content-center m-3" *ngIf="selectedViewOption === viewOptions.SIMPLIFIED">
+          <div *ngIf="selectedViewOption === viewOptions.SIMPLIFIED" class="row justify-content-center m-3">
 
-          <div *ngFor="let modelId of selectedModels" class="col-6">
+            <div *ngFor="let modelId of selectedModels" class="col-6">
 
-            <div class="card">
-              <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-center">
+              <div class="card">
+                <div class="card-header fiuba-institutional mb-1">
                   <h4
-                    class="card-title flex-grow-1 text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
+                    class="card-title text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
                 </div>
+                <div class="card-body d-flex flex-column">
 
-                <div class="row me-lg-4 ms-lg-4 me-md-2 ms-md-2 me-sm-1 ms-sm-1">
-                  <div class="col-6">
-                    <div class="row">
-                      <div class="col mt-0">
-                        <span class="text-muted">{{'MODEL_COMPARE.PARAMS' | translate}}</span>
+                  <div class="row me-lg-4 ms-lg-4 me-md-2 ms-md-2 me-sm-1 ms-sm-1">
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <span class="text-muted">{{'MODEL_COMPARE.PARAMS' | translate}}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col mt-0">
-                        <div *ngFor="let param of getBestAdjustmentDataByModel(modelId).parameters"
-                             class="mb-0">
-                          <span class="fiuba-institutional-text me-2">{{param.name}}</span>
-                          <span class="text-muted text-body-emphasis">
-                                <h5>{{param.value}}</h5>
+                      <div class="row">
+                        <div class="col mt-0">
+                          <div *ngFor="let param of getBestAdjustmentDataByModel(modelId).parameters"
+                               class="mb-0">
+                            <span class="fiuba-institutional-text me-2">{{param.name}}</span>
+                            <span class="text-muted text-body-emphasis">
+                                <h5>{{param.value}} <small class="text-muted">± {{param.stderr}}</small></h5>
                               </span>
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col mt-0">
+                          <span class="card-title text-muted float-end">{{'MODEL_COMPARE.BEST_FIT' | translate}}</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col mt-0">
+                          <h5 class="float-end">{{ getBestAdjustmentDataByModel(modelId).adjustment_name }}</h5>
+                        </div>
+                      </div>
+
+                    </div>
+
                   </div>
 
-                  <div class="col-6">
-                    <div class="row">
-                      <div class="col mt-0">
-                        <span class="card-title text-muted float-end">{{'MODEL_COMPARE.BEST_FIT' | translate}}</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col mt-0">
-                        <h5 class="float-end">{{ getBestAdjustmentDataByModel(modelId).adjustment_name }}</h5>
-                      </div>
-                    </div>
-
-                  </div>
 
                 </div>
-
 
               </div>
 
@@ -275,134 +288,109 @@
 
           </div>
 
-        </div>
+          <div *ngIf="selectedViewOption === viewOptions.DETAILED" class="row justify-content-center m-3">
 
-        <div class="row justify-content-center m-3" *ngIf="selectedViewOption === viewOptions.DETAILED">
+            <mat-accordion multi id="1">
 
-          <mat-accordion multi id="1">
+              <div class="m-2">
+                <button mat-button color="primary"
+                        (click)="toggleAccordion(1, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
+                </button>
+                <button mat-button color="primary"
+                        (click)="toggleAccordion(1, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
+                </button>
+              </div>
 
-            <div class="m-2">
-              <button mat-button color="primary"
-                      (click)="toggleAccordion(1, 'expand')">{{'MODEL_COMPARE.EXPAND_ALL' | translate}}
-              </button>
-              <button mat-button color="primary"
-                      (click)="toggleAccordion(1, 'collapse')">{{'MODEL_COMPARE.COLLAPSE_ALL' | translate}}
-              </button>
-            </div>
-
-            <div *ngFor="let modelId of selectedModels" class="col-12">
+              <div *ngFor="let modelId of selectedModels" class="col-12">
 
 
-              <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <h4 class="text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
+                <mat-expansion-panel [expanded]="true">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <h4 class="text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
 
-                <div class="card">
-                  <div class="card-body d-flex flex-column">
-                    <p class="card-text mt-2"></p>
-                    <div class="table-responsive">
+                  <ng-template matExpansionPanelContent>
+                    <div class="card">
+                      <div class="card-body d-flex flex-column">
+                        <p class="card-text mt-2"></p>
+                        <div class="table-responsive">
 
-                      <table class="table">
-                        <thead>
-                        <tr>
-                          <th scope="col">{{'MODEL_COMPARE.FIT' | translate}}</th>
-                          <th *ngFor="let param of noLinearResults[modelId].adjustments[0].parameters"
-                              scope="col">{{ param.name }}
-                          </th>
-                          <th scope="col"> {{ 'STATISTICS.chi_squared' | translate }}</th>
-                          <th scope="col"> {{ 'STATISTICS.r_squared' | translate }}</th>
-                          <th scope="col"> {{ 'STATISTICS.adjust_r_squared' | translate }}</th>
-                          <th scope="col"> {{ 'STATISTICS.adjust_chi_squeared' | translate }}</th>
-                          <th scope="col"> {{ 'STATISTICS.RMSE' | translate }}</th>
-                          <th scope="col"> {{ 'STATISTICS.SSE' | translate }}</th>
-                          <th scope="col"> {{ 'STATISTICS.HYBRID' | translate }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let item of noLinearResults[modelId].adjustments"
-                            [ngClass]="{'table-active fw-bold': noLinearResults[modelId].bestAdjustment === item.adjustment_name}">
-                          <th scope="row"> {{ item.adjustment_name }}</th>
-                          <td *ngFor="let param of item.parameters">{{ param.value }}</td>
-                          <td> {{ item.statistics.chi_squared }}</td>
-                          <td> {{ item.statistics.r_squared }}</td>
-                          <td> {{ item.statistics.adjust_r_squared }}</td>
-                          <td> {{ item.statistics.adjust_chi_squeared }}</td>
-                          <td> {{ item.statistics.RMSE }}</td>
-                          <td> {{ item.statistics.SSE }}</td>
-                          <td> {{ item.statistics.HYBRID }}</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div *ngIf="summaryGraph">
-                      <plotly-plot [data]="summaryGraph[modelId].data"
-                                   [layout]="summaryGraph[modelId].layout" [useResizeHandler]="true"></plotly-plot>
-                    </div>
+                          <table class="table">
+                            <thead>
+                            <tr>
+                              <th scope="col">{{'MODEL_COMPARE.FIT' | translate}}</th>
+                              <th *ngFor="let param of noLinearResults[modelId].adjustments[0].parameters"
+                                  scope="col">{{ param.name }}
+                              </th>
+                              <th scope="col"> {{ 'STATISTICS.chi_squared' | translate }}</th>
+                              <th scope="col"> {{ 'STATISTICS.r_squared' | translate }}</th>
+                              <th scope="col"> {{ 'STATISTICS.adjust_r_squared' | translate }}</th>
+                              <th scope="col"> {{ 'STATISTICS.adjust_chi_squeared' | translate }}</th>
+                              <th scope="col"> {{ 'STATISTICS.RMSE' | translate }}</th>
+                              <th scope="col"> {{ 'STATISTICS.SSE' | translate }}</th>
+                              <th scope="col"> {{ 'STATISTICS.HYBRID' | translate }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let item of noLinearResults[modelId].adjustments"
+                                [ngClass]="{'table-active fw-bold': noLinearResults[modelId].bestAdjustment === item.adjustment_name}">
+                              <th scope="row"> {{ item.adjustment_name }}</th>
+                              <td *ngFor="let param of item.parameters">{{ param.value }}</td>
+                              <td> {{ item.statistics.chi_squared }}</td>
+                              <td> {{ item.statistics.r_squared }}</td>
+                              <td> {{ item.statistics.adjust_r_squared }}</td>
+                              <td> {{ item.statistics.adjust_chi_squeared }}</td>
+                              <td> {{ item.statistics.RMSE }}</td>
+                              <td> {{ item.statistics.SSE }}</td>
+                              <td> {{ item.statistics.HYBRID }}</td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div *ngIf="summaryGraph">
+                          <plotly-plot [data]="summaryGraph[modelId].data"
+                                       [layout]="summaryGraph[modelId].layout" [useResizeHandler]="true"
+                                       [style]="{width: '100%', height: '100%'}"></plotly-plot>
+                        </div>
 
+                        <div class="m-3" *ngFor="let item of noLinearResults[modelId].adjustments">
 
-                    <div *ngFor="let item of noLinearResults[modelId].adjustments">
-                      <hr>
-                      <div *ngIf="item.best" class="mt-3 alert alert-success" role="alert">
-                        Best model: {{ item.adjustment_name }}
-                      </div>
-                      <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
-                                   [useResizeHandler]="true"></plotly-plot>
+                          <div class="card">
+                            <div class="card-body">
+                              <h5 class="text-center">
+                                {{ item.adjustment_name }}
+                                <span *ngIf="noLinearResults[modelId].bestAdjustment === item.adjustment_name"
+                                      class="badge fiuba-institutional-bg text-white">
+                                  {{'MODEL_COMPARE.BEST_FIT' | translate}}
+                                </span>
+                              </h5>
+                              <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
+                                           [useResizeHandler]="true"
+                                           [style]="{width: '100%', height: '100%'}"></plotly-plot>
 
-                      <div class="table-responsive">
-                        <table class="table table-striped">
-                          <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th *ngFor="let param of item.parameters" scope="col">{{ param.name }}</th>
-                            <th scope="col"> {{ 'STATISTICS.chi_squared' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.r_squared' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.adjust_r_squared' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.adjust_chi_squeared' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.RMSE' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.SSE' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.HYBRID' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.AIC' | translate }}</th>
-                            <th scope="col"> {{ 'STATISTICS.BIC' | translate }}</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td *ngFor="let param of item.parameters">{{ param.value }}</td>
-                            <td> {{ item.statistics.chi_squared }}</td>
-                            <td> {{ item.statistics.r_squared }}</td>
-                            <td> {{ item.statistics.adjust_r_squared }}</td>
-                            <td> {{ item.statistics.adjust_chi_squeared }}</td>
-                            <td> {{ item.statistics.RMSE }}</td>
-                            <td> {{ item.statistics.SSE }}</td>
-                            <td> {{ item.statistics.HYBRID }}</td>
-                            <td> {{ item.statistics.AIC }}</td>
-                            <td> {{ item.statistics.BIC }}</td>
-                          </tr>
-                          </tbody>
-                        </table>
+                              <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
+                            </div>
+                          </div>
+
+                        </div>
+
 
                       </div>
-
                     </div>
+                  </ng-template>
 
-                  </div>
-                </div>
+                </mat-expansion-panel>
 
+              </div>
 
-              </mat-expansion-panel>
+            </mat-accordion>
 
-
-            </div>
-          </mat-accordion>
+          </div>
 
         </div>
-
-      </div>
-
+      </ng-template>
 
     </mat-tab>
   </mat-tab-group>

@@ -4,6 +4,15 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModelSelectorServiceService} from "./model-selector-service.service";
 import {Model} from "./model";
 
+
+interface Model2 {
+  name: string;
+  description: string;
+  selected: boolean;
+  icon?: string;
+}
+
+
 @Component({
   selector: 'app-model-selector',
   templateUrl: './model-selector.component.html',
@@ -17,6 +26,31 @@ export class ModelSelectorComponent {
   private modalService = inject(NgbModal);
   protected readonly faInfoCircle = faInfoCircle;
   protected loadingModels: boolean = false;
+
+
+  protected models2: Model2[] = [
+    {
+      name: 'Langmuir',
+      description: 'Best for monolayer adsorption processes',
+      selected: false,
+      icon: 'analytics'
+    },
+    {
+      name: 'Freundlich',
+      description: 'Suitable for heterogeneous surface processes',
+      selected: false,
+      icon: 'show_chart'
+    }
+  ];
+
+  selectModel2(model: Model2): void {
+    // If you want single selection
+    this.models.forEach(m => m.selected = false);
+    model.selected = true;
+
+    // If you want multiple selection, use this instead:
+    // model.selected = !model.selected;
+  }
 
   constructor(private modelService: ModelSelectorServiceService) {
   }

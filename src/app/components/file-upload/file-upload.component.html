@@ -46,14 +46,14 @@
   <span class="m-3 fw-bold"> {{ 'FILE_UPLOAD.SAMPLE_SPEC' | translate }} </span>
 
   <form *ngIf="uploadedFile.valid" class="w-100 d-flex flex-column gap-3 mt-2">
-    <mat-form-field class="example-full-width">
+    <mat-form-field>
       <mat-label> {{ 'FILE_UPLOAD.SAMPLE_TITLE' | translate }}</mat-label>
       <input id="title" matInput placeholder="Ej. Muestra Carbon 20241225" [value]=[dataSample.title]
              (change)="onChange($event)"
       >
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field>
       <mat-label> {{ 'FILE_UPLOAD.SAMPLE_DESCRIPTION' | translate }}</mat-label>
       <textarea id="description" matInput [value]=[dataSample.description] (change)="onChange($event)"></textarea>
     </mat-form-field>

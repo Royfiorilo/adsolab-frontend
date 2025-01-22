@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {ModelConfigurationService} from "./model-configuration.service";
 import {ILinearizationGraph, ILinearizationRequest} from "./interface";
@@ -28,6 +28,24 @@ export class ModelConfigurationComponent {
   constructor(private modelConfigurationService: ModelConfigurationService,
               protected commonUtilsService: CommonUtilsService) {
 
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+
+    this.cleanLinearizationGraphs(changes);
+
+  }
+
+  private cleanLinearizationGraphs(changes: SimpleChanges) {
+    if (changes['selectedModels'] && !changes['selectedModels'].firstChange && changes['selectedModels'].currentValue !== changes['selectedModels'].previousValue) {
+
+      let modelSelectionDiff = [
+        ...changes['selectedModels'].currentValue?.filter((modelId: number) => !changes['selectedModels'].previousValue?.includes(modelId)),
+        ...changes['selectedModels'].previousValue?.filter((modelId: number) => !changes['selectedModels'].currentValue?.includes(modelId))
+      ];
+
+      modelSelectionDiff.forEach(modelId => delete this.linearizationGraphs[modelId])
+    }
   }
 
   open(content: TemplateRef<any>) {
@@ -82,7 +100,7 @@ export class ModelConfigurationComponent {
                   marker: {color: 'blue'}
                 },
               ],
-              layout: {title: linearization.name}
+              layout: {title: '', autosize: true}
             }
           }
 
@@ -110,7 +128,7 @@ export class ModelConfigurationComponent {
     return Math.min(...numbers);
   }
 
-  selectConfiguration(event: Event, modelId: number): void {
+  selectConfiguration(event: any, modelId: number): void {
     this.onSelectedConfiguration.emit(modelId);
   }
 
