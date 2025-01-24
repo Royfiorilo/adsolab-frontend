@@ -16,26 +16,40 @@
         </div>
         <div class="card-body d-flex flex-column">
 
-          <mat-form-field class="w-100">
-            <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
-            <mat-select [(value)]="modelConfiguration[modelId].automatedParams"
-                        [id]="modelId.toString()"
-            >
+          <div class="d-flex gap-2">
 
-              <ng-container *ngIf="commonUtilsService.getModelById(modelId, models).linearizations.length">
+            <mat-form-field class="flex-grow-1">
+              <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
+              <mat-select [(value)]="modelConfiguration[modelId].automatedParams"
+                          [id]="modelId.toString()"
+              >
 
-                <mat-option [value]=true>
-                  {{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}
+                <ng-container *ngIf="commonUtilsService.getModelById(modelId, models).linearizations.length">
+
+                  <mat-option [value]=true>
+                    {{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}
+                  </mat-option>
+
+                </ng-container>
+
+                <mat-option [value]=false>
+                  {{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}
                 </mat-option>
 
-              </ng-container>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="flex-grow-2">
+              <mat-label>Iteraciones</mat-label>
+              <input
+                [id]="modelId.toString()"
+                [(ngModel)]="modelConfiguration[modelId].iterations"
+                matInput
+                type="number"
+                placeholder="Ej. 25"
+              >
+            </mat-form-field>
+          </div>
 
-              <mat-option [value]=false>
-                {{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}
-              </mat-option>
-
-            </mat-select>
-          </mat-form-field>
 
           <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
             <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="text-center">
@@ -91,7 +105,7 @@
                 </h5>
                 <small class="text-center" *ngIf="item.isBestResult"
                        class="badge fiuba-institutional-bg text-white">
-                  {{'MODEL_CONFIGURATION.BEST_LINEARIZATION' | translate}}
+                  {{ 'MODEL_CONFIGURATION.BEST_LINEARIZATION' | translate }}
                 </small>
               </div>
 
