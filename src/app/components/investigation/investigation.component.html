@@ -42,7 +42,6 @@
             </div>
             <app-model-configuration [investigationId]="investigation?.investigation_id" [models]="models"
                                      [modelConfiguration]="modelConfiguration"
-                                     (onSelectedConfiguration)="onSelectedConfiguration($event)"
                                      (onSelectedParams)="onSelectedParams($event)"
                                      [selectedModels]="selectedModels"
                                      [dataSample]="investigation?.sample"></app-model-configuration>
