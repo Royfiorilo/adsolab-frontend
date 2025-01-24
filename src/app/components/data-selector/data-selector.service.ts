@@ -34,6 +34,8 @@ export class DataSelectorService {
         qe: sample.qe,
         title: sample.title,
         description: sample.description
+//        adsorbate_id: 1,
+//        adsorbent_id: 1
 //        cuando este listo el back, mandar la sample completa directamente.
       })
     }

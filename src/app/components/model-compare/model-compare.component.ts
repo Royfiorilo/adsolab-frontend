@@ -1,4 +1,4 @@
-import {Component, Input, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, QueryList, SimpleChanges, ViewChildren} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
@@ -8,6 +8,7 @@ import {
   INoLinearRequest,
   INoLinearRequestModel,
   INoLinearRequestSeed,
+  Ridge,
   ViewOption
 } from "./interface";
 import {ModelCompareService} from "./model-compare.service";
@@ -30,6 +31,7 @@ export class ModelCompareComponent {
   @Input() models!: Model[];
   @Input() dataSample: DataSample | undefined;
   @Input() modelConfiguration!: IModelsConfigurations;
+  @Input() stepId!: number;
   protected noLinearResults: { [key: number]: { bestAdjustment: string, adjustments: INoLinearGraph[] } } = {};
   protected noLinearCompareResult: IComparison | undefined;
   protected runningNoLinearAdjustment: boolean = false;
@@ -38,6 +40,10 @@ export class ModelCompareComponent {
   protected toggleValue: string = 'results';
   protected selectedViewOption: ViewOption = ViewOption.SIMPLIFIED;
   protected viewOptions = ViewOption;
+  protected selectedModelsChanged: boolean = false;
+  protected ridgeResult: Ridge | undefined;
+  protected xForCurvePlot: number[] = [];
+
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
     leastsq: "#8f3237",
@@ -45,15 +51,6 @@ export class ModelCompareComponent {
     freundlich: "orange",
     langmuir: "green"
   }
-  protected comparisonResults = [
-    {compare: "", name: 'model', model: 300},
-
-  ];
-
-  resultsSheet2 = [
-    {id: 1, name: 'Another Result X', value: 300},
-    {id: 2, name: 'Another Result Y', value: 400},
-  ];
 
   constructor(protected commonUtilsService: CommonUtilsService,
               protected modelCompareService: ModelCompareService) {
@@ -65,6 +62,17 @@ export class ModelCompareComponent {
 
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+
+    if (changes['selectedModels'] && changes['selectedModels'].currentValue !== changes['selectedModels'].previousValue) {
+      this.selectedModelsChanged = true;
+    }
+
+    if (changes['stepId'] && changes['stepId'].currentValue === 3 && this.selectedModelsChanged) {
+      this.runNonLinearModels();
+    }
+
+  }
 
   bestTransformedValue(modelId: number, index: number): number {
     const adjustments = this.noLinearResults[modelId].adjustments;
@@ -120,6 +128,8 @@ export class ModelCompareComponent {
 
   runNonLinearModels() {
 
+    this.selectedModelsChanged = false;
+
     this.noLinearResults = {};
 
     this.runningNoLinearAdjustment = true
@@ -159,7 +169,7 @@ export class ModelCompareComponent {
       let xPointX = this.dataSample?.ce!
       let yPointX = this.dataSample?.qe!
 
-      let xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
+      this.xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
 
       let baseData = {
         x: xPointX,
@@ -170,8 +180,10 @@ export class ModelCompareComponent {
         marker: {color: 'black'}
       }
 
+      this.ridgeResult = response.comparison.ridge;
+
       let ridgeData = {
-        x: xForCurvePlot,
+        x: this.xForCurvePlot,
         y: response.comparison.ridge.y_pred,
         type: 'scatter',
         mode: 'line+marker',
@@ -182,7 +194,7 @@ export class ModelCompareComponent {
       }
 
       this.compareGraph = {
-        data: [ridgeData], layout: {title: "Mejor ajuste por modelo"}
+        data: [ridgeData], layout: {title: "Mejor ajuste por modelo", autosize: true}
       }
 
       for (const model of response.results) {
@@ -194,7 +206,7 @@ export class ModelCompareComponent {
 
 
         this.summaryGraph[model.model] = {
-          data: [], layout: {title: "Resumen de resultados"}
+          data: [], layout: {title: "Resumen de resultados", autosize: true}
         }
 
         for (const adjustment of model.adjustment_methods) {
@@ -215,7 +227,7 @@ export class ModelCompareComponent {
             let modelName = this.commonUtilsService.getModelById(model.model, this.models).name;
             compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
             compareData.marker = {color: this.colorByMethod[modelName]}
-            compareData.name = modelName
+            compareData.name = modelName + ` (${model.best_adjust})`
             this.compareGraph.data.push(compareData);
           }
 
@@ -231,7 +243,7 @@ export class ModelCompareComponent {
                 resultData,
                 baseData
               ],
-              layout: {title: adjustment.name}
+              layout: {title: '', autosize: true} //TODO: poner algun titulo
             }
           }
           this.noLinearResults[model.model].adjustments.push(noLinearGraph)
@@ -277,6 +289,11 @@ export class ModelCompareComponent {
 
   }
 
+  getRidgeResiduals(name: string) {
+
+    return (this.noLinearCompareResult!.ridge!.residuals as any)[name]
+  }
+
   getRidgeStatistic(statName: string) {
 
     return (this.noLinearCompareResult!.ridge!.statistics as any)[statName]
@@ -305,17 +322,22 @@ export class ModelCompareComponent {
     this.selectedModels.forEach((modelId) => {
       this.addModelSheet(workbook, modelId);
     });
+    this.addRidgeSheet(workbook);
     const excelBuffer: any = XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
     const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-    saveAs(blob, 'Adsolab.xlsx');
+    saveAs(blob, 'Adsolab.xlsx');//Cambiar por nombre de investigacion
   }
 
   private addMainDataSheet(workbook: XLSX.WorkBook): void {
     const worksheetData: (string | number)[][] = [];
 
-    worksheetData.push(this.getHeaders('Ce'));
+    worksheetData.push([...this.getHeaders('Ce'), 'Ridge']);
     this.dataSample?.ce.forEach((ceValue, index) => {
-      worksheetData.push(this.getRowForCe(ceValue, index));
+      let rowsForCe = this.getRowForCe(ceValue, index);
+      if (this.ridgeResult && this.ridgeResult.y_pred) {
+        rowsForCe = [...rowsForCe, this.ridgeResult.y_pred[index]];
+      }
+      worksheetData.push(rowsForCe);
     });
 
     worksheetData.push([...this.getHeaders('Estadisticos'), 'Ridge']);
@@ -324,7 +346,7 @@ export class ModelCompareComponent {
       worksheetData.push(this.getRowForStatistics(statName));
     });
 
-    worksheetData.push(this.getHeaders('Residuos'));
+    worksheetData.push([...this.getHeaders('Residuos'), 'Ridge']);
     this.getResidualsRows().forEach((name) => {
       worksheetData.push(this.getRowForResiduals(name));
     });
@@ -332,6 +354,34 @@ export class ModelCompareComponent {
     const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
     workbook.Sheets['Data'] = worksheet;
     workbook.SheetNames.push('Data');
+  }
+
+  private addRidgeSheet(workbook: XLSX.WorkBook): void {
+    const sheetData: (string | number)[][] = [];
+    if (this.ridgeResult) {
+      let headers = [...Object.keys(this.ridgeResult.statistics), ...Object.keys(this.ridgeResult.residuals)];
+      let values = [...Object.values(this.ridgeResult.statistics), ...Object.values(this.ridgeResult.residuals)];
+      this.ridgeResult.results.forEach((result) => {
+        let model = this.commonUtilsService.getModelById(result.model, this.models);
+        headers = [...headers, model.name]
+        values = [...values, result.coef]
+      });
+
+
+      sheetData.push(headers);
+      sheetData.push(values);
+      sheetData.push(['x', 'y']);
+
+
+      this.ridgeResult.y_pred.forEach((y, index) => {
+        sheetData.push([this.xForCurvePlot[index], y]);
+      });
+
+    }
+
+    const newSheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
+    workbook.Sheets['Ridge'] = newSheet;
+    workbook.SheetNames.push('Ridge');
   }
 
   private addModelSheet(workbook: XLSX.WorkBook, modelId: number): void {
@@ -389,7 +439,9 @@ export class ModelCompareComponent {
     return [
       name,
       ...this.selectedModels.map(modelId => this.parseResiduals(this.bestResidualValue(modelId, name))),
+      this.getRidgeResiduals(name),
     ];
+
   }
 
 

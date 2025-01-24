@@ -2,6 +2,7 @@
   "TRUE": "SI",
   "FALSE": "NO",
   "OR": "o",
+  "NAME": "Nombre",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "GRAPHS": "Gráficos",
@@ -44,7 +45,9 @@
     "AUTOMATED_PARAMS": "Parámetros automatizados",
     "MANUAL_PARAMS": "Parámetros manuales",
     "PARAM": "Parámetro {{ key }}",
-    "RUN_LINEARIZATION": "Ejecutar linealización"
+    "RUN_LINEARIZATION": "Ejecutar linealización",
+    "BEST_LINEARIZATION": "Mejor linealización",
+    "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles"
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",
@@ -58,6 +61,7 @@
     "SIMPLIFIED_VIEW": "Vista simplificada",
     "DETAILED_VIEW": "Vista detallada",
     "PARAMS": "Parámetros",
+    "STATISTICS": "Estadísticos",
     "BEST_FIT": "Mejor ajuste",
     "EXPAND_ALL": "Expandir todos",
     "COLLAPSE_ALL": "Colapsar todos",

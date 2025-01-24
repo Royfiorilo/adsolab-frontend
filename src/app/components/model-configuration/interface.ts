@@ -1,4 +1,4 @@
-import {IGraph, ILinearStatistics, IParameter, ITransformedData} from "../../common/common.interface";
+import {IGraph, IParameter, IStatistics, ITransformedData} from "../../common/common.interface";
 
 export interface ILinearizationRequest {
   investigation_id: number;
@@ -29,14 +29,14 @@ export interface ILinearization {
   slope: number;
   intercept: number;
   parameters: IParameter[];
-  statistics: ILinearStatistics;
+  statistics: IStatistics;
 }
 
 
 export interface ILinearizationGraph {
   isBestResult: boolean;
   parameters: IParameter[];
-  statistics: ILinearStatistics;
+  statistics: IStatistics;
   linearizationName: string;
   graph: IGraph;
 }

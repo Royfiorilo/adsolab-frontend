@@ -18,6 +18,7 @@ export interface Model {
   formula: string;
   parameters: Parameter;
   linearizations: Linearization[];
+  selected: boolean;
 }
 
 export interface ModelsResponse {
