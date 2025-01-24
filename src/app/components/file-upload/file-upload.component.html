@@ -68,7 +68,7 @@
           (selectionChange)="onUnitChange($event,'adsorbate')"
         >
           <mat-option *ngFor="let adsorbate of adsorbates" [value]="adsorbate.id">
-            {{ adsorbate.name }}
+            {{ adsorbate.iupac_name }}
           </mat-option>
         </mat-select>
       </mat-form-field>

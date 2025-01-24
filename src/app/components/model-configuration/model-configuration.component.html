@@ -10,7 +10,7 @@
 
     <div *ngFor="let modelId of selectedModels" class="col-6">
       <div class="card">
-        <div class="card-header fiuba-institutional mb-1">
+        <div class="card-header fiuba-investigation mb-1">
           <h4
             class="card-title text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
         </div>
@@ -18,19 +18,19 @@
 
           <mat-form-field class="w-100">
             <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
-            <mat-select
-              (selectionChange)="selectConfiguration($event,modelId)" [id]="modelId.toString()"
+            <mat-select [(value)]="modelConfiguration[modelId].automatedParams"
+                        [id]="modelId.toString()"
             >
 
               <ng-container *ngIf="commonUtilsService.getModelById(modelId, models).linearizations.length">
 
-                <mat-option [value]="true">
+                <mat-option [value]=true>
                   {{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}
                 </mat-option>
 
               </ng-container>
 
-              <mat-option [value]="!commonUtilsService.getModelById(modelId, models).linearizations.length">
+              <mat-option [value]=false>
                 {{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}
               </mat-option>
 
@@ -77,7 +77,7 @@
                 </div>
                 <div class="mt-auto d-flex align-content-center justify-content-center">
                   <button (click)="runLinearization(modelId)"
-                          class="btn fiuba-institutional mt-3">{{ 'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
+                          class="btn fiuba-investigation mt-3">{{ 'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
                   </button>
                 </div>
               </div>

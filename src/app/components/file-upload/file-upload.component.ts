@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import * as XLSX from 'xlsx';
-import {DataSample, InvalidFileReason} from "../data-selector/data-sample";
+import {DataSample, IAdsorbate, IAdsorbent, InvalidFileReason} from "../data-selector/data-sample";
 import {faCircleCheck, faFileDownload, faFileUpload, faXmarkCircle} from '@fortawesome/free-solid-svg-icons';
 import {TranslateService} from "@ngx-translate/core";
 import {SampleSelectorService} from "../data-selector/sample-selector.service";
@@ -22,23 +22,25 @@ export class FileUploadComponent {
   protected uploadedFile: { name?: string, valid?: boolean, reason?: InvalidFileReason } = {};
   protected dataSample: DataSample = {
     adsorbate_id: undefined, adsorbent_id: undefined,
-    temperature: undefined, unit: undefined,
+    temperature: undefined, measure_unit: undefined,
     description: undefined, sample_id: undefined, title: undefined,
     ce: [],
     qe: []
   }
-
-  //temporal
-  protected adsorbents: { name?: string, id?: number } [] = [{name: 'Zeolitas', id: 1},
-    {name: 'Carbon Actvado', id: 2},
-    {name: 'Carbon vegetal', id: 3}]
-
-  protected adsorbates: { name?: string, id?: number } [] = [{name: 'Dióxido de Carbono (CO₂)', id: 1},
-    {name: 'Metano (CH₄)', id: 2},
-    {name: 'CAmoníaco (NH₃)', id: 3}]
+  protected adsorbents: IAdsorbent[] = [];
+  protected adsorbates: IAdsorbate[] = [];
 
 
   constructor(private translate: TranslateService, private sampleService: SampleSelectorService) {
+  }
+
+  ngOnInit() {
+
+    this.sampleService.getMaterials().subscribe(response => {
+      this.adsorbates = response.adsorbates
+      this.adsorbents = response.adsorbents
+    })
+
   }
 
   onDragOver(event: DragEvent) {

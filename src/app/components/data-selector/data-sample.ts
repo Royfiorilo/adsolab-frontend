@@ -10,10 +10,9 @@ export interface DataSample {
   title: string | undefined;
   description: string | undefined;
   temperature: number | undefined;
-  unit: string | undefined;
+  measure_unit: string | undefined;
   adsorbate_id: number | undefined;
   adsorbent_id: number | undefined;
-
 }
 
 export interface CreateInvestigationResponse {
@@ -25,9 +24,21 @@ export interface GetSampleResponse {
   samples: DataSample[];
 }
 
+export interface IAdsorbate {
+  id: number;
+  ion_name: string;
+  iupac_name: string;
+  formula: string;
+}
+
+export interface IAdsorbent {
+  id: number;
+  name: string;
+}
+
 export interface GetMaterialsResponse {
-  adsorbates: string[] | undefined;
-  adsorbents: string[] | undefined;
+  adsorbates: IAdsorbate[];
+  adsorbents: IAdsorbent[];
 }
 
 export enum InvalidFileReason {

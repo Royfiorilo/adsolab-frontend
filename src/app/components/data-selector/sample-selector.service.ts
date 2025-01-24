@@ -21,9 +21,6 @@ export class SampleSelectorService {
   }
 
   getMaterials(): Observable<GetMaterialsResponse> {
-    // @ts-ignore
-    //add methods for materials adsorbate and adsorbent
-    return
-
+    return this.httpClient.get<GetMaterialsResponse>(`${this.backendBaseUrl}/adsorption-materials`);
   }
 }

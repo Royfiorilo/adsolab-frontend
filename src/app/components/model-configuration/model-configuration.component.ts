@@ -34,6 +34,8 @@ export class ModelConfigurationComponent {
 
     this.cleanLinearizationGraphs(changes);
 
+    console.log(this.modelConfiguration)
+
   }
 
   private cleanLinearizationGraphs(changes: SimpleChanges) {
@@ -126,10 +128,6 @@ export class ModelConfigurationComponent {
 
   private getMinValue(numbers: number[]) {
     return Math.min(...numbers);
-  }
-
-  selectConfiguration(event: any, modelId: number): void {
-    this.onSelectedConfiguration.emit(modelId);
   }
 
   protected readonly faInfoCircle = faInfoCircle;
