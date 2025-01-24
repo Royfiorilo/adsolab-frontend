@@ -91,6 +91,7 @@ export interface Ridge {
   best_model: number;
   y_pred: number[];
   statistics: IStatistics;
+  residuals: IResiduals;
   results: ModelRidgeResult[];
 }
 

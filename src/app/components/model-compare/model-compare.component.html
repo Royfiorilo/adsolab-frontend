@@ -3,8 +3,17 @@
   <div class="d-flex justify-content-end" *ngIf="!runningNoLinearAdjustment">
     <button mat-button color="primary" class="m-2" (click)="runNonLinearModels()">
       <mat-icon>refresh</mat-icon>
-      {{'MODEL_COMPARE.RERUN_COMPARISON' | translate}}
+      {{ 'MODEL_COMPARE.RERUN_COMPARISON' | translate }}
     </button>
+
+    <div>
+      <button mat-button color="primary" class="m-2" (click)="downloadExcelWithMultipleSheets()">
+        <fa-icon [icon]="faDownload" class="m-2"></fa-icon>
+        {{ 'MODEL_COMPARE.DOWNLOAD_RESULTS' | translate }}
+      </button>
+    </div>
+
+
   </div>
 
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" *ngIf="!selectedModelsChanged">

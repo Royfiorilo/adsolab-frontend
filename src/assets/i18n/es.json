@@ -65,7 +65,8 @@
     "BEST_FIT": "Mejor ajuste",
     "EXPAND_ALL": "Expandir todos",
     "COLLAPSE_ALL": "Colapsar todos",
-    "FIT": "Ajuste"
+    "FIT": "Ajuste",
+    "DOWNLOAD_RESULTS": "Descargar resultados"
   },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"

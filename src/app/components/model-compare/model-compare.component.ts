@@ -8,11 +8,15 @@ import {
   INoLinearRequest,
   INoLinearRequestModel,
   INoLinearRequestSeed,
+  Ridge,
   ViewOption
 } from "./interface";
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 import {MatAccordion} from "@angular/material/expansion";
+import {faFileDownload} from "@fortawesome/free-solid-svg-icons";
+import * as XLSX from 'xlsx';
+import {saveAs} from 'file-saver';
 
 
 @Component({
@@ -37,6 +41,8 @@ export class ModelCompareComponent {
   protected selectedViewOption: ViewOption = ViewOption.SIMPLIFIED;
   protected viewOptions = ViewOption;
   protected selectedModelsChanged: boolean = false;
+  protected ridgeResult: Ridge | undefined;
+  protected xForCurvePlot: number[] = [];
 
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
@@ -62,7 +68,7 @@ export class ModelCompareComponent {
       this.selectedModelsChanged = true;
     }
 
-    if (changes['stepId'] && changes['stepId'].currentValue === 3 && this.selectedModelsChanged) {
+    if (changes['stepId'] && !changes['stepId'].firstChange && changes['stepId'].currentValue === 3 && this.selectedModelsChanged) {
       this.runNonLinearModels();
     }
 
@@ -163,7 +169,7 @@ export class ModelCompareComponent {
       let xPointX = this.dataSample?.ce!
       let yPointX = this.dataSample?.qe!
 
-      let xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
+      this.xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
 
       let baseData = {
         x: xPointX,
@@ -174,8 +180,10 @@ export class ModelCompareComponent {
         marker: {color: 'black'}
       }
 
+      this.ridgeResult = response.comparison.ridge;
+
       let ridgeData = {
-        x: xForCurvePlot,
+        x: this.xForCurvePlot,
         y: response.comparison.ridge.y_pred,
         type: 'scatter',
         mode: 'line+marker',
@@ -281,6 +289,11 @@ export class ModelCompareComponent {
 
   }
 
+  getRidgeResiduals(name: string) {
+
+    return (this.noLinearCompareResult!.ridge!.residuals as any)[name]
+  }
+
   getRidgeStatistic(statName: string) {
 
     return (this.noLinearCompareResult!.ridge!.statistics as any)[statName]
@@ -302,5 +315,140 @@ export class ModelCompareComponent {
     }
   }
 
+  downloadExcelWithMultipleSheets(): void {
+    const workbook: XLSX.WorkBook = {Sheets: {}, SheetNames: []};
+
+    this.addMainDataSheet(workbook);
+    this.selectedModels.forEach((modelId) => this.addModelSheet(workbook, modelId));
+    this.addRidgeSheet(workbook);
+
+    const excelBuffer: any = XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
+    const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
+    saveAs(blob, 'Adsolab.xlsx'); // Reemplazar por investigation name
+  }
+
+  private addMainDataSheet(workbook: XLSX.WorkBook): void {
+    const worksheetData: (string | number)[][] = [];
+
+    worksheetData.push([...this.getHeaders('Ce'), 'Ridge']);
+    this.dataSample?.ce.forEach((ceValue, index) => {
+      worksheetData.push(this.getCeRowWithRidge(ceValue, index));
+    });
+
+    worksheetData.push([...this.getHeaders('Estadisticos'), 'Ridge']);
+    this.getStatisticsRows().forEach((statName) => {
+      worksheetData.push(this.getRowForStatistics(statName));
+    });
+
+    worksheetData.push([...this.getHeaders('Residuos'), 'Ridge']);
+    this.getResidualsRows().forEach((name) => {
+      worksheetData.push(this.getRowForResiduals(name));
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    this.addSheetToWorkbook(workbook, 'Data', worksheet);
+  }
+
+  private addRidgeSheet(workbook: XLSX.WorkBook): void {
+    if (!this.ridgeResult) return;
+
+    const sheetData: (string | number)[][] = [];
+    const headers = [
+      ...Object.keys(this.ridgeResult.statistics),
+      ...Object.keys(this.ridgeResult.residuals),
+      ...this.ridgeResult.results.map(result => this.getModelName(result.model))
+    ];
+
+    const values = [
+      ...Object.values(this.ridgeResult.statistics),
+      ...Object.values(this.ridgeResult.residuals),
+      ...this.ridgeResult.results.map(result => result.coef)
+    ];
+
+    sheetData.push(headers);
+    sheetData.push(values);
+
+    sheetData.push(['x', 'y']);
+    this.ridgeResult.y_pred.forEach((y, index) => {
+      sheetData.push([this.xForCurvePlot[index], y]);
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
+    this.addSheetToWorkbook(workbook, 'Ridge', worksheet);
+  }
+
+  private addModelSheet(workbook: XLSX.WorkBook, modelId: number): void {
+    const model = this.commonUtilsService.getModelById(+modelId, this.models);
+    const bestAdjust = this.getBestAdjustmentDataByModel(model._id);
+
+    const headers = [
+      ...bestAdjust.parameters.map(param => param.name),
+      ...Object.keys(bestAdjust.statistics),
+      ...Object.keys(bestAdjust.residuals)
+    ];
+
+    const values = [
+      ...bestAdjust.parameters.map(param => param.value),
+      ...Object.values(bestAdjust.statistics),
+      ...Object.values(bestAdjust.residuals)
+    ];
+
+    const sheetData: (string | number)[][] = [
+      [bestAdjust.adjustment_name],
+      headers,
+      values,
+      ['x', 'y'],
+      ...this.getGraphDataRows(bestAdjust.graph.data)
+    ];
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
+    this.addSheetToWorkbook(workbook, model.name, worksheet);
+  }
+
+  private addSheetToWorkbook(workbook: XLSX.WorkBook, sheetName: string, worksheet: XLSX.WorkSheet): void {
+    workbook.Sheets[sheetName] = worksheet;
+    workbook.SheetNames.push(sheetName);
+  }
+
+  private getHeaders(...additionalHeaders: string[]): string[] {
+    const modelHeaders = Object.keys(this.noLinearResults).map(modelId =>
+      this.getModelName(+modelId)
+    );
+    return [...additionalHeaders, ...modelHeaders];
+  }
+
+  private getCeRowWithRidge(ceValue: number, index: number): (string | number)[] {
+    const baseRow = this.getRowForCe(ceValue, index);
+    const ridgeValue = this.ridgeResult?.y_pred?.[index] ?? 'N/A';
+    return [...baseRow, ridgeValue];
+  }
+
+  private getGraphDataRows(graphData: { x: number[]; y: number[] }[]): (string | number)[][] {
+    const rows: (string | number)[][] = [];
+    graphData.forEach((data) => {
+      data.x.forEach((xValue, index) => {
+        rows.push([xValue, data.y[index]]);
+      });
+    });
+    return rows;
+  }
+
+  private getModelName(modelId: number): string {
+    return this.commonUtilsService.getModelById(modelId, this.models).name;
+  }
+
+  private getRowForCe(ceValue: number, index: number): (string | number)[] {
+    return [ceValue, ...this.selectedModels.map(modelId => this.bestTransformedValue(modelId, index))];
+  }
+
+  private getRowForStatistics(statName: string): (string | number)[] {
+    return [statName, ...this.selectedModels.map(modelId => this.bestStatisticValue(modelId, statName)), this.getRidgeStatistic(statName)];
+  }
+
+  private getRowForResiduals(name: string): (string | number)[] {
+    return [name, ...this.selectedModels.map(modelId => this.parseResiduals(this.bestResidualValue(modelId, name))), this.getRidgeResiduals(name)];
+  }
+
   protected readonly Object = Object;
+  protected readonly faDownload = faFileDownload;
 }
