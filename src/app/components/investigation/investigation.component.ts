@@ -56,7 +56,7 @@ export class InvestigationComponent {
   }
 
   onSelectedConfiguration(modelId: number) {
-    this.modelConfiguration[modelId].automatedParams = !this.modelConfiguration[modelId].automatedParams;
+    console.log(this.modelConfiguration[modelId].automatedParams)
   }
 
   onSelectedParams(modelsConfigurations: IModelsConfigurations) {

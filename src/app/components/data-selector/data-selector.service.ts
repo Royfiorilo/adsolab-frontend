@@ -20,6 +20,9 @@ export class DataSelectorService {
   }
 
   createInvestigation(sample: DataSample): Observable<CreateInvestigationResponse> {
+
+    sample.measure_unit = 'test'
+
     if (this.validateSampleData(sample)) {
       console.log("Invalid data sample");
     }
@@ -29,15 +32,7 @@ export class DataSelectorService {
         sample_id: sample.sample_id
       })
     } else {
-      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation`, {
-        ce: sample.ce,
-        qe: sample.qe,
-        title: sample.title,
-        description: sample.description
-//        adsorbate_id: 1,
-//        adsorbent_id: 1
-//        cuando este listo el back, mandar la sample completa directamente.
-      })
+      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation`, sample)
     }
   }
 }

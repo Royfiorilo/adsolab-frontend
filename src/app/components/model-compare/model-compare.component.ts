@@ -68,7 +68,7 @@ export class ModelCompareComponent {
       this.selectedModelsChanged = true;
     }
 
-    if (changes['stepId'] && changes['stepId'].currentValue === 3 && this.selectedModelsChanged) {
+    if (changes['stepId'] && !changes['stepId'].firstChange && changes['stepId'].currentValue === 3 && this.selectedModelsChanged) {
       this.runNonLinearModels();
     }
 
@@ -315,17 +315,16 @@ export class ModelCompareComponent {
     }
   }
 
-
   downloadExcelWithMultipleSheets(): void {
     const workbook: XLSX.WorkBook = {Sheets: {}, SheetNames: []};
+
     this.addMainDataSheet(workbook);
-    this.selectedModels.forEach((modelId) => {
-      this.addModelSheet(workbook, modelId);
-    });
+    this.selectedModels.forEach((modelId) => this.addModelSheet(workbook, modelId));
     this.addRidgeSheet(workbook);
+
     const excelBuffer: any = XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
     const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-    saveAs(blob, 'Adsolab.xlsx');//Cambiar por nombre de investigacion
+    saveAs(blob, 'Adsolab.xlsx'); // Reemplazar por investigation name
   }
 
   private addMainDataSheet(workbook: XLSX.WorkBook): void {
@@ -333,15 +332,10 @@ export class ModelCompareComponent {
 
     worksheetData.push([...this.getHeaders('Ce'), 'Ridge']);
     this.dataSample?.ce.forEach((ceValue, index) => {
-      let rowsForCe = this.getRowForCe(ceValue, index);
-      if (this.ridgeResult && this.ridgeResult.y_pred) {
-        rowsForCe = [...rowsForCe, this.ridgeResult.y_pred[index]];
-      }
-      worksheetData.push(rowsForCe);
+      worksheetData.push(this.getCeRowWithRidge(ceValue, index));
     });
 
     worksheetData.push([...this.getHeaders('Estadisticos'), 'Ridge']);
-
     this.getStatisticsRows().forEach((statName) => {
       worksheetData.push(this.getRowForStatistics(statName));
     });
@@ -352,98 +346,108 @@ export class ModelCompareComponent {
     });
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    workbook.Sheets['Data'] = worksheet;
-    workbook.SheetNames.push('Data');
+    this.addSheetToWorkbook(workbook, 'Data', worksheet);
   }
 
   private addRidgeSheet(workbook: XLSX.WorkBook): void {
+    if (!this.ridgeResult) return;
+
     const sheetData: (string | number)[][] = [];
-    if (this.ridgeResult) {
-      let headers = [...Object.keys(this.ridgeResult.statistics), ...Object.keys(this.ridgeResult.residuals)];
-      let values = [...Object.values(this.ridgeResult.statistics), ...Object.values(this.ridgeResult.residuals)];
-      this.ridgeResult.results.forEach((result) => {
-        let model = this.commonUtilsService.getModelById(result.model, this.models);
-        headers = [...headers, model.name]
-        values = [...values, result.coef]
-      });
+    const headers = [
+      ...Object.keys(this.ridgeResult.statistics),
+      ...Object.keys(this.ridgeResult.residuals),
+      ...this.ridgeResult.results.map(result => this.getModelName(result.model))
+    ];
 
+    const values = [
+      ...Object.values(this.ridgeResult.statistics),
+      ...Object.values(this.ridgeResult.residuals),
+      ...this.ridgeResult.results.map(result => result.coef)
+    ];
 
-      sheetData.push(headers);
-      sheetData.push(values);
-      sheetData.push(['x', 'y']);
+    sheetData.push(headers);
+    sheetData.push(values);
 
+    sheetData.push(['x', 'y']);
+    this.ridgeResult.y_pred.forEach((y, index) => {
+      sheetData.push([this.xForCurvePlot[index], y]);
+    });
 
-      this.ridgeResult.y_pred.forEach((y, index) => {
-        sheetData.push([this.xForCurvePlot[index], y]);
-      });
-
-    }
-
-    const newSheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
-    workbook.Sheets['Ridge'] = newSheet;
-    workbook.SheetNames.push('Ridge');
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
+    this.addSheetToWorkbook(workbook, 'Ridge', worksheet);
   }
 
   private addModelSheet(workbook: XLSX.WorkBook, modelId: number): void {
     const model = this.commonUtilsService.getModelById(+modelId, this.models);
     const bestAdjust = this.getBestAdjustmentDataByModel(model._id);
-    const sheetData: (string | number)[][] = [];
 
-    sheetData.push([bestAdjust.adjustment_name]);
+    const headers = [
+      ...bestAdjust.parameters.map(param => param.name),
+      ...Object.keys(bestAdjust.statistics),
+      ...Object.keys(bestAdjust.residuals)
+    ];
 
-    const headers = [...bestAdjust.parameters.map(param => param.name), ...Object.keys(bestAdjust.statistics),
-      ...Object.keys(bestAdjust.residuals)];
     const values = [
       ...bestAdjust.parameters.map(param => param.value),
       ...Object.values(bestAdjust.statistics),
-      ...Object.values(bestAdjust.residuals),
+      ...Object.values(bestAdjust.residuals)
     ];
-    sheetData.push(headers);
-    sheetData.push(values);
 
-    sheetData.push(['x', 'y']);
-    bestAdjust.graph.data.forEach((data) => {
-      data.x.forEach((value, index) => {
-        sheetData.push([value, data.y[index]]);
-      });
-    });
+    const sheetData: (string | number)[][] = [
+      [bestAdjust.adjustment_name],
+      headers,
+      values,
+      ['x', 'y'],
+      ...this.getGraphDataRows(bestAdjust.graph.data)
+    ];
 
-    const newSheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
-    workbook.Sheets[model.name] = newSheet;
-    workbook.SheetNames.push(model.name);
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
+    this.addSheetToWorkbook(workbook, model.name, worksheet);
+  }
+
+  private addSheetToWorkbook(workbook: XLSX.WorkBook, sheetName: string, worksheet: XLSX.WorkSheet): void {
+    workbook.Sheets[sheetName] = worksheet;
+    workbook.SheetNames.push(sheetName);
   }
 
   private getHeaders(...additionalHeaders: string[]): string[] {
     const modelHeaders = Object.keys(this.noLinearResults).map(modelId =>
-      this.commonUtilsService.getModelById(+modelId, this.models).name
+      this.getModelName(+modelId)
     );
     return [...additionalHeaders, ...modelHeaders];
   }
 
+  private getCeRowWithRidge(ceValue: number, index: number): (string | number)[] {
+    const baseRow = this.getRowForCe(ceValue, index);
+    const ridgeValue = this.ridgeResult?.y_pred?.[index] ?? 'N/A';
+    return [...baseRow, ridgeValue];
+  }
+
+  private getGraphDataRows(graphData: { x: number[]; y: number[] }[]): (string | number)[][] {
+    const rows: (string | number)[][] = [];
+    graphData.forEach((data) => {
+      data.x.forEach((xValue, index) => {
+        rows.push([xValue, data.y[index]]);
+      });
+    });
+    return rows;
+  }
+
+  private getModelName(modelId: number): string {
+    return this.commonUtilsService.getModelById(modelId, this.models).name;
+  }
+
   private getRowForCe(ceValue: number, index: number): (string | number)[] {
-    return [
-      ceValue,
-      ...this.selectedModels.map(modelId => this.bestTransformedValue(modelId, index)),
-    ];
+    return [ceValue, ...this.selectedModels.map(modelId => this.bestTransformedValue(modelId, index))];
   }
 
   private getRowForStatistics(statName: string): (string | number)[] {
-    return [
-      statName,
-      ...this.selectedModels.map(modelId => this.bestStatisticValue(modelId, statName)),
-      this.getRidgeStatistic(statName),
-    ];
+    return [statName, ...this.selectedModels.map(modelId => this.bestStatisticValue(modelId, statName)), this.getRidgeStatistic(statName)];
   }
 
   private getRowForResiduals(name: string): (string | number)[] {
-    return [
-      name,
-      ...this.selectedModels.map(modelId => this.parseResiduals(this.bestResidualValue(modelId, name))),
-      this.getRidgeResiduals(name),
-    ];
-
+    return [name, ...this.selectedModels.map(modelId => this.parseResiduals(this.bestResidualValue(modelId, name))), this.getRidgeResiduals(name)];
   }
-
 
   protected readonly Object = Object;
   protected readonly faDownload = faFileDownload;
