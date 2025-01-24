@@ -1,6 +1,7 @@
 export interface IModelConfiguration {
-  automatedParams :boolean;
+  automatedParams: boolean;
   selectedLinearizations: string[];//todavia no implementado
-  paramValues: {[key: string]: number};
-  paramInfo: {[key: string]: string};
+  paramValues: { [key: string]: number };
+  paramInfo: { [key: string]: string };
+  iterations: number;
 }

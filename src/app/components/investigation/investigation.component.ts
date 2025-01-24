@@ -37,7 +37,8 @@ export class InvestigationComponent {
       paramValues: Object.keys(model?.parameters || {})
         .reduce((acc, key) => ({...acc, [key]: undefined}), {}),
       paramInfo: model?.parameters || {},
-      selectedLinearizations: []
+      selectedLinearizations: [],
+      iterations: 10 //ADD DEFAULT VALUE
     };
   }
 

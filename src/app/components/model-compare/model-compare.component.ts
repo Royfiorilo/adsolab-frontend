@@ -127,7 +127,7 @@ export class ModelCompareComponent {
   }
 
   runNonLinearModels() {
-
+    
     this.selectedModelsChanged = false;
 
     this.noLinearResults = {};
@@ -150,6 +150,7 @@ export class ModelCompareComponent {
 
       const modelRequest: INoLinearRequestModel = {
         model: +modelId,
+        iteration: this.modelConfiguration[+modelId].iterations,
         seeds
       }
 
