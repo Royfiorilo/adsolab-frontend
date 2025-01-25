@@ -92,5 +92,11 @@
     "passes_normality": "Cumple normalidad",
     "passes_homoscedasticity": "Cumple homocedasticidad",
     "passes_independence": "Cumple independencia"
+  },
+  "ERROR": {
+    "OOPS": "Oops!",
+    "UNEXPECTED_ERROR": "Hubo un error inesperado",
+    "ERROR_DETAILS": "Detalles del error",
+    "GO_TO_HOME": "Ir al inicio"
   }
 }

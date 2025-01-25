@@ -34,8 +34,6 @@ export class ModelConfigurationComponent {
 
     this.cleanLinearizationGraphs(changes);
 
-    console.log(this.modelConfiguration)
-
   }
 
   private cleanLinearizationGraphs(changes: SimpleChanges) {

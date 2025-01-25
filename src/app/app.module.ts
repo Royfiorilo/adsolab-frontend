@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -46,6 +46,8 @@ import {MatDividerModule} from "@angular/material/divider";
 import {FitResultComponent} from './components/fit-result/fit-result.component';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatRippleModule} from "@angular/material/core";
+import {ErrorComponent} from './components/error/error.component';
+import {CustomErrorHandler} from "./common/custom-error-handler";
 
 //Plotly.register(locale)
 
@@ -70,7 +72,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MainPageComponent,
     LoadingComponent,
     DataVisualizerComponent,
-    FitResultComponent
+    FitResultComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -111,7 +114,10 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatSelect
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    {
+      provide: ErrorHandler, useClass: CustomErrorHandler
+    }
   ],
   bootstrap: [AppComponent]
 })
