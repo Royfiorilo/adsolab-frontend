@@ -12,7 +12,8 @@ export interface IModelLinearizationRequest {
 
 export interface ILinearizationResponse {
   investigation_id: number;
-  results: IResult[];
+  results?: IResult[];
+  error?: string;
 }
 
 export interface IResult {
@@ -31,7 +32,6 @@ export interface ILinearization {
   parameters: IParameter[];
   statistics: IStatistics;
 }
-
 
 export interface ILinearizationGraph {
   isBestResult: boolean;

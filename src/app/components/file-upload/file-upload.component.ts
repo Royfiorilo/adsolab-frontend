@@ -33,9 +33,7 @@ export class FileUploadComponent {
 
 
   constructor(private translateService: TranslateService, private sampleService: SampleSelectorService) {
-  }
 
-  ngOnInit() {
 
     this.sampleService.getMaterials()
       .pipe(
@@ -52,6 +50,11 @@ export class FileUploadComponent {
         this.adsorbates = response.adsorbates
         this.adsorbents = response.adsorbents
       })
+
+  }
+
+  ngOnInit() {
+
 
   }
 

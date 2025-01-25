@@ -83,7 +83,7 @@
           </ng-container>
           <ng-template #automatedParams>
 
-            <div class="row" *ngIf="!linearizationGraphs[modelId]">
+            <div class="row" *ngIf="!linearizationGraphs[modelId]?.graphs?.length">
               <div class="col">
                 <small class="text-muted">{{ 'MODEL_CONFIGURATION.AVAILABLE_LINEARIZATIONS' | translate }}</small>
                 <div *ngFor="let linearization of commonUtilsService.getModelById(modelId,models).linearizations">
@@ -97,7 +97,7 @@
               </div>
             </div>
 
-            <div class="row m-3" *ngFor="let item of linearizationGraphs[modelId]">
+            <div class="row m-3" *ngFor="let item of linearizationGraphs[modelId]?.graphs">
 
               <div class="col text-center">
                 <h5 class="text-center">
@@ -123,6 +123,7 @@
   </div>
 
 </div>
+
 <ng-container *ngIf="runningLinearization">
   <app-loading></app-loading>
 </ng-container>

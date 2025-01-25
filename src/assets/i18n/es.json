@@ -3,6 +3,7 @@
   "FALSE": "NO",
   "OR": "o",
   "NAME": "Nombre",
+  "CLOSE": "Cerrar",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "GRAPHS": "Gráficos",
@@ -49,7 +50,8 @@
     "PARAM": "Parámetro {{ key }}",
     "RUN_LINEARIZATION": "Ejecutar linealización",
     "BEST_LINEARIZATION": "Mejor linealización",
-    "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles"
+    "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles",
+    "LINEARIZATION_ERROR": "No se pudo realizar la linearización. Por favor, ingrese los parámetros manualmente para poder avanzar."
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",
@@ -94,6 +96,7 @@
     "passes_independence": "Cumple independencia"
   },
   "ERROR": {
+    "ERROR": "Error",
     "OOPS": "Oops!",
     "UNEXPECTED_ERROR": "Hubo un error inesperado",
     "ERROR_DETAILS": "Detalles del error",

@@ -48,6 +48,8 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {MatRippleModule} from "@angular/material/core";
 import {ErrorComponent} from './components/error/error.component';
 import {CustomErrorHandler} from "./common/custom-error-handler";
+import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
+import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component';
 
 //Plotly.register(locale)
 
@@ -73,7 +75,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     LoadingComponent,
     DataVisualizerComponent,
     FitResultComponent,
-    ErrorComponent
+    ErrorComponent,
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -111,7 +114,11 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
       },
       defaultLanguage: 'es'
     }),
-    MatSelect
+    MatSelect,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose
   ],
   providers: [
     provideAnimationsAsync(),

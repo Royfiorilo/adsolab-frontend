@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>{{ 'ERROR.ERROR' | translate }}</h2>
+
+<mat-dialog-content>
+  <p class="fw-bold">{{ data.main_message }}</p>
+  <h6>{{ 'ERROR.ERROR_DETAILS' | translate }}:</h6>
+  <p>{{ data.error_message }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="justify-content-end">
+  <button mat-button mat-dialog-close color="primary">{{ 'CLOSE' | translate }}</button>
+</mat-dialog-actions>

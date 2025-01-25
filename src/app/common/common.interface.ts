@@ -54,3 +54,8 @@ export interface ITransformedData {
   x: number[];
   y: number[];
 }
+
+export interface IErrorDialogData {
+  main_message: string;
+  error_message: string;
+}

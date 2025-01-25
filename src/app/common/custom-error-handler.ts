@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable} from "@angular/core";
+import {ErrorHandler, Injectable, NgZone} from "@angular/core";
 import {Router} from "@angular/router";
 
 @Injectable({
@@ -6,12 +6,15 @@ import {Router} from "@angular/router";
 })
 export class CustomErrorHandler implements ErrorHandler {
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private zone: NgZone) {
   }
 
   handleError(error: string): void {
 
-    this.router.navigateByUrl(`/error?message=${error}`);
+    this.zone.run(() => {
+      this.router.navigateByUrl(`/error?message=${error}`);
+    })
+
   }
 
 }
