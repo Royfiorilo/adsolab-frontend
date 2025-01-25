@@ -106,3 +106,24 @@ export enum ViewOption {
   SIMPLIFIED = 'SIMPLIFIED'
 }
 
+export interface ISaveRequest {
+  investigation_id: number;
+  comparison: {
+    heuristic: Heuristic,
+    ridge: IRidgeSaveRequest
+  };
+  results: INoLinearResult[];
+  seeds: INoLinearRequestSeed[];
+}
+
+export interface IRidgeSaveRequest {
+  best_model: number;
+  statistics: IStatistics;
+  residuals: IResiduals;
+  results: ModelRidgeResult[];
+}
+
+//solo mostrar heuristica del mejor modelo
+//en ridge no mostrar los y_pred.
+//agregar stderror
+

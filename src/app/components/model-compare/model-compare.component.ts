@@ -8,13 +8,16 @@ import {
   INoLinearRequest,
   INoLinearRequestModel,
   INoLinearRequestSeed,
+  INoLinearResponse,
+  IRidgeSaveRequest,
+  ISaveRequest,
   Ridge,
   ViewOption
 } from "./interface";
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 import {MatAccordion} from "@angular/material/expansion";
-import {faFileDownload} from "@fortawesome/free-solid-svg-icons";
+import {faCloudArrowUp, faFileDownload} from "@fortawesome/free-solid-svg-icons";
 import * as XLSX from 'xlsx';
 import {saveAs} from 'file-saver';
 
@@ -43,6 +46,7 @@ export class ModelCompareComponent {
   protected selectedModelsChanged: boolean = false;
   protected ridgeResult: Ridge | undefined;
   protected xForCurvePlot: number[] = [];
+  protected noLinearResponse: INoLinearResponse | undefined;
 
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
@@ -126,8 +130,52 @@ export class ModelCompareComponent {
     this.toggleValue = value;
   }
 
+  saveInvestigation() {
+
+    const investigationId = this.investigationId as number;
+    const response = this.noLinearResponse as INoLinearResponse;
+
+    const ridgeRequest: IRidgeSaveRequest = {
+      best_model: response.comparison.ridge.best_model,
+      residuals: response.comparison.ridge.residuals,
+      results: response.comparison.ridge.results,
+      statistics: response.comparison.ridge.statistics,
+    };
+
+    const seeds: { name: string, value: number, stderr: number }[] = [];
+    for (const modelId of Object.keys(this.modelConfiguration)) {
+      for (const param of Object.entries(this.modelConfiguration[+modelId].paramValues)) {
+        seeds.push({
+          name: param[0],
+          value: param[1],
+          stderr: this.noLinearResults[+modelId].adjustments[0].parameters[0].std_err
+        })
+      }
+    }
+
+    const request: ISaveRequest = {
+      investigation_id: investigationId,
+      comparison: {
+        heuristic: response.comparison.heuristic,
+        ridge: ridgeRequest,
+      },
+      results: response.results,
+      seeds: seeds
+    }
+
+    this.modelCompareService.saveInvestigation(request).subscribe({
+      next: (response) => {
+        console.log('Response: ', response);
+      },
+      error: (error) => {
+        console.error('Error saving investigation:', error);
+      },
+    });
+  }
+
+
   runNonLinearModels() {
-    
+
     this.selectedModelsChanged = false;
 
     this.noLinearResults = {};
@@ -165,6 +213,8 @@ export class ModelCompareComponent {
 
     this.modelCompareService.runNoLinearModel(request).subscribe((response) => {
 
+
+      this.noLinearResponse = response;
       this.noLinearCompareResult = response.comparison;
 
       let xPointX = this.dataSample?.ce!
@@ -331,9 +381,9 @@ export class ModelCompareComponent {
   private addMainDataSheet(workbook: XLSX.WorkBook): void {
     const worksheetData: (string | number)[][] = [];
 
-    worksheetData.push([...this.getHeaders('Ce'), 'Ridge']);
+    worksheetData.push(this.getHeaders('Ce'));
     this.dataSample?.ce.forEach((ceValue, index) => {
-      worksheetData.push(this.getCeRowWithRidge(ceValue, index));
+      worksheetData.push(this.getRowForCe(ceValue, index));
     });
 
     worksheetData.push([...this.getHeaders('Estadisticos'), 'Ridge']);
@@ -418,12 +468,6 @@ export class ModelCompareComponent {
     return [...additionalHeaders, ...modelHeaders];
   }
 
-  private getCeRowWithRidge(ceValue: number, index: number): (string | number)[] {
-    const baseRow = this.getRowForCe(ceValue, index);
-    const ridgeValue = this.ridgeResult?.y_pred?.[index] ?? 'N/A';
-    return [...baseRow, ridgeValue];
-  }
-
   private getGraphDataRows(graphData: { x: number[]; y: number[] }[]): (string | number)[][] {
     const rows: (string | number)[][] = [];
     graphData.forEach((data) => {
@@ -450,6 +494,8 @@ export class ModelCompareComponent {
     return [name, ...this.selectedModels.map(modelId => this.parseResiduals(this.bestResidualValue(modelId, name))), this.getRidgeResiduals(name)];
   }
 
+
   protected readonly Object = Object;
   protected readonly faDownload = faFileDownload;
+  protected readonly faSave = faCloudArrowUp;
 }
