@@ -4,6 +4,7 @@ import {DataSample, IAdsorbate, IAdsorbent, InvalidFileReason} from "../data-sel
 import {faCircleCheck, faFileDownload, faFileUpload, faXmarkCircle} from '@fortawesome/free-solid-svg-icons';
 import {TranslateService} from "@ngx-translate/core";
 import {SampleSelectorService} from "../data-selector/sample-selector.service";
+import {catchError, firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-file-upload',
@@ -31,15 +32,26 @@ export class FileUploadComponent {
   protected adsorbates: IAdsorbate[] = [];
 
 
-  constructor(private translate: TranslateService, private sampleService: SampleSelectorService) {
+  constructor(private translateService: TranslateService, private sampleService: SampleSelectorService) {
   }
 
   ngOnInit() {
 
-    this.sampleService.getMaterials().subscribe(response => {
-      this.adsorbates = response.adsorbates
-      this.adsorbents = response.adsorbents
-    })
+    this.sampleService.getMaterials()
+      .pipe(
+        catchError(async error => {
+          if (error.status === 404) {
+            await firstValueFrom(this.sampleService.syncMaterials())
+            return await firstValueFrom(this.sampleService.getMaterials());
+          } else {
+            throw await firstValueFrom(this.translateService.get('DATA_SELECTOR.ERROR_LOADING_PREVIOUS_SAMPLES', error));
+          }
+        })
+      )
+      .subscribe(response => {
+        this.adsorbates = response.adsorbates
+        this.adsorbents = response.adsorbents
+      })
 
   }
 

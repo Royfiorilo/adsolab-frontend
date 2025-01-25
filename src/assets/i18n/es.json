@@ -29,12 +29,14 @@
       "INVALID_DATA": "El archivo debe tener exclusivamente valores numéricos",
       "READ_ERROR": "Error en la lectura del archivo"
     },
-    "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo"
+    "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo",
+    "ERROR_LOADING_MATERIALS": "Error al cargar materiales: {{ message }}"
   },
   "DATA_SELECTOR": {
     "START_INVESTIGATION": "Comenzar investigación",
     "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
-    "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente"
+    "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
+    "ERROR_LOADING_PREVIOUS_SAMPLES": "Error al cargar muestras anteriores: {{ message }}"
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo"

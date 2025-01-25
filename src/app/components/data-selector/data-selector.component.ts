@@ -1,10 +1,11 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
-import {catchError, Observable, of} from 'rxjs';
+import {catchError, firstValueFrom, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-data-selector',
@@ -23,13 +24,18 @@ export class DataSelectorComponent {
 
   constructor(
     private dataService: DataSelectorService,
-    private sampleService: SampleSelectorService) {
+    private sampleService: SampleSelectorService,
+    private translateService: TranslateService) {
 
     if (this.options.length === 0) {
       this.loadingDataSamples = true;
       this.sampleService.getSamples()
-        .pipe(catchError((error) => {
-          return of({samples: []})
+        .pipe(catchError(async (error) => {
+          if (error.status === 404) {
+            return {samples: []};
+          } else {
+            throw await firstValueFrom(translateService.get('FILE_UPLOAD.ERROR_LOADING_MATERIALS', error));
+          }
         }))
         .subscribe(response => {
           this.loadingDataSamples = false;
