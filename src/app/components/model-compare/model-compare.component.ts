@@ -142,27 +142,26 @@ export class ModelCompareComponent {
       statistics: response.comparison.ridge.statistics,
     };
 
-    const seeds: { name: string, value: number, stderr: number }[] = [];
-    for (const modelId of Object.keys(this.modelConfiguration)) {
-      for (const [paramName, paramValue] of Object.entries(this.modelConfiguration[+modelId].paramValues)) {
-        seeds.push({
-          name: paramName,
-          value: +paramValue.value,
-          stderr: paramValue.stderr
-        });
-      }
-
-    }
-
     const request: ISaveRequest = {
       investigation_id: investigationId,
       comparison: {
         heuristic: response.comparison.heuristic,
         ridge: ridgeRequest,
       },
-      results: response.results,
-      seeds: seeds
+      results: response.results.map(result => {
+        const modelId = result.model;
+        const seeds: INoLinearRequestSeed[] = Object.entries(this.modelConfiguration[modelId]?.paramValues || {}).map(([paramName, paramValue]) => ({
+          name: paramName,
+          value: +paramValue.value,
+          stderr: paramValue.stderr
+        }));
+        return {
+          ...result,
+          seeds,
+        }
+      })
     }
+
 
     this.modelCompareService.saveInvestigation(request).subscribe({
       next: (response) => {

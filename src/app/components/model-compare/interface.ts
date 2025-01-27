@@ -65,6 +65,8 @@ export interface INoLinearResult {
   adjustment_methods: AdjustmentMethod[];
   best_adjust: string,
   model: number;
+  seeds: INoLinearRequestSeed[] | undefined;
+
 }
 
 export interface INoLinearResponse {
@@ -114,7 +116,6 @@ export interface ISaveRequest {
     ridge: IRidgeSaveRequest
   };
   results: INoLinearResult[];
-  seeds: INoLinearRequestSeed[];
 }
 
 export interface IRidgeSaveRequest {
