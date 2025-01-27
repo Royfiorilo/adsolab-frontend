@@ -67,7 +67,7 @@
     "COLLAPSE_ALL": "Colapsar todos",
     "FIT": "Ajuste",
     "DOWNLOAD_RESULTS": "Descargar resultados",
-    "SAVE_INVESTIGATION": "Guardar investigacion"
+    "SAVE_RESULTS": "Guardar resultados"
   },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"

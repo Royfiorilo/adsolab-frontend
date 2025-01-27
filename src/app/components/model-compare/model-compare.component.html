@@ -16,7 +16,7 @@
     <div>
       <button mat-button color="primary" class="m-2" (click)="saveInvestigation()">
         <fa-icon [icon]="faSave" class="m-2"></fa-icon>
-        {{ 'MODEL_COMPARE.SAVE_INVESTIGATION' | translate }}
+        {{ 'MODEL_COMPARE.SAVE_RESULTS' | translate }}
       </button>
     </div>
 
@@ -166,7 +166,7 @@
                 <table class="table table-striped">
                   <thead>
                   <tr>
-                    <th>{{ 'MODEL_COMPARE.NAME' | translate }}</th>
+                    <th>{{ 'NAME' | translate }}</th>
                     <th *ngFor="let modelId of Object.keys(noLinearResults)">
                       {{ commonUtilsService.getModelById(+modelId, models).name }}
                     </th>
@@ -200,7 +200,7 @@
                 <table class="table table-striped">
                   <thead>
                   <tr>
-                    <th>{{ 'MODEL_COMPARE.NAME' | translate }}</th>
+                    <th>{{ 'NAME' | translate }}</th>
                     <th *ngFor="let modelId of Object.keys(noLinearResults)">
                       {{ commonUtilsService.getModelById(+modelId, models).name }}
                     </th>
