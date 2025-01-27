@@ -12,6 +12,7 @@ export interface INoLinearGraph {
 export interface INoLinearRequestSeed {
   name: string;
   value: number;
+  stderr: number;
 }
 
 export interface INoLinearRequestModel {
@@ -64,6 +65,8 @@ export interface INoLinearResult {
   adjustment_methods: AdjustmentMethod[];
   best_adjust: string,
   model: number;
+  seeds: INoLinearRequestSeed[] | undefined;
+
 }
 
 export interface INoLinearResponse {
@@ -105,4 +108,24 @@ export enum ViewOption {
   DETAILED = 'DETAILED',
   SIMPLIFIED = 'SIMPLIFIED'
 }
+
+export interface ISaveRequest {
+  investigation_id: number;
+  comparison: {
+    heuristic: Heuristic,
+    ridge: IRidgeSaveRequest
+  };
+  results: INoLinearResult[];
+}
+
+export interface IRidgeSaveRequest {
+  best_model: number;
+  statistics: IStatistics;
+  residuals: IResiduals;
+  results: ModelRidgeResult[];
+}
+
+//solo mostrar heuristica del mejor modelo
+//en ridge no mostrar los y_pred.
+//agregar stderror
 

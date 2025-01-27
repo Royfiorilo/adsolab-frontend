@@ -11,3 +11,5 @@ export class CommonUtilsService {
   }
 
 }
+
+export const DEFAULT_ITERATIONS = 10000;
