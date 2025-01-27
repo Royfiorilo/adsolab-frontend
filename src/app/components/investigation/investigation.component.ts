@@ -3,12 +3,15 @@ import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Investigation} from "../data-selector/data-sample";
 import {IModelsConfigurations} from "../../common/common.interface";
+import {DEFAULT_ITERATIONS} from '../../common/common.service';
+
 
 @Component({
   selector: 'app-investigation',
   templateUrl: './investigation.component.html',
   styleUrl: './investigation.component.css',
 })
+
 
 export class InvestigationComponent {
   investigation: Investigation | undefined;
@@ -39,7 +42,7 @@ export class InvestigationComponent {
       paramInfo: model?.parameters || {},
       selectedLinearizations: [],
       paramSaved: undefined,
-      iterations: 10 //ADD DEFAULT VALUE
+      iterations: DEFAULT_ITERATIONS
     };
   }
 
