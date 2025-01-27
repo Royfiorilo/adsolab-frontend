@@ -12,6 +12,7 @@ export interface INoLinearGraph {
 export interface INoLinearRequestSeed {
   name: string;
   value: number;
+  stderr: number;
 }
 
 export interface INoLinearRequestModel {

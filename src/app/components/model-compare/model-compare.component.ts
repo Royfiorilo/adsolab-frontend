@@ -144,13 +144,14 @@ export class ModelCompareComponent {
 
     const seeds: { name: string, value: number, stderr: number }[] = [];
     for (const modelId of Object.keys(this.modelConfiguration)) {
-      for (const param of Object.entries(this.modelConfiguration[+modelId].paramValues)) {
+      for (const [paramName, paramValue] of Object.entries(this.modelConfiguration[+modelId].paramValues)) {
         seeds.push({
-          name: param[0],
-          value: param[1],
-          stderr: this.noLinearResults[+modelId].adjustments[0].parameters[0].std_err
-        })
+          name: paramName,
+          value: +paramValue.value,
+          stderr: paramValue.stderr
+        });
       }
+
     }
 
     const request: ISaveRequest = {
@@ -188,13 +189,14 @@ export class ModelCompareComponent {
 
       const seeds: INoLinearRequestSeed[] = []
 
-      for (const param of Object.entries(this.modelConfiguration[+modelId].paramValues)) {
-
+      for (const [paramName, paramValue] of Object.entries(this.modelConfiguration[+modelId].paramValues)) {
         seeds.push({
-          name: param[0],
-          value: param[1]
-        })
+          name: paramName,
+          value: +paramValue.value,
+          stderr: paramValue.stderr
+        });
       }
+
 
       const modelRequest: INoLinearRequestModel = {
         model: +modelId,

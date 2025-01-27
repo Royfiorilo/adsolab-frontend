@@ -38,6 +38,7 @@ export class InvestigationComponent {
         .reduce((acc, key) => ({...acc, [key]: undefined}), {}),
       paramInfo: model?.parameters || {},
       selectedLinearizations: [],
+      paramSaved: undefined,
       iterations: 10 //ADD DEFAULT VALUE
     };
   }

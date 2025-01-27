@@ -109,7 +109,10 @@ export class ModelConfigurationComponent {
           //asign param values
           if (linearizationGraph.isBestResult) {
             for (const parameter of linearization.parameters) {
-              this.modelConfiguration[modelId].paramValues[parameter.name] = parameter.value
+              this.modelConfiguration[modelId].paramValues[parameter.name] = {
+                value: parameter.value,
+                stderr: parameter.std_err
+              }
             }
           }
 
@@ -134,7 +137,7 @@ export class ModelConfigurationComponent {
 
   onChange(event: Event, modelId: number, key: string) {
 
-    this.modelConfiguration[modelId].paramValues[key] = +(event.target as HTMLInputElement).value
+    this.modelConfiguration[modelId].paramValues[key] = {value: +(event.target as HTMLInputElement).value, stderr: 0}
 
 
     this.onSelectedParams.emit(this.modelConfiguration)
