@@ -41,7 +41,8 @@
     "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación."
   },
   "MODEL_SELECTOR": {
-    "MODEL_DETAILS": "Detalles del modelo"
+    "MODEL_DETAILS": "Detalles del modelo",
+    "ERROR_LOADING_MODELS": "Error al cargar modelos: {{ message }}"
   },
   "MODEL_CONFIGURATION": {
     "NOT_SELECTED_MODELS": "No se han seleccionado modelos",
