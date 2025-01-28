@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
-import {CreateInvestigationResponse, DataSample, Investigation} from "./data-sample";
-import {catchError, firstValueFrom, Observable, of} from 'rxjs';
+import {DataSample, Investigation} from "./data-sample";
+import {catchError, firstValueFrom, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
@@ -83,34 +83,26 @@ export class DataSelectorComponent {
       this.creatingInvestigation = true;
       this.dataService
         .createInvestigation(this.dataSample)
-        .pipe(catchError((error) => {
-          let errorResponse: CreateInvestigationResponse = {
-            error: error.message,
-            investigation_id: 0,
-            sample_id: 0
-          }
-          return of(errorResponse);
-        }))
-        .subscribe(async (response) => {
+        .subscribe({
+          error: async (error) => {
 
-          this.creatingInvestigation = false;
-
-          if (response.error) {
-
+            this.creatingInvestigation = false;
             this.dialog.open(ErrorDialogComponent, {
               data: {
                 main_message: await firstValueFrom(this.translateService.get('DATA_SELECTOR.CREATE_INVESTIGATION_ERROR')),
-                error_message: response.error,
+                error_message: error.message,
               }
             })
 
-          } else {
+          },
+          next: async (response) => {
+
+            this.creatingInvestigation = false;
 
             let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
             this.onInvestigationCreated.emit(investigation);
 
           }
-
         });
     }
   }
