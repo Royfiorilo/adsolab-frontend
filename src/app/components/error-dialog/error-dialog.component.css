@@ -1,0 +1,36 @@
+.error-dialog {
+  padding: 1rem;
+  max-width: 500px;
+}
+
+.error-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.error-icon {
+  height: 75px !important;
+  width: 75px !important;
+  font-size: 75px !important;
+  color: #e53935;
+  margin: 3px !important;
+}
+
+h2 {
+  margin: 0;
+  color: #333;
+  font-weight: 500;
+}
+
+.error-message {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 1rem 0;
+  line-height: 1.5;
+}
+
+mat-dialog-content {
+  max-height: 60vh;
+}

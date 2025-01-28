@@ -1,11 +1,29 @@
-<h2 mat-dialog-title>{{ 'ERROR.ERROR' | translate }}</h2>
+<div class="error-dialog">
+  <div class="text-center">
+    <h2>{{ 'ERROR.ERROR' | translate }}</h2>
+    <mat-icon class="error-icon">error_outline</mat-icon>
+  </div>
 
-<mat-dialog-content>
-  <p class="fw-bold">{{ data.main_message }}</p>
-  <h6>{{ 'ERROR.ERROR_DETAILS' | translate }}:</h6>
-  <p>{{ data.error_message }}</p>
-</mat-dialog-content>
+  <mat-dialog-content>
+    <p>{{ data.main_message }}</p>
 
-<mat-dialog-actions class="justify-content-end">
-  <button mat-button mat-dialog-close color="primary">{{ 'CLOSE' | translate }}</button>
-</mat-dialog-actions>
+    <mat-expansion-panel *ngIf="data.error_message" class="error-details">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ 'ERROR.TECHNICAL_DETAILS' | translate }}
+
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <code class="technical-details">{{ data.error_message }}</code>
+    </mat-expansion-panel>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button
+      mat-button
+      color="primary"
+      mat-dialog-close>
+      {{ 'CLOSE' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

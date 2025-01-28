@@ -37,7 +37,8 @@
     "START_INVESTIGATION": "Comenzar investigación",
     "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
     "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
-    "ERROR_LOADING_PREVIOUS_SAMPLES": "Error al cargar muestras anteriores: {{ message }}"
+    "ERROR_LOADING_PREVIOUS_SAMPLES": "Error al cargar muestras anteriores: {{ message }}",
+    "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación."
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo"
@@ -51,7 +52,7 @@
     "RUN_LINEARIZATION": "Ejecutar linealización",
     "BEST_LINEARIZATION": "Mejor linealización",
     "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles",
-    "LINEARIZATION_ERROR": "No se pudo realizar la linearización. Por favor, ingrese los parámetros manualmente para poder avanzar."
+    "LINEARIZATION_ERROR": "No se pudo realizar la linealización. Por favor, ingrese los parámetros manualmente para poder avanzar."
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",
@@ -99,7 +100,7 @@
     "ERROR": "Error",
     "OOPS": "Oops!",
     "UNEXPECTED_ERROR": "Hubo un error inesperado",
-    "ERROR_DETAILS": "Detalles del error",
+    "TECHNICAL_DETAILS": "Detalles técnicos",
     "GO_TO_HOME": "Ir al inicio"
   }
 }

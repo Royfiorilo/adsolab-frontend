@@ -17,7 +17,8 @@ export interface DataSample {
 
 export interface CreateInvestigationResponse {
   investigation_id: number;
-  sample_id: number
+  sample_id: number;
+  error?: string;
 }
 
 export interface GetSampleResponse {

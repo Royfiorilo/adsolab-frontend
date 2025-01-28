@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
-import {DataSample, Investigation} from "./data-sample";
-import {catchError, firstValueFrom, Observable} from 'rxjs';
+import {CreateInvestigationResponse, DataSample, Investigation} from "./data-sample";
+import {catchError, firstValueFrom, Observable, of} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
 import {TranslateService} from '@ngx-translate/core';
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 
 @Component({
   selector: 'app-data-selector',
@@ -25,7 +27,8 @@ export class DataSelectorComponent {
   constructor(
     private dataService: DataSelectorService,
     private sampleService: SampleSelectorService,
-    private translateService: TranslateService) {
+    private translateService: TranslateService,
+    private dialog: MatDialog) {
 
     if (this.options.length === 0) {
       this.loadingDataSamples = true;
@@ -80,10 +83,34 @@ export class DataSelectorComponent {
       this.creatingInvestigation = true;
       this.dataService
         .createInvestigation(this.dataSample)
-        .subscribe((response) => {
-          let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
+        .pipe(catchError((error) => {
+          let errorResponse: CreateInvestigationResponse = {
+            error: error.message,
+            investigation_id: 0,
+            sample_id: 0
+          }
+          return of(errorResponse);
+        }))
+        .subscribe(async (response) => {
+
           this.creatingInvestigation = false;
-          this.onInvestigationCreated.emit(investigation);
+
+          if (response.error) {
+
+            this.dialog.open(ErrorDialogComponent, {
+              data: {
+                main_message: await firstValueFrom(this.translateService.get('DATA_SELECTOR.CREATE_INVESTIGATION_ERROR')),
+                error_message: response.error,
+              }
+            })
+
+          } else {
+
+            let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
+            this.onInvestigationCreated.emit(investigation);
+
+          }
+
         });
     }
   }
