@@ -1,13 +1,13 @@
 import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {ModelConfigurationService} from "./model-configuration.service";
-import {ILinearizationGraph, ILinearizationRequest, ILinearizationResponse} from "./interface";
+import {ILinearizationGraph, ILinearizationRequest} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {DataSample} from "../data-selector/data-sample";
 import {CommonUtilsService} from "../../common/common.service";
 import {IModelsConfigurations} from "../../common/common.interface";
-import {catchError, firstValueFrom, of} from "rxjs";
+import {firstValueFrom} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
@@ -72,89 +72,75 @@ export class ModelConfigurationComponent {
         graphs: []
       }
 
-      this.modelConfigurationService.runLinearization(request)
-        .pipe(
-          catchError((error) => {
-            let errorResponse: ILinearizationResponse = {
-              investigation_id: this.investigationId!,
-              error: error.message,
-              results: []
+      this.modelConfigurationService.runLinearization(request).subscribe({
+        error: async (error) => {
+
+          this.runningLinearization = false;
+          this.dialog.open(ErrorDialogComponent, {
+            data: {
+              main_message: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.LINEARIZATION_ERROR')),
+              error_message: error.message,
             }
-            return of(errorResponse);
-          })
-        )
-        .subscribe(async (response) => {
+          });
+          this.modelConfiguration[modelId].automatedParams = false;
+
+        },
+        next: (response) => {
 
           this.runningLinearization = false;
 
-          if (response.error) {
+          this.linearizationGraphs[model._id].graphs = [];
+          let linearizations = response.results[0].linearizations;
 
-            this.dialog.open(ErrorDialogComponent, {
-              data: {
-                main_message: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.LINEARIZATION_ERROR')),
-                error_message: response.error,
+          for (const linearization of linearizations) {
+
+            let slope: number = linearization.slope;
+            let intercept: number = linearization.intercept;
+            let xTransformed = linearization.transformed.x;
+            let xMin: number = this.getMinValue(xTransformed!);
+            let xMax: number = this.getMaxValue(xTransformed!);
+            let linearizationGraph: ILinearizationGraph = {
+              parameters: linearization.parameters,
+              statistics: linearization.statistics,
+              isBestResult: linearization.id === +response.results[0].best_result,
+              linearizationName: linearization.name,
+              graph: {
+                data: [
+                  {
+                    x: xTransformed,
+                    y: linearization.transformed.y,
+                    type: 'scatter',
+                    mode: 'markers',
+                    marker: {color: 'red'}
+                  },
+                  {
+                    x: [xMin, xMax],
+                    y: [(slope * xMin + intercept), (slope * xMax + intercept)],
+                    type: 'scatter',
+                    mode: 'line',
+                    marker: {color: 'blue'}
+                  },
+                ],
+                layout: {title: '', autosize: true}
               }
-            })
-
-            this.modelConfiguration[modelId].automatedParams = false;
-
-          } else if (response.results?.length) {
-
-            this.linearizationGraphs[model._id].graphs = [];
-            let linearizations = response.results[0].linearizations;
-
-            for (const linearization of linearizations) {
-
-              let slope: number = linearization.slope;
-              let intercept: number = linearization.intercept;
-              let xTransformed = linearization.transformed.x;
-              let xMin: number = this.getMinValue(xTransformed!);
-              let xMax: number = this.getMaxValue(xTransformed!);
-              let linearizationGraph: ILinearizationGraph = {
-                parameters: linearization.parameters,
-                statistics: linearization.statistics,
-                isBestResult: linearization.id === +response.results[0].best_result,
-                linearizationName: linearization.name,
-                graph: {
-                  data: [
-                    {
-                      x: xTransformed,
-                      y: linearization.transformed.y,
-                      type: 'scatter',
-                      mode: 'markers',
-                      marker: {color: 'red'}
-                    },
-                    {
-                      x: [xMin, xMax],
-                      y: [(slope * xMin + intercept), (slope * xMax + intercept)],
-                      type: 'scatter',
-                      mode: 'line',
-                      marker: {color: 'blue'}
-                    },
-                  ],
-                  layout: {title: '', autosize: true}
-                }
-              }
-
-              //asign param values
-              if (linearizationGraph.isBestResult) {
-                for (const parameter of linearization.parameters) {
-                  this.modelConfiguration[modelId].paramValues[parameter.name] = {
-                    value: parameter.value,
-                    stderr: parameter.std_err
-                  }
-                }
-              }
-
-              this.linearizationGraphs[modelId].graphs.push(linearizationGraph);
             }
 
-            this.onSelectedParams.emit(this.modelConfiguration);
+            //asign param values
+            if (linearizationGraph.isBestResult) {
+              for (const parameter of linearization.parameters) {
+                this.modelConfiguration[modelId].paramValues[parameter.name] = {
+                  value: parameter.value,
+                  stderr: parameter.std_err
+                }
+              }
+            }
 
+            this.linearizationGraphs[modelId].graphs.push(linearizationGraph);
           }
 
-
-        });
+          this.onSelectedParams.emit(this.modelConfiguration);
+        }
+      });
     }
   }
 

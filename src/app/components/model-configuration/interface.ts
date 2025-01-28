@@ -12,8 +12,7 @@ export interface IModelLinearizationRequest {
 
 export interface ILinearizationResponse {
   investigation_id: number;
-  results?: IResult[];
-  error?: string;
+  results: IResult[];
 }
 
 export interface IResult {
