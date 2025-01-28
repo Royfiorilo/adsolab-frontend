@@ -12,6 +12,7 @@ export class CustomErrorHandler implements ErrorHandler {
   handleError(error: string): void {
 
     this.zone.run(() => {
+      console.error(error);
       this.router.navigateByUrl(`/error?message=${error}`);
     })
 

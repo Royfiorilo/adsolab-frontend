@@ -20,6 +20,10 @@ import {MatAccordion} from "@angular/material/expansion";
 import {faCloudArrowUp, faFileDownload} from "@fortawesome/free-solid-svg-icons";
 import * as XLSX from 'xlsx';
 import {saveAs} from 'file-saver';
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {firstValueFrom} from "rxjs";
+import {TranslateService} from "@ngx-translate/core";
 
 
 @Component({
@@ -37,7 +41,7 @@ export class ModelCompareComponent {
   @Input() stepId!: number;
   protected noLinearResults: { [key: number]: { bestAdjustment: string, adjustments: INoLinearGraph[] } } = {};
   protected noLinearCompareResult: IComparison | undefined;
-  protected runningNoLinearAdjustment: boolean = false;
+  protected runningNoLinearAdjustment: boolean = true;
   protected summaryGraph: { [key: number]: IGraph } = {};
   protected compareGraph: IGraph | undefined;
   protected toggleValue: string = 'results';
@@ -47,6 +51,7 @@ export class ModelCompareComponent {
   protected ridgeResult: Ridge | undefined;
   protected xForCurvePlot: number[] = [];
   protected noLinearResponse: INoLinearResponse | undefined;
+  protected noLinearFailed: boolean = false;
 
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
@@ -57,7 +62,9 @@ export class ModelCompareComponent {
   }
 
   constructor(protected commonUtilsService: CommonUtilsService,
-              protected modelCompareService: ModelCompareService) {
+              protected modelCompareService: ModelCompareService,
+              private dialog: MatDialog,
+              private translateService: TranslateService) {
   }
 
   ngOnInit() {
@@ -164,11 +171,13 @@ export class ModelCompareComponent {
 
 
     this.modelCompareService.saveInvestigation(request).subscribe({
-      next: (response) => {
-        console.log('Response: ', response);
-      },
-      error: (error) => {
-        console.error('Error saving investigation:', error);
+      error: async (error) => {
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            main_message: await firstValueFrom(this.translateService.get('MODEL_COMPARE.ERROR_SAVING_RESULTS', error)),
+            error_message: error.message,
+          }
+        })
       },
     });
   }
@@ -212,104 +221,116 @@ export class ModelCompareComponent {
       models
     }
 
-    this.modelCompareService.runNoLinearModel(request).subscribe((response) => {
+    this.modelCompareService.runNoLinearModel(request).subscribe({
+      error: async (error) => {
 
+        this.noLinearFailed = true;
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            main_message: await firstValueFrom(this.translateService.get('MODEL_COMPARE.ERROR_RUNNING_COMPARISON', error)),
+            error_message: error.message,
+          }
+        });
+        this.runningNoLinearAdjustment = false;
+      },
+      next: (response) => {
 
-      this.noLinearResponse = response;
-      this.noLinearCompareResult = response.comparison;
+        this.noLinearResponse = response;
+        this.noLinearCompareResult = response.comparison;
 
-      let xPointX = this.dataSample?.ce!
-      let yPointX = this.dataSample?.qe!
+        let xPointX = this.dataSample?.ce!
+        let yPointX = this.dataSample?.qe!
 
-      this.xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
+        this.xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
 
-      let baseData = {
-        x: xPointX,
-        y: yPointX,
-        type: 'scatter',
-        mode: 'markers',
-        name: "Muestra",
-        marker: {color: 'black'}
-      }
-
-      this.ridgeResult = response.comparison.ridge;
-
-      let ridgeData = {
-        x: this.xForCurvePlot,
-        y: response.comparison.ridge.y_pred,
-        type: 'scatter',
-        mode: 'line+marker',
-        name: 'Ridge',
-        line: {shape: 'spline', color: 'grey'},
-        marker: {color: 'grey'},
-
-      }
-
-      this.compareGraph = {
-        data: [ridgeData], layout: {title: "Mejor ajuste por modelo", autosize: true}
-      }
-
-      for (const model of response.results) {
-
-        this.noLinearResults[model.model] = {
-          adjustments: [],
-          bestAdjustment: model.best_adjust
+        let baseData = {
+          x: xPointX,
+          y: yPointX,
+          type: 'scatter',
+          mode: 'markers',
+          name: "Muestra",
+          marker: {color: 'black'}
         }
 
+        this.ridgeResult = response.comparison.ridge;
 
-        this.summaryGraph[model.model] = {
-          data: [], layout: {title: "Resumen de resultados", autosize: true}
+        let ridgeData = {
+          x: this.xForCurvePlot,
+          y: response.comparison.ridge.y_pred,
+          type: 'scatter',
+          mode: 'line+marker',
+          name: 'Ridge',
+          line: {shape: 'spline', color: 'grey'},
+          marker: {color: 'grey'},
+
         }
 
-        for (const adjustment of model.adjustment_methods) {
+        this.compareGraph = {
+          data: [ridgeData], layout: {title: "Mejor ajuste por modelo", autosize: true}
+        }
 
-          let resultData = {
-            x: adjustment.transformed.x,
-            y: adjustment.transformed.y,
-            type: 'scatter',
-            mode: 'line+marker',
-            name: adjustment.name,
-            line: {shape: 'spline', color: this.colorByMethod[adjustment.name]},
-            marker: {color: this.colorByMethod[adjustment.name]},
+        for (const model of response.results) {
+
+          this.noLinearResults[model.model] = {
+            adjustments: [],
+            bestAdjustment: model.best_adjust
           }
 
 
-          if (adjustment.name === model.best_adjust) {
-            let compareData = {...resultData};
-            let modelName = this.commonUtilsService.getModelById(model.model, this.models).name;
-            compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
-            compareData.marker = {color: this.colorByMethod[modelName]}
-            compareData.name = modelName + ` (${model.best_adjust})`
-            this.compareGraph.data.push(compareData);
+          this.summaryGraph[model.model] = {
+            data: [], layout: {title: "Resumen de resultados", autosize: true}
           }
 
-          this.summaryGraph[model.model].data.push(resultData)
+          for (const adjustment of model.adjustment_methods) {
 
-          let noLinearGraph: INoLinearGraph = {
-            parameters: adjustment.parameters,
-            statistics: adjustment.statistics,
-            adjustment_name: adjustment.name,
-            residuals: adjustment.residuals,
-            graph: {
-              data: [
-                resultData,
-                baseData
-              ],
-              layout: {title: '', autosize: true} //TODO: poner algun titulo
+            let resultData = {
+              x: adjustment.transformed.x,
+              y: adjustment.transformed.y,
+              type: 'scatter',
+              mode: 'line+marker',
+              name: adjustment.name,
+              line: {shape: 'spline', color: this.colorByMethod[adjustment.name]},
+              marker: {color: this.colorByMethod[adjustment.name]},
             }
-          }
-          this.noLinearResults[model.model].adjustments.push(noLinearGraph)
-        }
 
-        this.summaryGraph[model.model].data.push(baseData)
+
+            if (adjustment.name === model.best_adjust) {
+              let compareData = {...resultData};
+              let modelName = this.commonUtilsService.getModelById(model.model, this.models).name;
+              compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
+              compareData.marker = {color: this.colorByMethod[modelName]}
+              compareData.name = modelName + ` (${model.best_adjust})`
+              this.compareGraph.data.push(compareData);
+            }
+
+            this.summaryGraph[model.model].data.push(resultData)
+
+            let noLinearGraph: INoLinearGraph = {
+              parameters: adjustment.parameters,
+              statistics: adjustment.statistics,
+              adjustment_name: adjustment.name,
+              residuals: adjustment.residuals,
+              graph: {
+                data: [
+                  resultData,
+                  baseData
+                ],
+                layout: {title: '', autosize: true} //TODO: poner algun titulo
+              }
+            }
+            this.noLinearResults[model.model].adjustments.push(noLinearGraph)
+          }
+
+          this.summaryGraph[model.model].data.push(baseData)
+
+        }
+        this.compareGraph.data.push(baseData);
+
+        this.runningNoLinearAdjustment = false;
+        this.noLinearFailed = false;
 
       }
-      this.compareGraph.data.push(baseData);
-
-      this.runningNoLinearAdjustment = false;
-
     })
-
   }
 
 

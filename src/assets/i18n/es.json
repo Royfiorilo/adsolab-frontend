@@ -73,7 +73,9 @@
     "COLLAPSE_ALL": "Colapsar todos",
     "FIT": "Ajuste",
     "DOWNLOAD_RESULTS": "Descargar resultados",
-    "SAVE_RESULTS": "Guardar resultados"
+    "SAVE_RESULTS": "Guardar resultados",
+    "ERROR_RUNNING_COMPARISON": "No se pudo ejecutar la comparación.",
+    "ERROR_SAVING_RESULTS": "No se pudieron guardar los resultados."
   },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"
