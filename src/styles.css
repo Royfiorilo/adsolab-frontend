@@ -144,3 +144,17 @@ html, body {
   color: #8f3237;
 }
 
+.error-details {
+  margin: 1rem 0;
+}
+
+.technical-details {
+  display: block;
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 0.9rem;
+  color: #666;
+}

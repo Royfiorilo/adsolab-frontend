@@ -60,10 +60,6 @@ export class InvestigationComponent {
     this.models = models;
   }
 
-  onSelectedConfiguration(modelId: number) {
-    console.log(this.modelConfiguration[modelId].automatedParams)
-  }
-
   onSelectedParams(modelsConfigurations: IModelsConfigurations) {
     this.modelConfiguration = modelsConfigurations;
     this.checkConfigurationDone();

@@ -3,6 +3,8 @@ import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModelSelectorServiceService} from "./model-selector-service.service";
 import {Model} from "./model";
+import {catchError, firstValueFrom} from "rxjs";
+import {TranslateService} from "@ngx-translate/core";
 
 
 interface Model2 {
@@ -52,16 +54,20 @@ export class ModelSelectorComponent {
     // model.selected = !model.selected;
   }
 
-  constructor(private modelService: ModelSelectorServiceService) {
+  constructor(private modelService: ModelSelectorServiceService, private translateService: TranslateService) {
   }
 
   ngOnInit() {
     if (this.models.length === 0) {
       this.loadingModels = true;
-      this.modelService.getModels().subscribe(response => {
-        this.loadingModels = false;
-        this.onLoadedModels.emit(response.models);
-      });
+      this.modelService.getModels()
+        .pipe(catchError(async (error) => {
+          throw await firstValueFrom(this.translateService.get('MODEL_SELECTOR.ERROR_LOADING_MODELS', error));
+        }))
+        .subscribe(response => {
+          this.loadingModels = false;
+          this.onLoadedModels.emit(response.models);
+        });
     }
   }
 

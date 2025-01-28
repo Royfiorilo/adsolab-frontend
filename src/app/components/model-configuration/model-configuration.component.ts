@@ -7,6 +7,10 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {DataSample} from "../data-selector/data-sample";
 import {CommonUtilsService} from "../../common/common.service";
 import {IModelsConfigurations} from "../../common/common.interface";
+import {firstValueFrom} from "rxjs";
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-model-configuration',
@@ -19,22 +23,20 @@ export class ModelConfigurationComponent {
   @Input() investigationId: number | undefined;
   @Input() modelConfiguration!: IModelsConfigurations;
   @Input() models!: Model[];
-  @Output() onSelectedConfiguration = new EventEmitter<number>();
   @Output() onSelectedParams = new EventEmitter<IModelsConfigurations>();
-  protected linearizationGraphs: { [key: number]: ILinearizationGraph[] } = {};
+  protected linearizationGraphs: { [key: number]: { graphs: ILinearizationGraph[], error?: string } } = {};
   private modalService = inject(NgbModal);
   protected runningLinearization: boolean = false;
 
   constructor(private modelConfigurationService: ModelConfigurationService,
-              protected commonUtilsService: CommonUtilsService) {
+              protected commonUtilsService: CommonUtilsService,
+              private dialog: MatDialog, private translateService: TranslateService) {
 
   }
 
   ngOnChanges(changes: SimpleChanges) {
 
     this.cleanLinearizationGraphs(changes);
-
-    console.log(this.modelConfiguration)
 
   }
 
@@ -66,61 +68,78 @@ export class ModelConfigurationComponent {
 
       this.runningLinearization = true;
 
-      this.modelConfigurationService.runLinearization(request).subscribe((response) => {
+      this.linearizationGraphs[modelId] = {
+        graphs: []
+      }
 
-        this.runningLinearization = false;
+      this.modelConfigurationService.runLinearization(request).subscribe({
+        error: async (error) => {
 
-        this.linearizationGraphs[model._id] = [];
-        let linearizations = response.results[0].linearizations;
-
-        for (const linearization of linearizations) {
-
-          let slope: number = linearization.slope;
-          let intercept: number = linearization.intercept;
-          let xTransformed = linearization.transformed.x;
-          let xMin: number = this.getMinValue(xTransformed!);
-          let xMax: number = this.getMaxValue(xTransformed!);
-          let linearizationGraph: ILinearizationGraph = {
-            parameters: linearization.parameters,
-            statistics: linearization.statistics,
-            isBestResult: linearization.id === +response.results[0].best_result,
-            linearizationName: linearization.name,
-            graph: {
-              data: [
-                {
-                  x: xTransformed,
-                  y: linearization.transformed.y,
-                  type: 'scatter',
-                  mode: 'markers',
-                  marker: {color: 'red'}
-                },
-                {
-                  x: [xMin, xMax],
-                  y: [(slope * xMin + intercept), (slope * xMax + intercept)],
-                  type: 'scatter',
-                  mode: 'line',
-                  marker: {color: 'blue'}
-                },
-              ],
-              layout: {title: '', autosize: true}
+          this.runningLinearization = false;
+          this.dialog.open(ErrorDialogComponent, {
+            data: {
+              main_message: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.LINEARIZATION_ERROR')),
+              error_message: error.message,
             }
-          }
+          });
+          this.modelConfiguration[modelId].automatedParams = false;
 
-          //asign param values
-          if (linearizationGraph.isBestResult) {
-            for (const parameter of linearization.parameters) {
-              this.modelConfiguration[modelId].paramValues[parameter.name] = {
-                value: parameter.value,
-                stderr: parameter.std_err
+        },
+        next: (response) => {
+
+          this.runningLinearization = false;
+
+          this.linearizationGraphs[model._id].graphs = [];
+          let linearizations = response.results[0].linearizations;
+
+          for (const linearization of linearizations) {
+
+            let slope: number = linearization.slope;
+            let intercept: number = linearization.intercept;
+            let xTransformed = linearization.transformed.x;
+            let xMin: number = this.getMinValue(xTransformed!);
+            let xMax: number = this.getMaxValue(xTransformed!);
+            let linearizationGraph: ILinearizationGraph = {
+              parameters: linearization.parameters,
+              statistics: linearization.statistics,
+              isBestResult: linearization.id === +response.results[0].best_result,
+              linearizationName: linearization.name,
+              graph: {
+                data: [
+                  {
+                    x: xTransformed,
+                    y: linearization.transformed.y,
+                    type: 'scatter',
+                    mode: 'markers',
+                    marker: {color: 'red'}
+                  },
+                  {
+                    x: [xMin, xMax],
+                    y: [(slope * xMin + intercept), (slope * xMax + intercept)],
+                    type: 'scatter',
+                    mode: 'line',
+                    marker: {color: 'blue'}
+                  },
+                ],
+                layout: {title: '', autosize: true}
               }
             }
+
+            //asign param values
+            if (linearizationGraph.isBestResult) {
+              for (const parameter of linearization.parameters) {
+                this.modelConfiguration[modelId].paramValues[parameter.name] = {
+                  value: parameter.value,
+                  stderr: parameter.std_err
+                }
+              }
+            }
+
+            this.linearizationGraphs[modelId].graphs.push(linearizationGraph);
           }
 
-          this.linearizationGraphs[modelId].push(linearizationGraph);
+          this.onSelectedParams.emit(this.modelConfiguration);
         }
-
-        this.onSelectedParams.emit(this.modelConfiguration);
-
       });
     }
   }
@@ -143,4 +162,5 @@ export class ModelConfigurationComponent {
     this.onSelectedParams.emit(this.modelConfiguration)
 
   }
+
 }

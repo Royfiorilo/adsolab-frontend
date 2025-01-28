@@ -1,10 +1,13 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
-import {catchError, Observable, of} from 'rxjs';
+import {catchError, firstValueFrom, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
+import {TranslateService} from '@ngx-translate/core';
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 
 @Component({
   selector: 'app-data-selector',
@@ -23,13 +26,19 @@ export class DataSelectorComponent {
 
   constructor(
     private dataService: DataSelectorService,
-    private sampleService: SampleSelectorService) {
+    private sampleService: SampleSelectorService,
+    private translateService: TranslateService,
+    private dialog: MatDialog) {
 
     if (this.options.length === 0) {
       this.loadingDataSamples = true;
       this.sampleService.getSamples()
-        .pipe(catchError((error) => {
-          return of({samples: []})
+        .pipe(catchError(async (error) => {
+          if (error.status === 404) {
+            return {samples: []};
+          } else {
+            throw await firstValueFrom(translateService.get('FILE_UPLOAD.ERROR_LOADING_MATERIALS', error));
+          }
         }))
         .subscribe(response => {
           this.loadingDataSamples = false;
@@ -74,10 +83,26 @@ export class DataSelectorComponent {
       this.creatingInvestigation = true;
       this.dataService
         .createInvestigation(this.dataSample)
-        .subscribe((response) => {
-          let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
-          this.creatingInvestigation = false;
-          this.onInvestigationCreated.emit(investigation);
+        .subscribe({
+          error: async (error) => {
+
+            this.creatingInvestigation = false;
+            this.dialog.open(ErrorDialogComponent, {
+              data: {
+                main_message: await firstValueFrom(this.translateService.get('DATA_SELECTOR.CREATE_INVESTIGATION_ERROR')),
+                error_message: error.message,
+              }
+            })
+
+          },
+          next: async (response) => {
+
+            this.creatingInvestigation = false;
+
+            let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
+            this.onInvestigationCreated.emit(investigation);
+
+          }
         });
     }
   }

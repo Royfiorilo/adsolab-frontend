@@ -3,6 +3,7 @@
   "FALSE": "NO",
   "OR": "o",
   "NAME": "Nombre",
+  "CLOSE": "Cerrar",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "GRAPHS": "Gráficos",
@@ -29,15 +30,19 @@
       "INVALID_DATA": "El archivo debe tener exclusivamente valores numéricos",
       "READ_ERROR": "Error en la lectura del archivo"
     },
-    "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo"
+    "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo",
+    "ERROR_LOADING_MATERIALS": "Error al cargar materiales: {{ message }}"
   },
   "DATA_SELECTOR": {
     "START_INVESTIGATION": "Comenzar investigación",
     "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
-    "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente"
+    "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
+    "ERROR_LOADING_PREVIOUS_SAMPLES": "Error al cargar muestras anteriores: {{ message }}",
+    "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación."
   },
   "MODEL_SELECTOR": {
-    "MODEL_DETAILS": "Detalles del modelo"
+    "MODEL_DETAILS": "Detalles del modelo",
+    "ERROR_LOADING_MODELS": "Error al cargar modelos: {{ message }}"
   },
   "MODEL_CONFIGURATION": {
     "NOT_SELECTED_MODELS": "No se han seleccionado modelos",
@@ -47,7 +52,8 @@
     "PARAM": "Parámetro {{ key }}",
     "RUN_LINEARIZATION": "Ejecutar linealización",
     "BEST_LINEARIZATION": "Mejor linealización",
-    "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles"
+    "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles",
+    "LINEARIZATION_ERROR": "No se pudo realizar la linealización. Por favor, ingrese los parámetros manualmente para poder avanzar."
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",
@@ -67,7 +73,9 @@
     "COLLAPSE_ALL": "Colapsar todos",
     "FIT": "Ajuste",
     "DOWNLOAD_RESULTS": "Descargar resultados",
-    "SAVE_RESULTS": "Guardar resultados"
+    "SAVE_RESULTS": "Guardar resultados",
+    "ERROR_RUNNING_COMPARISON": "No se pudo ejecutar la comparación.",
+    "ERROR_SAVING_RESULTS": "No se pudieron guardar los resultados."
   },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"
@@ -90,5 +98,12 @@
     "passes_normality": "Cumple normalidad",
     "passes_homoscedasticity": "Cumple homocedasticidad",
     "passes_independence": "Cumple independencia"
+  },
+  "ERROR": {
+    "ERROR": "Error",
+    "OOPS": "Oops!",
+    "UNEXPECTED_ERROR": "Hubo un error inesperado",
+    "TECHNICAL_DETAILS": "Detalles técnicos",
+    "GO_TO_HOME": "Ir al inicio"
   }
 }

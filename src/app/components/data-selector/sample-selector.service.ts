@@ -23,4 +23,8 @@ export class SampleSelectorService {
   getMaterials(): Observable<GetMaterialsResponse> {
     return this.httpClient.get<GetMaterialsResponse>(`${this.backendBaseUrl}/adsorption-materials`);
   }
+
+  syncMaterials(): Observable<any> {
+    return this.httpClient.get<any>(`${this.backendBaseUrl}/materials_sync`);
+  }
 }

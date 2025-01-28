@@ -32,7 +32,6 @@ export interface ILinearization {
   statistics: IStatistics;
 }
 
-
 export interface ILinearizationGraph {
   isBestResult: boolean;
   parameters: IParameter[];
