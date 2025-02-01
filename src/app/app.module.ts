@@ -35,7 +35,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatTabsModule} from '@angular/material/tabs';
+import {MatTabBody, MatTabsModule} from '@angular/material/tabs';
 import {MatSelect} from "@angular/material/select";
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTooltipModule} from "@angular/material/tooltip";
@@ -49,7 +49,7 @@ import {MatRippleModule} from "@angular/material/core";
 import {ErrorComponent} from './components/error/error.component';
 import {CustomErrorHandler} from "./common/custom-error-handler";
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
-import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component';
+import {ErrorDialogComponent} from './components/error-dialog/error-dialog.component';
 
 //Plotly.register(locale)
 
@@ -118,7 +118,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose
+    MatDialogClose,
+    MatTabBody
   ],
   providers: [
     provideAnimationsAsync(),

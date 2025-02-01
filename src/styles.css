@@ -23,7 +23,7 @@
 }
 
 .main-header {
-  background-color: #1976D2;
+  background-color: #008bce;
   height: 15%;
 }
 
@@ -101,12 +101,14 @@
   position: fixed;
   top: 50%;
   right: 5%;
+  z-index: 10;
 }
 
 .stepper-button-left {
   position: fixed;
   top: 50%;
   left: 5%;
+  z-index: 10;
 }
 
 body {

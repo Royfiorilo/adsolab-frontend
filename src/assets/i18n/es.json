@@ -66,6 +66,8 @@
     "RERUN_COMPARISON": "Volver a ejecutar comparación",
     "SIMPLIFIED_VIEW": "Vista simplificada",
     "DETAILED_VIEW": "Vista detallada",
+    "ONE_COLUMN": "Una columna",
+    "TWO_COLUMNS": "Dos columnas",
     "PARAMS": "Parámetros",
     "STATISTICS": "Estadísticos",
     "BEST_FIT": "Mejor ajuste",

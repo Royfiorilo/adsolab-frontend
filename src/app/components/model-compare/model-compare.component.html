@@ -30,6 +30,7 @@
 
       <ng-template matTabContent>
 
+
         <div class="row justify-content-center m-3">
           <div class="card col-lg-8 col-md-10">
             <div class="card-body d-flex flex-column">
@@ -107,124 +108,151 @@
           </div>
         </div>
 
+        <div class="row m-0">
 
-        <div *ngIf="compareGraph">
-          <plotly-plot [data]="compareGraph.data" [layout]="compareGraph.layout"
-                       [useResizeHandler]="true" [style]="{width: '100%', height: '100%'}"></plotly-plot>
-        </div>
-
-        <mat-accordion multi id="0">
-
-          <div class="m-2">
-            <button mat-button color="primary"
-                    (click)="toggleAccordion(0, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
+          <div class="d-flex justify-content-end mb-3">
+            <button mat-icon-button color="primary"
+                    [ngClass]="{'bg-primary-subtle': selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS}"
+                    matTooltip="{{'MODEL_COMPARE.TWO_COLUMNS' | translate}}"
+                    (click)="toggleComparisonViewOption(comparisonViewOptions.TWO_COLUMNS)">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                   fill="#008bce">
+                <path
+                  d="M600-120q-33 0-56.5-23.5T520-200v-560q0-33 23.5-56.5T600-840h160q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600Zm0-640v560h160v-560H600ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h160q33 0 56.5 23.5T440-760v560q0 33-23.5 56.5T360-120H200Zm0-640v560h160v-560H200Zm560 0H600h160Zm-400 0H200h160Z"/>
+              </svg>
             </button>
-            <button mat-button color="primary"
-                    (click)="toggleAccordion(0, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
+            <button mat-icon-button color="primary"
+                    [ngClass]="{'bg-primary-subtle': selectedComparisonLayout === comparisonViewOptions.ONE_COLUMN}"
+                    matTooltip="{{'MODEL_COMPARE.ONE_COLUMN' | translate}}"
+                    (click)="toggleComparisonViewOption(comparisonViewOptions.ONE_COLUMN)">
+              <mat-icon>splitscreen</mat-icon>
             </button>
           </div>
 
-          <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <h4 class="text-center">Puntos calculados</h4>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
+          <div class="col-md-12"
+               [ngClass]="selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS ? 'col-lg-8' : 'col'">
+            <div *ngIf="compareGraph">
+              <plotly-plot #comparisonPlot [data]="compareGraph.data" [layout]="compareGraph.layout"
+                           [useResizeHandler]="true"></plotly-plot>
+            </div>
+          </div>
 
-            <ng-template matExpansionPanelContent>
-              <table class="table table-striped">
-                <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Ce</th>
-                  <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                    {{ commonUtilsService.getModelById(+modelId, models).name }}
-                  </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let ceValue of dataSample?.ce; let i = index">
-                  <th scope="row">{{ i + 1 }}</th>
-                  <td>{{ ceValue }}</td>
-                  <td *ngFor="let modelId of selectedModels">
-                    {{ bestTransformedValue(modelId, i) || 'N/A' }}
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </ng-template>
+          <div class="col-md-12"
+               [ngClass]="selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS ? 'col-lg-4' : 'col'">
+            <mat-accordion multi id="0">
 
-          </mat-expansion-panel>
-
-          <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <h4 class="text-center">Estadísticos</h4>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <ng-template matExpansionPanelContent>
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                  <tr>
-                    <th>{{ 'NAME' | translate }}</th>
-                    <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                      {{ commonUtilsService.getModelById(+modelId, models).name }}
-                    </th>
-                    <th>{{ 'MODEL_COMPARE.RIDGE' | translate }}</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let statName of getStatisticsRows()">
-                    <td>{{ 'STATISTICS.' + statName | translate }}</td>
-                    <td *ngFor="let modelId of selectedModels">
-                      {{ bestStatisticValue(modelId, statName) || 'N/A' }}
-                    </td>
-                    <td>{{ getRidgeStatistic(statName) }}</td>
-                  </tr>
-                  </tbody>
-                </table>
+              <div class="m-2">
+                <button mat-button color="primary"
+                        (click)="toggleAccordion(0, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
+                </button>
+                <button mat-button color="primary"
+                        (click)="toggleAccordion(0, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
+                </button>
               </div>
-            </ng-template>
 
-          </mat-expansion-panel>
+              <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h4 class="text-center">Puntos calculados</h4>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
 
-          <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <h4 class="text-center">Residuos</h4>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
+                <ng-template matExpansionPanelContent>
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Ce</th>
+                      <th *ngFor="let modelId of Object.keys(noLinearResults)">
+                        {{ commonUtilsService.getModelById(+modelId, models).name }}
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let ceValue of dataSample?.ce; let i = index">
+                      <th scope="row">{{ i + 1 }}</th>
+                      <td>{{ ceValue }}</td>
+                      <td *ngFor="let modelId of selectedModels">
+                        {{ bestTransformedValue(modelId, i) || 'N/A' }}
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </ng-template>
 
-            <ng-template matExpansionPanelContent>
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                  <tr>
-                    <th>{{ 'NAME' | translate }}</th>
-                    <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                      {{ commonUtilsService.getModelById(+modelId, models).name }}
-                    </th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let residualName of getResidualsRows()">
-                    <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
-                    <td *ngFor="let modelId of selectedModels">
-                      {{ parseResiduals(bestResidualValue(modelId, residualName)) || 'N/A' }}
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </ng-template>
+              </mat-expansion-panel>
 
-          </mat-expansion-panel>
+              <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h4 class="text-center">Estadísticos</h4>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
 
-        </mat-accordion>
+                <ng-template matExpansionPanelContent>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th>{{ 'NAME' | translate }}</th>
+                        <th *ngFor="let modelId of Object.keys(noLinearResults)">
+                          {{ commonUtilsService.getModelById(+modelId, models).name }}
+                        </th>
+                        <th>{{ 'MODEL_COMPARE.RIDGE' | translate }}</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let statName of getStatisticsRows()">
+                        <td>{{ 'STATISTICS.' + statName | translate }}</td>
+                        <td *ngFor="let modelId of selectedModels">
+                          {{ bestStatisticValue(modelId, statName) || 'N/A' }}
+                        </td>
+                        <td>{{ getRidgeStatistic(statName) }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </ng-template>
 
+              </mat-expansion-panel>
+
+              <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h4 class="text-center">Residuos</h4>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <ng-template matExpansionPanelContent>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th>{{ 'NAME' | translate }}</th>
+                        <th *ngFor="let modelId of Object.keys(noLinearResults)">
+                          {{ commonUtilsService.getModelById(+modelId, models).name }}
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let residualName of getResidualsRows()">
+                        <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                        <td *ngFor="let modelId of selectedModels">
+                          {{ parseResiduals(bestResidualValue(modelId, residualName)) || 'N/A' }}
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </ng-template>
+
+              </mat-expansion-panel>
+
+            </mat-accordion>
+          </div>
+        </div>
       </ng-template>
+
 
     </mat-tab>
 
@@ -233,14 +261,15 @@
       <ng-template matTabContent>
         <div class="d-flex justify-content-end mb-3">
           <button mat-icon-button color="primary"
-                  [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.SIMPLIFIED}"
+                  [ngClass]="{'bg-primary-subtle': selectedAllResultsViewOption === allResultsViewOption.SIMPLIFIED}"
                   matTooltip="{{'MODEL_COMPARE.SIMPLIFIED_VIEW' | translate}}"
-                  (click)="toggleView(viewOptions.SIMPLIFIED)">
+                  (click)="toggleAllResultsViewOption(allResultsViewOption.SIMPLIFIED)">
             <mat-icon>grid_view</mat-icon>
           </button>
           <button mat-icon-button color="primary"
-                  [ngClass]="{'bg-primary-subtle': selectedViewOption === viewOptions.DETAILED}"
-                  matTooltip="{{'MODEL_COMPARE.DETAILED_VIEW' | translate}}" (click)="toggleView(viewOptions.DETAILED)">
+                  [ngClass]="{'bg-primary-subtle': selectedAllResultsViewOption === allResultsViewOption.DETAILED}"
+                  matTooltip="{{'MODEL_COMPARE.DETAILED_VIEW' | translate}}"
+                  (click)="toggleAllResultsViewOption(allResultsViewOption.DETAILED)">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#008bce">
               <path
                 d="m296-80-56-56 276-277 140 140 207-207 57 57-264 263-140-140L296-80Zm-136-40q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v168H160v472Zm0-552h560v-88H160v88Zm0 0v-88 88Z"/>
@@ -250,7 +279,8 @@
 
         <div *ngIf="!runningNoLinearAdjustment">
 
-          <div *ngIf="selectedViewOption === viewOptions.SIMPLIFIED" class="row justify-content-center m-3">
+          <div *ngIf="selectedAllResultsViewOption === allResultsViewOption.SIMPLIFIED"
+               class="row justify-content-center m-3">
 
             <div *ngFor="let modelId of selectedModels" class="col-6">
 
@@ -307,7 +337,8 @@
 
           </div>
 
-          <div *ngIf="selectedViewOption === viewOptions.DETAILED" class="row justify-content-center m-3">
+          <div *ngIf="selectedAllResultsViewOption === allResultsViewOption.DETAILED"
+               class="row justify-content-center m-3">
 
             <mat-accordion multi id="1">
 
