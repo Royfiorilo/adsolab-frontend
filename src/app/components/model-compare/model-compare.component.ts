@@ -1,8 +1,10 @@
-import {Component, Input, QueryList, SimpleChanges, ViewChildren} from '@angular/core';
+import {Component, Input, QueryList, SimpleChanges, ViewChild, ViewChildren} from '@angular/core';
 import {DataSample} from "../data-selector/data-sample";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
 import {
+  AllResultsViewOption,
+  ComparisonViewOption,
   IComparison,
   INoLinearGraph,
   INoLinearRequest,
@@ -11,8 +13,7 @@ import {
   INoLinearResponse,
   IRidgeSaveRequest,
   ISaveRequest,
-  Ridge,
-  ViewOption
+  Ridge
 } from "./interface";
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
@@ -24,6 +25,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
+import {PlotlyComponent} from "angular-plotly.js";
 
 
 @Component({
@@ -33,6 +35,7 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class ModelCompareComponent {
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
+  @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
   @Input() investigationId: number | undefined;
   @Input() selectedModels!: number[];
   @Input() models!: Model[];
@@ -45,8 +48,10 @@ export class ModelCompareComponent {
   protected summaryGraph: { [key: number]: IGraph } = {};
   protected compareGraph: IGraph | undefined;
   protected toggleValue: string = 'results';
-  protected selectedViewOption: ViewOption = ViewOption.SIMPLIFIED;
-  protected viewOptions = ViewOption;
+  protected selectedAllResultsViewOption: AllResultsViewOption = AllResultsViewOption.SIMPLIFIED;
+  protected selectedComparisonLayout: ComparisonViewOption = ComparisonViewOption.TWO_COLUMNS;
+  protected allResultsViewOption = AllResultsViewOption;
+  protected comparisonViewOptions = ComparisonViewOption;
   protected selectedModelsChanged: boolean = false;
   protected ridgeResult: Ridge | undefined;
   protected xForCurvePlot: number[] = [];
@@ -372,8 +377,17 @@ export class ModelCompareComponent {
     return (this.noLinearCompareResult!.ridge!.statistics as any)[statName]
   }
 
-  toggleView(viewOption: ViewOption): void {
-    this.selectedViewOption = viewOption;
+  toggleAllResultsViewOption(viewOption: AllResultsViewOption): void {
+    this.selectedAllResultsViewOption = viewOption;
+  }
+
+  toggleComparisonViewOption(viewOption: ComparisonViewOption): void {
+    this.selectedComparisonLayout = viewOption;
+    setTimeout(() => {
+      if (this.comparisonPlot) {
+        this.comparisonPlot.updatePlot();
+      }
+    }, 0);
   }
 
   toggleAccordion(index: number, action: string): void {

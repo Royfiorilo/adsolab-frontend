@@ -104,9 +104,14 @@ export interface IComparison {
   ridge: Ridge;
 }
 
-export enum ViewOption {
+export enum AllResultsViewOption {
   DETAILED = 'DETAILED',
   SIMPLIFIED = 'SIMPLIFIED'
+}
+
+export enum ComparisonViewOption {
+  ONE_COLUMN = 'ONE_COLUMN',
+  TWO_COLUMNS = 'TWO_COLUMNS',
 }
 
 export interface ISaveRequest {
