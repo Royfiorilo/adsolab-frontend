@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Investigation} from "../data-selector/data-sample";
@@ -6,6 +6,7 @@ import {IInvestigationState, IModelsConfigurations} from "../../common/common.in
 import {DEFAULT_ITERATIONS} from '../../common/common.service';
 import {StateService} from "./state.service";
 import {MatStep} from "@angular/material/stepper";
+import {MatDialog} from "@angular/material/dialog";
 
 
 @Component({
@@ -23,8 +24,9 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
   modelConfiguration: IModelsConfigurations = {};
   modelConfigurationDone: boolean = false;
   @ViewChildren(MatStep) steps!: QueryList<MatStep>;
+  @ViewChild("loadOnGoingInvestigationModal") loadOnGoingInvestigationModal!: TemplateRef<any>;
 
-  constructor(private _snackBar: MatSnackBar, private stateService: StateService) {
+  constructor(private _snackBar: MatSnackBar, private stateService: StateService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -46,6 +48,7 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
 
     if (this.stepId) {
       this.steps.get(this.stepId)?.select()
+      this.dialog.open(this.loadOnGoingInvestigationModal);
     }
 
   }
@@ -154,5 +157,25 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
         stepId: this.stepId,
       }
     )
+  }
+
+  resetInvestigation() {
+    this.investigation = undefined;
+    this.modelConfiguration = {};
+    this.modelConfigurationDone = false;
+    this.models = [];
+    this.selectedModels = [];
+    this.stepId = 0
+
+    this.stateService.state.set({
+      investigation: this.investigation,
+      modelConfiguration: this.modelConfiguration,
+      modelConfigurationDone: this.modelConfigurationDone,
+      models: this.models,
+      selectedModels: this.selectedModels,
+      stepId: this.stepId
+    });
+
+    this.steps.get(this.stepId)?.select();
   }
 }

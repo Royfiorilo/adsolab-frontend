@@ -40,3 +40,13 @@ export interface ILinearizationGraph {
   graph: IGraph;
 }
 
+export enum SeedParamOption {
+  AUTOMATED = 'AUTOMATED',
+  MANUAL = 'MANUAL'
+}
+
+export interface ISeedParamOption {
+  name: SeedParamOption;
+  value: string;
+}
+
