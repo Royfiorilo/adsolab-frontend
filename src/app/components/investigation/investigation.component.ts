@@ -1,9 +1,11 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Investigation} from "../data-selector/data-sample";
-import {IModelsConfigurations} from "../../common/common.interface";
+import {IInvestigationState, IModelsConfigurations} from "../../common/common.interface";
 import {DEFAULT_ITERATIONS} from '../../common/common.service';
+import {StateService} from "./state.service";
+import {MatStep} from "@angular/material/stepper";
 
 
 @Component({
@@ -13,19 +15,47 @@ import {DEFAULT_ITERATIONS} from '../../common/common.service';
 })
 
 
-export class InvestigationComponent {
+export class InvestigationComponent implements OnInit, AfterViewInit {
   investigation: Investigation | undefined;
-  stepId: number = 1;
+  stepId: number = 0;
   models: Model[] = [];
   selectedModels: number[] = [];
   modelConfiguration: IModelsConfigurations = {};
   modelConfigurationDone: boolean = false;
+  @ViewChildren(MatStep) steps!: QueryList<MatStep>;
 
-  constructor(private _snackBar: MatSnackBar) {
+  constructor(private _snackBar: MatSnackBar, private stateService: StateService) {
+  }
+
+  ngOnInit() {
+
+    let state: IInvestigationState = this.stateService.state();
+
+    if (state) {
+      this.investigation = state.investigation;
+      this.stepId = state.stepId;
+      this.models = state.models;
+      this.selectedModels = state.selectedModels;
+      this.modelConfiguration = state.modelConfiguration;
+      this.modelConfigurationDone = state.modelConfigurationDone;
+    }
+
+  }
+
+  ngAfterViewInit() {
+
+    if (this.stepId) {
+      this.steps.get(this.stepId)?.select()
+    }
+
   }
 
   investigationCreated(investigation: Investigation) {
     this.investigation = investigation;
+    this.stateService.state.set({
+      ...this.stateService.state(),
+      investigation: this.investigation,
+    })
     this._snackBar.open("Investigación creada con éxito", "Aceptar", {
       duration: 3000,
       verticalPosition: 'top',
@@ -38,12 +68,19 @@ export class InvestigationComponent {
     this.modelConfiguration[modelId] = {
       automatedParams: !!model?.linearizations && model.linearizations.length > 0,
       paramValues: Object.keys(model?.parameters || {})
-        .reduce((acc, key) => ({...acc, [key]: undefined}), {}),
+        .reduce((acc, key) => ({...acc, [key]: {value: 0, stderr: 0}}), {}),
       paramInfo: model?.parameters || {},
       selectedLinearizations: [],
       paramSaved: undefined,
       iterations: DEFAULT_ITERATIONS
     };
+    console.log(this.modelConfiguration);
+    this.stateService.state.set({
+        ...this.stateService.state(),
+        selectedModels: this.selectedModels,
+        modelConfiguration: this.modelConfiguration,
+      }
+    )
   }
 
   onModelSelected(modelId: number) {
@@ -58,11 +95,21 @@ export class InvestigationComponent {
 
   onLoadedModels(models: Model[]) {
     this.models = models;
+    this.stateService.state.set({
+        ...this.stateService.state(),
+        models: this.models,
+      }
+    )
   }
 
   onSelectedParams(modelsConfigurations: IModelsConfigurations) {
     this.modelConfiguration = modelsConfigurations;
     this.checkConfigurationDone();
+    this.stateService.state.set({
+        ...this.stateService.state(),
+        modelConfiguration: this.modelConfiguration,
+      }
+    )
   }
 
   private checkConfigurationDone() {
@@ -74,7 +121,7 @@ export class InvestigationComponent {
 
       for (const paramName of Object.keys(params)) {
 
-        if (!params[paramName]) {
+        if (!params[paramName].value) {
           configurationDone = false;
         }
 
@@ -82,14 +129,30 @@ export class InvestigationComponent {
 
     }
     this.modelConfigurationDone = configurationDone;
+    this.stateService.state.set({
+        ...this.stateService.state(),
+        modelConfigurationDone: this.modelConfigurationDone,
+      }
+    )
   }
 
   private removeModel(modelId: number) {
     this.selectedModels = this.selectedModels.filter(selectedModel => selectedModel !== modelId)
     delete this.modelConfiguration[modelId]
+    this.stateService.state.set({
+        ...this.stateService.state(),
+        selectedModels: this.selectedModels,
+        modelConfiguration: this.modelConfiguration,
+      }
+    )
   }
 
   onStepChange($event: number) {
     this.stepId = $event;
+    this.stateService.state.set({
+        ...this.stateService.state(),
+        stepId: this.stepId,
+      }
+    )
   }
 }

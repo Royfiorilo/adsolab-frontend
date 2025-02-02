@@ -1,4 +1,14 @@
-import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  TemplateRef
+} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {ModelConfigurationService} from "./model-configuration.service";
 import {ILinearizationGraph, ILinearizationRequest} from "./interface";
@@ -17,7 +27,7 @@ import {TranslateService} from "@ngx-translate/core";
   templateUrl: './model-configuration.component.html',
   styleUrl: './model-configuration.component.css'
 })
-export class ModelConfigurationComponent {
+export class ModelConfigurationComponent implements OnChanges, OnInit {
   @Input() dataSample: DataSample | undefined;
   @Input() selectedModels!: number[];
   @Input() investigationId: number | undefined;
@@ -31,6 +41,12 @@ export class ModelConfigurationComponent {
   constructor(private modelConfigurationService: ModelConfigurationService,
               protected commonUtilsService: CommonUtilsService,
               private dialog: MatDialog, private translateService: TranslateService) {
+
+  }
+
+  ngOnInit() {
+
+    console.log(this.modelConfiguration[1].automatedParams)
 
   }
 
@@ -155,12 +171,10 @@ export class ModelConfigurationComponent {
   protected readonly faInfoCircle = faInfoCircle;
 
   onChange(event: Event, modelId: number, key: string) {
-
-    this.modelConfiguration[modelId].paramValues[key] = {value: +(event.target as HTMLInputElement).value, stderr: 0}
-
-
+    
     this.onSelectedParams.emit(this.modelConfiguration)
 
   }
+
 
 }

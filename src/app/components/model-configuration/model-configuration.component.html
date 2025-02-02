@@ -57,7 +57,7 @@
               <mat-form-field class="w-100">
                 <mat-label> {{ param.key }}</mat-label>
                 <input matInput
-                       [value]=[modelConfiguration[modelId].paramValues[param.key]]
+                       [(ngModel)]="param.value.value"
                        (change)="onChange($event,modelId, param.key)"
                        id="{{param.key}}"
                        type="number"/>

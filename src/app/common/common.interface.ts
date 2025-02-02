@@ -1,4 +1,6 @@
 import {IModelConfiguration} from "../components/investigation/interface";
+import {Investigation} from "../components/data-selector/data-sample";
+import {Model} from "../components/model-selector/model";
 
 export interface IModelsConfigurations {
   [modelId: number]: IModelConfiguration
@@ -58,4 +60,13 @@ export interface ITransformedData {
 export interface IErrorDialogData {
   main_message: string;
   error_message: string;
+}
+
+export interface IInvestigationState {
+  investigation: Investigation | undefined;
+  stepId: number;
+  models: Model[];
+  selectedModels: number[];
+  modelConfiguration: IModelsConfigurations;
+  modelConfigurationDone: boolean;
 }
