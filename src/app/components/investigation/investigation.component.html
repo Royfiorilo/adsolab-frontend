@@ -9,7 +9,8 @@
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
-          <app-data-selector (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
+          <app-data-selector [investigation]="investigation"
+                             (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
         </mat-step>
         <mat-step label="Selección de Modelos" [completed]="selectedModels.length !== 0">
           <ng-template matStepContent>
