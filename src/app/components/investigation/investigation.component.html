@@ -24,7 +24,7 @@
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
-            <app-model-selector [models]="models" [selectedModels]="selectedModels"
+            <app-model-selector [models]="models" [selectedModels]="selectedModels" [stepId]="stepId"
                                 (onLoadedModels)="onLoadedModels($event)"
                                 (onSelectedModels)="onModelSelected($event)"></app-model-selector>
 
