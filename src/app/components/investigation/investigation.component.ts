@@ -79,7 +79,6 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
       paramSaved: undefined,
       iterations: DEFAULT_ITERATIONS
     };
-    console.log(this.modelConfiguration);
     this.stateService.state.set({
         ...this.stateService.state(),
         selectedModels: this.selectedModels,

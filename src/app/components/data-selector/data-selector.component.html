@@ -43,8 +43,8 @@
     </div>
   </div>
 </div>
-<app-data-visualizer [isTableVisible]="true" *ngIf="investigation?.sample"
-                     [data]="investigation?.sample!"></app-data-visualizer>
+<app-data-visualizer [isTableVisible]="true" *ngIf="investigation?.sample ?? dataSample"
+                     [data]="investigation?.sample ?? dataSample!"></app-data-visualizer>
 <ng-container *ngIf="creatingInvestigation || loadingDataSamples">
   <app-loading></app-loading>
 </ng-container>
