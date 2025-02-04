@@ -11,7 +11,11 @@
   },
   "INVESTIGATION": {
     "CONTINUE": "Continuar",
-    "BACK": "Volver"
+    "BACK": "Volver",
+    "CREATE_NEW": "Crear nueva",
+    "CONTINUE_INVESTIGATION_TITLE": "Continuar investigación",
+    "ONGOING_INVESTIGATION_DETECTED": "Detectamos que hay una investigación en curso.",
+    "CONTINUE_INVESTIGATION_QUESTION": "¿Te gustaría retomarla o empezar una nueva?"
   },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",
@@ -53,7 +57,9 @@
     "RUN_LINEARIZATION": "Ejecutar linealización",
     "BEST_LINEARIZATION": "Mejor linealización",
     "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles",
-    "LINEARIZATION_ERROR": "No se pudo realizar la linealización. Por favor, ingrese los parámetros manualmente para poder avanzar."
+    "LINEARIZATION_ERROR": "No se pudo realizar la linealización. Por favor, ingrese los parámetros manualmente para poder avanzar.",
+    "ITERATIONS": "Iteraciones",
+    "ITERATIONS_EXAMPLE": "Ej. 5000"
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
 import {catchError, firstValueFrom, Observable} from 'rxjs';
@@ -16,6 +16,7 @@ import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 })
 export class DataSelectorComponent {
   @Output() onInvestigationCreated: EventEmitter<Investigation> = new EventEmitter();
+  @Input() investigation!: Investigation | undefined;
   protected dataSample: DataSample | undefined;
   protected availableDataSamples: DataSample[] = [];
   protected creatingInvestigation: boolean = false;

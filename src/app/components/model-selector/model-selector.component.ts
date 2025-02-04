@@ -1,5 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, TemplateRef} from '@angular/core';
-import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
+import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModelSelectorServiceService} from "./model-selector-service.service";
 import {Model} from "./model";
@@ -23,10 +22,10 @@ interface Model2 {
 export class ModelSelectorComponent {
   @Input() selectedModels!: number[];
   @Input() models!: Model[];
+  @Input() stepId!: number;
   @Output() onSelectedModels: EventEmitter<number> = new EventEmitter();
   @Output() onLoadedModels: EventEmitter<Model[]> = new EventEmitter();
   private modalService = inject(NgbModal);
-  protected readonly faInfoCircle = faInfoCircle;
   protected loadingModels: boolean = false;
 
 
@@ -58,6 +57,10 @@ export class ModelSelectorComponent {
   }
 
   ngOnInit() {
+    this.getModels();
+  }
+
+  private getModels() {
     if (this.models.length === 0) {
       this.loadingModels = true;
       this.modelService.getModels()
@@ -69,6 +72,14 @@ export class ModelSelectorComponent {
           this.onLoadedModels.emit(response.models);
         });
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if (changes['stepId'] && changes['stepId'].currentValue === 1) {
+      this.getModels();
+    }
+
   }
 
   open(content: TemplateRef<any>) {

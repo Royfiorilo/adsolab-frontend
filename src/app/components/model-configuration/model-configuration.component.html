@@ -24,28 +24,26 @@
                           [id]="modelId.toString()"
               >
 
-                <ng-container *ngIf="commonUtilsService.getModelById(modelId, models).linearizations.length">
+                <div *ngFor="let option of seedParamOptions">
 
-                  <mat-option [value]=true>
-                    {{ 'MODEL_CONFIGURATION.AUTOMATED_PARAMS' | translate }}
+                  <mat-option [value]="option.name === SeedParamOption.AUTOMATED"
+                              *ngIf="(option.name === SeedParamOption.AUTOMATED && commonUtilsService.getModelById(modelId, models).linearizations.length)
+                              || option.name === SeedParamOption.MANUAL">
+                    {{ option.value }}
                   </mat-option>
 
-                </ng-container>
-
-                <mat-option [value]=false>
-                  {{ 'MODEL_CONFIGURATION.MANUAL_PARAMS' | translate }}
-                </mat-option>
+                </div>
 
               </mat-select>
             </mat-form-field>
             <mat-form-field class="flex-grow-2">
-              <mat-label>Iteraciones</mat-label>
+              <mat-label>{{ 'MODEL_CONFIGURATION.ITERATIONS' | translate }}</mat-label>
               <input
                 [id]="modelId.toString()"
                 [(ngModel)]="modelConfiguration[modelId].iterations"
                 matInput
                 type="number"
-                placeholder="Ej. 25"
+                placeholder="{{ 'MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}"
               >
             </mat-form-field>
           </div>
@@ -57,7 +55,7 @@
               <mat-form-field class="w-100">
                 <mat-label> {{ param.key }}</mat-label>
                 <input matInput
-                       [value]=[modelConfiguration[modelId].paramValues[param.key]]
+                       [(ngModel)]="param.value.value"
                        (change)="onChange($event,modelId, param.key)"
                        id="{{param.key}}"
                        type="number"/>

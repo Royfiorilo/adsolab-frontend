@@ -1,7 +1,17 @@
-import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  TemplateRef
+} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {ModelConfigurationService} from "./model-configuration.service";
-import {ILinearizationGraph, ILinearizationRequest} from "./interface";
+import {ILinearizationGraph, ILinearizationRequest, ISeedParamOption, SeedParamOption} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {DataSample} from "../data-selector/data-sample";
@@ -17,7 +27,7 @@ import {TranslateService} from "@ngx-translate/core";
   templateUrl: './model-configuration.component.html',
   styleUrl: './model-configuration.component.css'
 })
-export class ModelConfigurationComponent {
+export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   @Input() dataSample: DataSample | undefined;
   @Input() selectedModels!: number[];
   @Input() investigationId: number | undefined;
@@ -27,10 +37,25 @@ export class ModelConfigurationComponent {
   protected linearizationGraphs: { [key: number]: { graphs: ILinearizationGraph[], error?: string } } = {};
   private modalService = inject(NgbModal);
   protected runningLinearization: boolean = false;
+  protected seedParamOptions: ISeedParamOption[] = []
 
   constructor(private modelConfigurationService: ModelConfigurationService,
               protected commonUtilsService: CommonUtilsService,
               private dialog: MatDialog, private translateService: TranslateService) {
+
+  }
+
+  async ngAfterViewInit() {
+
+    this.seedParamOptions.push({
+      name: SeedParamOption.AUTOMATED,
+      value: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.AUTOMATED_PARAMS'))
+    });
+
+    this.seedParamOptions.push({
+      name: SeedParamOption.MANUAL,
+      value: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.MANUAL_PARAMS'))
+    });
 
   }
 
@@ -156,11 +181,10 @@ export class ModelConfigurationComponent {
 
   onChange(event: Event, modelId: number, key: string) {
 
-    this.modelConfiguration[modelId].paramValues[key] = {value: +(event.target as HTMLInputElement).value, stderr: 0}
-
-
     this.onSelectedParams.emit(this.modelConfiguration)
 
   }
 
+
+  protected readonly SeedParamOption = SeedParamOption;
 }

@@ -8,5 +8,5 @@ import {DataSample} from "../data-selector/data-sample";
 })
 export class DataVisualizerComponent {
   @Input() data!: DataSample;
-  protected isTableVisible: boolean = false;
+  @Input() isTableVisible: boolean = false;
 }
