@@ -48,7 +48,7 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
 
     let state: IInvestigationState = this.stateService.state();
 
-    if (state.investigation) {
+    if (state?.investigation) {
       this.steps.get(this.stepId)?.select()
       this.dialog.open(this.loadOnGoingInvestigationModal);
     }
