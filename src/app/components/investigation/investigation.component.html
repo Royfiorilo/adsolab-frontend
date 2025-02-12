@@ -3,52 +3,59 @@
     <div class="col-10">
       <mat-stepper [orientation]="'horizontal'" [linear]="true" [animationDuration]="'0'"
                    (selectedIndexChange)="onStepChange($event)">
-        <mat-step label="Datos" [completed]="investigation" class="d-flex">
-          <div *ngIf="investigation" class="stepper-button-right">
+        <mat-step label="Datos" [completed]="state().investigation" class="d-flex">
+          <div *ngIf="state().investigation" class="stepper-button-right">
             <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
-          <app-data-selector [investigation]="investigation"
+          <app-data-selector [investigation]="state().investigation"
                              (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
         </mat-step>
-        <mat-step label="Selección de Modelos" [completed]="selectedModels.length !== 0">
+
+        <mat-step label="Selección de Modelos" [completed]="state().selectedModels.length !== 0">
           <ng-template matStepContent>
-            <div class="stepper-button-left" *ngIf="models.length !== 0">
+            <div class="stepper-button-left" *ngIf="state().models.length !== 0">
               <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_back</mat-icon>
               </button>
             </div>
-            <div class="stepper-button-right" *ngIf="selectedModels.length !== 0">
+            <div class="stepper-button-right" *ngIf="state().selectedModels.length !== 0">
               <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
-            <app-model-selector [models]="models" [selectedModels]="selectedModels" [stepId]="stepId"
+            <app-model-selector [models]="state().models"
+                                [selectedModels]="state().selectedModels"
+                                [stepId]="state().stepId"
                                 (onLoadedModels)="onLoadedModels($event)"
-                                (onSelectedModels)="onModelSelected($event)"></app-model-selector>
-
+                                (onSelectedModels)="onModelSelected($event)">
+            </app-model-selector>
           </ng-template>
         </mat-step>
-        <mat-step label="Configuración de Modelos" [completed]="modelConfigurationDone">
+
+        <mat-step label="Configuración de Modelos" [completed]="state().modelConfigurationDone">
           <ng-template matStepContent>
             <div class="stepper-button-left">
               <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_back</mat-icon>
               </button>
             </div>
-            <div class="stepper-button-right" *ngIf="modelConfigurationDone">
+            <div class="stepper-button-right" *ngIf="state().modelConfigurationDone">
               <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
-            <app-model-configuration [investigationId]="investigation?.investigation_id" [models]="models"
-                                     [modelConfiguration]="modelConfiguration"
+            <app-model-configuration [investigationId]="state().investigation?.investigation_id"
+                                     [models]="state().models"
+                                     [modelConfiguration]="state().modelConfiguration"
                                      (onSelectedParams)="onSelectedParams($event)"
-                                     [selectedModels]="selectedModels"
-                                     [dataSample]="investigation?.sample"></app-model-configuration>
+                                     [selectedModels]="state().selectedModels"
+                                     [dataSample]="state().investigation?.sample">
+            </app-model-configuration>
           </ng-template>
         </mat-step>
+
         <mat-step label="Resultados">
           <ng-template matStepContent>
             <div class="stepper-button-left">
@@ -57,12 +64,13 @@
               </button>
             </div>
             <app-model-compare
-              [investigationId]="investigation?.investigation_id"
-              [dataSample]="investigation?.sample"
-              [selectedModels]="selectedModels"
-              [modelConfiguration]="modelConfiguration"
-              [stepId]="stepId"
-              [models]="models"></app-model-compare>
+              [investigationId]="state().investigation?.investigation_id"
+              [dataSample]="state().investigation?.sample"
+              [selectedModels]="state().selectedModels"
+              [modelConfiguration]="state().modelConfiguration"
+              [stepId]="state().stepId"
+              [models]="state().models">
+            </app-model-compare>
           </ng-template>
         </mat-step>
       </mat-stepper>
@@ -71,7 +79,6 @@
 </div>
 
 <ng-template #loadOnGoingInvestigationModal>
-
   <h2 mat-dialog-title>
     {{ 'INVESTIGATION.CONTINUE_INVESTIGATION_TITLE' | translate }}
   </h2>
