@@ -8,11 +8,16 @@
     </button>
 
     <div>
-      <button mat-button color="primary" class="m-2" (click)="downloadExcelWithMultipleSheets()"
-              *ngIf="!noLinearFailed">
-        <fa-icon [icon]="faDownload" class="m-2"></fa-icon>
-        {{ 'MODEL_COMPARE.DOWNLOAD_RESULTS' | translate }}
-      </button>
+      <app-downloader
+        [modelConfiguration]="modelConfiguration"
+        [summaryGraph]="summaryGraph"
+        [ridgeResult]="ridgeResult"
+        [noLinearResults]="noLinearResults"
+        [noLinearFailed]="noLinearFailed"
+        [xForCurvePlot]="xForCurvePlot">
+        >
+      </app-downloader>
+
     </div>
 
     <div>

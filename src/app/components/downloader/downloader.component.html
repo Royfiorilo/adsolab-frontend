@@ -1,0 +1,5 @@
+<button mat-button color="primary" class="m-2" (click)="downloadExcel()"
+        *ngIf="!noLinearFailed">
+  <fa-icon [icon]="faDownload" class="m-2"></fa-icon>
+  {{ 'MODEL_COMPARE.DOWNLOAD_RESULTS' | translate }}
+</button>

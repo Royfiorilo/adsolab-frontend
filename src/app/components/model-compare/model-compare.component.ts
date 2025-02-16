@@ -16,9 +16,7 @@ import {
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 import {MatAccordion} from "@angular/material/expansion";
-import {faCloudArrowUp, faFileDownload} from "@fortawesome/free-solid-svg-icons";
-import * as XLSX from 'xlsx';
-import {saveAs} from 'file-saver';
+import {faCloudArrowUp} from "@fortawesome/free-solid-svg-icons";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {firstValueFrom} from "rxjs";
@@ -183,7 +181,6 @@ export class ModelCompareComponent {
     });
   }
 
-
   runNonLinearModels() {
 
     this.selectedModelsChanged = false;
@@ -334,7 +331,6 @@ export class ModelCompareComponent {
     })
   }
 
-
   getBestComparisonModelOverall(): string {
 
     if (this.noLinearCompareResult?.heuristic.best_model === this.noLinearCompareResult?.ridge.best_model) {
@@ -361,11 +357,6 @@ export class ModelCompareComponent {
       throw new Error("Best Fit not found")
     }
 
-  }
-
-  getRidgeResiduals(name: string) {
-
-    return (this.noLinearCompareResult!.ridge!.residuals as any)[name]
   }
 
   getRidgeStatistic(statName: string) {
@@ -398,136 +389,7 @@ export class ModelCompareComponent {
     }
   }
 
-  downloadExcelWithMultipleSheets(): void {
-    const workbook: XLSX.WorkBook = {Sheets: {}, SheetNames: []};
-
-    this.addMainDataSheet(workbook);
-    this.state().selectedModels.forEach((modelId) => this.addModelSheet(workbook, modelId));
-    this.addRidgeSheet(workbook);
-
-    const excelBuffer: any = XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
-    const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-    saveAs(blob, 'Adsolab.xlsx'); // Reemplazar por investigation name
-  }
-
-  private addMainDataSheet(workbook: XLSX.WorkBook): void {
-    const worksheetData: (string | number)[][] = [];
-
-    worksheetData.push(this.getHeaders('Ce'));
-    this.state().investigation?.sample?.ce.forEach((ceValue, index) => {
-      worksheetData.push(this.getRowForCe(ceValue, index));
-    });
-
-    worksheetData.push([...this.getHeaders('Estadisticos'), 'Ridge']);
-    this.getStatisticsRows().forEach((statName) => {
-      worksheetData.push(this.getRowForStatistics(statName));
-    });
-
-    worksheetData.push([...this.getHeaders('Residuos'), 'Ridge']);
-    this.getResidualsRows().forEach((name) => {
-      worksheetData.push(this.getRowForResiduals(name));
-    });
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    this.addSheetToWorkbook(workbook, 'Data', worksheet);
-  }
-
-  private addRidgeSheet(workbook: XLSX.WorkBook): void {
-    if (!this.ridgeResult) return;
-
-    const sheetData: (string | number)[][] = [];
-    const headers = [
-      ...Object.keys(this.ridgeResult.statistics),
-      ...Object.keys(this.ridgeResult.residuals),
-      ...this.ridgeResult.results.map(result => this.getModelName(result.model))
-    ];
-
-    const values = [
-      ...Object.values(this.ridgeResult.statistics),
-      ...Object.values(this.ridgeResult.residuals),
-      ...this.ridgeResult.results.map(result => result.coef)
-    ];
-
-    sheetData.push(headers);
-    sheetData.push(values);
-
-    sheetData.push(['x', 'y']);
-    this.ridgeResult.y_pred.forEach((y, index) => {
-      sheetData.push([this.xForCurvePlot[index], y]);
-    });
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
-    this.addSheetToWorkbook(workbook, 'Ridge', worksheet);
-  }
-
-  private addModelSheet(workbook: XLSX.WorkBook, modelId: number): void {
-    const model = this.commonUtilsService.getModelById(+modelId, this.state().models);
-    const bestAdjust = this.getBestAdjustmentDataByModel(model._id);
-
-    const headers = [
-      ...bestAdjust.parameters.map(param => param.name),
-      ...Object.keys(bestAdjust.statistics),
-      ...Object.keys(bestAdjust.residuals)
-    ];
-
-    const values = [
-      ...bestAdjust.parameters.map(param => param.value),
-      ...Object.values(bestAdjust.statistics),
-      ...Object.values(bestAdjust.residuals)
-    ];
-
-    const sheetData: (string | number)[][] = [
-      [bestAdjust.adjustment_name],
-      headers,
-      values,
-      ['x', 'y'],
-      ...this.getGraphDataRows(bestAdjust.graph.data)
-    ];
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
-    this.addSheetToWorkbook(workbook, model.name, worksheet);
-  }
-
-  private addSheetToWorkbook(workbook: XLSX.WorkBook, sheetName: string, worksheet: XLSX.WorkSheet): void {
-    workbook.Sheets[sheetName] = worksheet;
-    workbook.SheetNames.push(sheetName);
-  }
-
-  private getHeaders(...additionalHeaders: string[]): string[] {
-    const modelHeaders = Object.keys(this.noLinearResults).map(modelId =>
-      this.getModelName(+modelId)
-    );
-    return [...additionalHeaders, ...modelHeaders];
-  }
-
-  private getGraphDataRows(graphData: { x: number[]; y: number[] }[]): (string | number)[][] {
-    const rows: (string | number)[][] = [];
-    graphData.forEach((data) => {
-      data.x.forEach((xValue, index) => {
-        rows.push([xValue, data.y[index]]);
-      });
-    });
-    return rows;
-  }
-
-  private getModelName(modelId: number): string {
-    return this.commonUtilsService.getModelById(modelId, this.state().models).name;
-  }
-
-  private getRowForCe(ceValue: number, index: number): (string | number)[] {
-    return [ceValue, ...this.state().selectedModels.map(modelId => this.bestTransformedValue(modelId, index))];
-  }
-
-  private getRowForStatistics(statName: string): (string | number)[] {
-    return [statName, ...this.state().selectedModels.map(modelId => this.bestStatisticValue(modelId, statName)), this.getRidgeStatistic(statName)];
-  }
-
-  private getRowForResiduals(name: string): (string | number)[] {
-    return [name, ...this.state().selectedModels.map(modelId => this.parseResiduals(this.bestResidualValue(modelId, name))), this.getRidgeResiduals(name)];
-  }
-
 
   protected readonly Object = Object;
-  protected readonly faDownload = faFileDownload;
   protected readonly faSave = faCloudArrowUp;
 }

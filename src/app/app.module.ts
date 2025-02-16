@@ -57,6 +57,7 @@ import {
 } from "@angular/material/dialog";
 import {ErrorDialogComponent} from './components/error-dialog/error-dialog.component';
 import {InvestigationModalComponent} from "./components/investigation/investigation-modal.component";
+import {DownloaderComponent} from "./components/downloader/downloader.component";
 
 //Plotly.register(locale)
 
@@ -84,7 +85,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     FitResultComponent,
     ErrorComponent,
     ErrorDialogComponent,
-    InvestigationModalComponent
+    InvestigationModalComponent,
+    DownloaderComponent
   ],
   imports: [
     BrowserModule,
