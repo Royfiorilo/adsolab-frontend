@@ -8,13 +8,12 @@
     </button>
 
     <div>
-      <app-downloader
-        [modelConfiguration]="modelConfiguration"
-        [summaryGraph]="summaryGraph"
-        [ridgeResult]="ridgeResult"
-        [noLinearResults]="noLinearResults"
-        [noLinearFailed]="noLinearFailed"
-        [xForCurvePlot]="xForCurvePlot">
+      <app-downloader *ngIf="!noLinearFailed"
+                      [modelConfiguration]="modelConfiguration"
+                      [summaryGraph]="summaryGraph"
+                      [ridgeResult]="ridgeResult"
+                      [noLinearResults]="noLinearResults"
+                      [xForCurvePlot]="xForCurvePlot">
         >
       </app-downloader>
 

@@ -17,7 +17,6 @@ export class DownloaderComponent {
   @Input() summaryGraph!: { [key: number]: IGraph };
   @Input() ridgeResult?: Ridge;
   @Input() noLinearResults!: { [key: number]: { bestAdjustment: string; adjustments: any[] } };
-  @Input() noLinearFailed: boolean = false;
   @Input() xForCurvePlot: number[] = [];
   state = this.stateService.state;
 
