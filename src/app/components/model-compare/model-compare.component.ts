@@ -4,11 +4,12 @@ import {
   AllResultsViewOption,
   ComparisonViewOption,
   IComparison,
-  INoLinearGraph,
+  INoLinearAdjustmentResult,
   INoLinearRequest,
   INoLinearRequestModel,
   INoLinearRequestSeed,
   INoLinearResponse,
+  IResiduals,
   IRidgeSaveRequest,
   ISaveRequest,
   Ridge
@@ -34,7 +35,9 @@ export class ModelCompareComponent {
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
   @Input() modelConfiguration!: IModelsConfigurations;
-  protected noLinearResults: { [key: number]: { bestAdjustment: string, adjustments: INoLinearGraph[] } } = {};
+  protected noLinearResults: {
+    [key: number]: { bestAdjustment: string, adjustments: INoLinearAdjustmentResult[] }
+  } = {};
   protected noLinearCompareResult: IComparison | undefined;
   protected runningNoLinearAdjustment: boolean = true;
   protected summaryGraph: { [key: number]: IGraph } = {};
@@ -110,7 +113,7 @@ export class ModelCompareComponent {
 
   getResidualsRows(): string[] {
     const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.residuals || {};
-    return Object.keys(sampleResiduals);
+    return Object.keys(sampleResiduals.analysis);
   }
 
   bestResidualValue(modelId: number, residualName: string): number {
@@ -119,7 +122,7 @@ export class ModelCompareComponent {
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment
     );
-    return bestFit ? (bestFit.residuals as any)[residualName] : 0
+    return bestFit ? (bestFit.residuals.analysis as any)[residualName] : 0
   }
 
 
@@ -143,7 +146,7 @@ export class ModelCompareComponent {
 
     const ridgeRequest: IRidgeSaveRequest = {
       best_model: response.comparison.ridge.best_model,
-      residuals: response.comparison.ridge.residuals,
+      residuals: response.comparison.ridge.residuals.analysis,
       results: response.comparison.ridge.results,
       statistics: response.comparison.ridge.statistics,
     };
@@ -231,7 +234,7 @@ export class ModelCompareComponent {
         });
         this.runningNoLinearAdjustment = false;
       },
-      next: (response) => {
+      next: async (response) => {
 
         this.noLinearResponse = response;
         this.noLinearCompareResult = response.comparison;
@@ -241,12 +244,21 @@ export class ModelCompareComponent {
 
         this.xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
 
+        let axisTitles = {
+          xaxis: {
+            title: await firstValueFrom(this.translateService.get('CE'))
+          },
+          yaxis: {
+            title: await firstValueFrom(this.translateService.get('QE'))
+          },
+        }
+
         let baseData = {
           x: xPointX,
           y: yPointX,
           type: 'scatter',
           mode: 'markers',
-          name: "Muestra",
+          name: await firstValueFrom(this.translateService.get('SAMPLE')),
           marker: {color: 'black'}
         }
 
@@ -256,15 +268,21 @@ export class ModelCompareComponent {
           x: this.xForCurvePlot,
           y: response.comparison.ridge.y_pred,
           type: 'scatter',
-          mode: 'line+marker',
-          name: 'Ridge',
+          mode: 'lines',
+          name: await firstValueFrom(this.translateService.get("MODEL_COMPARE.RIDGE")),
           line: {shape: 'spline', color: 'grey'},
           marker: {color: 'grey'},
 
         }
 
         this.compareGraph = {
-          data: [ridgeData], layout: {title: "Mejor ajuste por modelo", autosize: true}
+          data: [ridgeData],
+          layout: {
+            title: await firstValueFrom(this.translateService.get("MODEL_COMPARE.PLOT.BEST_FIT_BY_MODEL")),
+            autosize: true,
+            xaxis: axisTitles.xaxis,
+            yaxis: axisTitles.yaxis
+          }
         }
 
         for (const model of response.results) {
@@ -276,7 +294,13 @@ export class ModelCompareComponent {
 
 
           this.summaryGraph[model.model] = {
-            data: [], layout: {title: "Resumen de resultados", autosize: true}
+            data: [],
+            layout: {
+              title: await firstValueFrom(this.translateService.get('MODEL_COMPARE.PLOT.RESULTS_SUMMARY_TITLE')),
+              autosize: true,
+              xaxis: axisTitles.xaxis,
+              yaxis: axisTitles.yaxis
+            }
           }
 
           for (const adjustment of model.adjustment_methods) {
@@ -285,7 +309,7 @@ export class ModelCompareComponent {
               x: adjustment.transformed.x,
               y: adjustment.transformed.y,
               type: 'scatter',
-              mode: 'line+marker',
+              mode: 'lines',
               name: adjustment.name,
               line: {shape: 'spline', color: this.colorByMethod[adjustment.name]},
               marker: {color: this.colorByMethod[adjustment.name]},
@@ -303,17 +327,22 @@ export class ModelCompareComponent {
 
             this.summaryGraph[model.model].data.push(resultData)
 
-            let noLinearGraph: INoLinearGraph = {
+            let noLinearGraph: INoLinearAdjustmentResult = {
               parameters: adjustment.parameters,
               statistics: adjustment.statistics,
               adjustment_name: adjustment.name,
-              residuals: adjustment.residuals,
+              residuals: await this.buildResidualsGraph(adjustment.residuals, xPointX),
               graph: {
                 data: [
                   resultData,
                   baseData
                 ],
-                layout: {title: '', autosize: true} //TODO: poner algun titulo
+                layout: {
+                  title: await firstValueFrom(this.translateService.get('MODEL_COMPARE.FIT')),
+                  autosize: true,
+                  xaxis: axisTitles.xaxis,
+                  yaxis: axisTitles.yaxis
+                }
               }
             }
             this.noLinearResults[model.model].adjustments.push(noLinearGraph)
@@ -331,7 +360,38 @@ export class ModelCompareComponent {
     })
   }
 
-  getBestComparisonModelOverall(): string {
+  async buildResidualsGraph(residuals: IResiduals, ce: number[]) {
+
+    let response = residuals;
+
+    response.graph = {
+      data: [
+        {
+          x: [...ce].sort((a, b) => a - b),
+          y: residuals.values,
+          type: 'scatter',
+          mode: 'markers',
+          marker: {color: 'red'},
+        }
+      ],
+      layout: {
+        title: await firstValueFrom(this.translateService.get('MODEL_COMPARE.RESIDUALS')),
+        autosize: true,
+        xaxis: {
+          title: await firstValueFrom(this.translateService.get('CE'))
+        },
+        yaxis: {
+          title: `${await firstValueFrom(this.translateService.get('QE'))} - ${await firstValueFrom(this.translateService.get('QE_PRED'))}`
+        }
+      }
+    }
+
+    return response;
+
+  }
+
+
+  getBestComparisonModelOverall(): string | undefined {
 
     if (this.noLinearCompareResult?.heuristic.best_model === this.noLinearCompareResult?.ridge.best_model) {
 
@@ -339,7 +399,7 @@ export class ModelCompareComponent {
 
     } else {
 
-      return 'Indefinido'
+      return undefined;
     }
 
   }

@@ -4,6 +4,11 @@
   "OR": "o",
   "NAME": "Nombre",
   "CLOSE": "Cerrar",
+  "CE": "Ce",
+  "QE": "Qe",
+  "QE_PRED": "Qe pred",
+  "SAMPLE": "Muestra",
+  "UNDEFINED": "Indefinido",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "GRAPHS": "Gráficos",
@@ -76,6 +81,7 @@
     "TWO_COLUMNS": "Dos columnas",
     "PARAMS": "Parámetros",
     "STATISTICS": "Estadísticos",
+    "CALCULATED_POINTS": "Puntos calculados",
     "BEST_FIT": "Mejor ajuste",
     "EXPAND_ALL": "Expandir todos",
     "COLLAPSE_ALL": "Colapsar todos",
@@ -83,7 +89,13 @@
     "DOWNLOAD_RESULTS": "Descargar resultados",
     "SAVE_RESULTS": "Guardar resultados",
     "ERROR_RUNNING_COMPARISON": "No se pudo ejecutar la comparación.",
-    "ERROR_SAVING_RESULTS": "No se pudieron guardar los resultados."
+    "ERROR_SAVING_RESULTS": "No se pudieron guardar los resultados.",
+    "RESIDUALS_ANALYSIS": "Análisis de residuos",
+    "RESIDUALS": "Residuos",
+    "PLOT": {
+      "RESULTS_SUMMARY_TITLE": "Resumen de resultados",
+      "BEST_FIT_BY_MODEL": "Mejor ajuste por modelo"
+    }
   },
   "DATA_VISUALIZER": {
     "SHOW_OR_HIDE_SAMPLE": "Mostrar/Ocultar muestra"

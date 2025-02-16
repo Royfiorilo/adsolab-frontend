@@ -33,34 +33,31 @@
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" *ngIf="!selectedModelsChanged && !noLinearFailed">
     <mat-tab selected label="{{'MODEL_COMPARE.COMPARISON' | translate}}">
 
-      <ng-template matTabContent>
+      <div class="row justify-content-center m-3">
+        <div class="card col-lg-8 col-md-10">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5
+                class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
+            </div>
 
-
-        <div class="row justify-content-center m-3">
-          <div class="card col-lg-8 col-md-10">
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex justify-content-between align-items-center">
-                <h5
-                  class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
-              </div>
-
-              <h2 class="text-center">
+            <h2 class="text-center">
               <span
-                [ngClass]="getBestComparisonModelOverall() !== 'Indefinido' ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
-              {{ getBestComparisonModelOverall() }}
+                [ngClass]="getBestComparisonModelOverall() ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
+              {{ getBestComparisonModelOverall() ?? ('UNDEFINED' | translate) }}
               </span>
-              </h2>
+            </h2>
 
-              <!--          Resumen del por que de la eleccion del mejor-->
+            <!--          Resumen del por que de la eleccion del mejor-->
 
-              <div class="card m-3">
-                <div
-                  class="card-body p-3 shadow-sm  align-items-center text-center">
-                  <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.HEURISTIC' | translate }}</h5>
+            <div class="card m-3">
+              <div
+                class="card-body p-3 shadow-sm  align-items-center text-center">
+                <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.HEURISTIC' | translate }}</h5>
 
-                  <div class="row justify-content-center">
+                <div class="row justify-content-center">
 
-                    <div *ngFor="let result of noLinearCompareResult!.heuristic!.results" class="col-md-6 col-lg-3">
+                  <div *ngFor="let result of noLinearCompareResult!.heuristic!.results" class="col-md-6 col-lg-3">
 
                       <div
                         [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
@@ -72,23 +69,23 @@
                         <div>{{ result.score }}</div>
                       </div>
 
-                    </div>
-
                   </div>
-
 
                 </div>
 
+
               </div>
 
-              <div class="card m-3">
-                <div
-                  class="card-body p-3 shadow-sm  align-items-center text-center">
-                  <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h5>
+            </div>
 
-                  <div class="row justify-content-center">
+            <div class="card m-3">
+              <div
+                class="card-body p-3 shadow-sm  align-items-center text-center">
+                <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h5>
 
-                    <div *ngFor="let result of noLinearCompareResult!.ridge!.results" class="col-md-6 col-lg-3">
+                <div class="row justify-content-center">
+
+                  <div *ngFor="let result of noLinearCompareResult!.ridge!.results" class="col-md-6 col-lg-3">
 
                       <div
                         [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
@@ -100,74 +97,74 @@
                         <div>{{ result.coef }}</div>
                       </div>
 
-                    </div>
-
                   </div>
-
 
                 </div>
 
+
               </div>
 
             </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row m-0">
+
+        <div class="d-flex justify-content-end mb-3">
+          <button mat-icon-button color="primary"
+                  [ngClass]="{'bg-primary-subtle': selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS}"
+                  matTooltip="{{'MODEL_COMPARE.TWO_COLUMNS' | translate}}"
+                  (click)="toggleComparisonViewOption(comparisonViewOptions.TWO_COLUMNS)">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                 fill="#008bce">
+              <path
+                d="M600-120q-33 0-56.5-23.5T520-200v-560q0-33 23.5-56.5T600-840h160q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600Zm0-640v560h160v-560H600ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h160q33 0 56.5 23.5T440-760v560q0 33-23.5 56.5T360-120H200Zm0-640v560h160v-560H200Zm560 0H600h160Zm-400 0H200h160Z"/>
+            </svg>
+          </button>
+          <button mat-icon-button color="primary"
+                  [ngClass]="{'bg-primary-subtle': selectedComparisonLayout === comparisonViewOptions.ONE_COLUMN}"
+                  matTooltip="{{'MODEL_COMPARE.ONE_COLUMN' | translate}}"
+                  (click)="toggleComparisonViewOption(comparisonViewOptions.ONE_COLUMN)">
+            <mat-icon>splitscreen</mat-icon>
+          </button>
+        </div>
+
+        <div class="col-md-12"
+             [ngClass]="selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS ? 'col-lg-8' : 'col'">
+          <div *ngIf="compareGraph">
+            <plotly-plot #comparisonPlot [data]="compareGraph.data" [layout]="compareGraph.layout"
+                         [useResizeHandler]="true"></plotly-plot>
           </div>
         </div>
 
-        <div class="row m-0">
+        <div class="col-md-12"
+             [ngClass]="selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS ? 'col-lg-4' : 'col'">
+          <mat-accordion multi id="0">
 
-          <div class="d-flex justify-content-end mb-3">
-            <button mat-icon-button color="primary"
-                    [ngClass]="{'bg-primary-subtle': selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS}"
-                    matTooltip="{{'MODEL_COMPARE.TWO_COLUMNS' | translate}}"
-                    (click)="toggleComparisonViewOption(comparisonViewOptions.TWO_COLUMNS)">
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                   fill="#008bce">
-                <path
-                  d="M600-120q-33 0-56.5-23.5T520-200v-560q0-33 23.5-56.5T600-840h160q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600Zm0-640v560h160v-560H600ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h160q33 0 56.5 23.5T440-760v560q0 33-23.5 56.5T360-120H200Zm0-640v560h160v-560H200Zm560 0H600h160Zm-400 0H200h160Z"/>
-              </svg>
-            </button>
-            <button mat-icon-button color="primary"
-                    [ngClass]="{'bg-primary-subtle': selectedComparisonLayout === comparisonViewOptions.ONE_COLUMN}"
-                    matTooltip="{{'MODEL_COMPARE.ONE_COLUMN' | translate}}"
-                    (click)="toggleComparisonViewOption(comparisonViewOptions.ONE_COLUMN)">
-              <mat-icon>splitscreen</mat-icon>
-            </button>
-          </div>
-
-          <div class="col-md-12"
-               [ngClass]="selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS ? 'col-lg-8' : 'col'">
-            <div *ngIf="compareGraph">
-              <plotly-plot #comparisonPlot [data]="compareGraph.data" [layout]="compareGraph.layout"
-                           [useResizeHandler]="true"></plotly-plot>
+            <div class="m-2">
+              <button mat-button color="primary"
+                      (click)="toggleAccordion(0, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
+              </button>
+              <button mat-button color="primary"
+                      (click)="toggleAccordion(0, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
+              </button>
             </div>
-          </div>
 
-          <div class="col-md-12"
-               [ngClass]="selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS ? 'col-lg-4' : 'col'">
-            <mat-accordion multi id="0">
-
-              <div class="m-2">
-                <button mat-button color="primary"
-                        (click)="toggleAccordion(0, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
-                </button>
-                <button mat-button color="primary"
-                        (click)="toggleAccordion(0, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
-                </button>
-              </div>
-
-              <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <h4 class="text-center">Puntos calculados</h4>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <h4 class="text-center">{{ 'MODEL_COMPARE.CALCULATED_POINTS' | translate }}</h4>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
 
                 <ng-template matExpansionPanelContent>
                   <table class="table table-striped">
                     <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Ce</th>
+                      <th scope="col">{{ 'CE' | translate }}</th>
                       <th *ngFor="let modelId of getNoLinearResultsModelIds()">
                         {{ commonUtilsService.getModelById(+modelId, state().models).name }}
                       </th>
@@ -185,14 +182,14 @@
                   </table>
                 </ng-template>
 
-              </mat-expansion-panel>
+            </mat-expansion-panel>
 
-              <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <h4 class="text-center">Estadísticos</h4>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <h4 class="text-center">{{ 'MODEL_COMPARE.STATISTICS' | translate }}</h4>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
 
                 <ng-template matExpansionPanelContent>
                   <div class="table-responsive">
@@ -219,14 +216,14 @@
                   </div>
                 </ng-template>
 
-              </mat-expansion-panel>
+            </mat-expansion-panel>
 
-              <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <h4 class="text-center">Residuos</h4>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <h4 class="text-center">{{ 'MODEL_COMPARE.RESIDUALS_ANALYSIS' | translate }}</h4>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
 
                 <ng-template matExpansionPanelContent>
                   <div class="table-responsive">
@@ -251,41 +248,39 @@
                   </div>
                 </ng-template>
 
-              </mat-expansion-panel>
+            </mat-expansion-panel>
 
-            </mat-accordion>
-          </div>
+          </mat-accordion>
         </div>
-      </ng-template>
-
+      </div>
 
     </mat-tab>
 
     <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
 
-      <ng-template matTabContent>
-        <div class="d-flex justify-content-end mb-3">
-          <button mat-icon-button color="primary"
-                  [ngClass]="{'bg-primary-subtle': selectedAllResultsViewOption === allResultsViewOption.SIMPLIFIED}"
-                  matTooltip="{{'MODEL_COMPARE.SIMPLIFIED_VIEW' | translate}}"
-                  (click)="toggleAllResultsViewOption(allResultsViewOption.SIMPLIFIED)">
-            <mat-icon>grid_view</mat-icon>
-          </button>
-          <button mat-icon-button color="primary"
-                  [ngClass]="{'bg-primary-subtle': selectedAllResultsViewOption === allResultsViewOption.DETAILED}"
-                  matTooltip="{{'MODEL_COMPARE.DETAILED_VIEW' | translate}}"
-                  (click)="toggleAllResultsViewOption(allResultsViewOption.DETAILED)">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#008bce">
-              <path
-                d="m296-80-56-56 276-277 140 140 207-207 57 57-264 263-140-140L296-80Zm-136-40q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v168H160v472Zm0-552h560v-88H160v88Zm0 0v-88 88Z"/>
-            </svg>
-          </button>
-        </div>
 
-        <div *ngIf="!runningNoLinearAdjustment">
+      <div class="d-flex justify-content-end mb-3">
+        <button mat-icon-button color="primary"
+                [ngClass]="{'bg-primary-subtle': selectedAllResultsViewOption === allResultsViewOption.SIMPLIFIED}"
+                matTooltip="{{'MODEL_COMPARE.SIMPLIFIED_VIEW' | translate}}"
+                (click)="toggleAllResultsViewOption(allResultsViewOption.SIMPLIFIED)">
+          <mat-icon>grid_view</mat-icon>
+        </button>
+        <button mat-icon-button color="primary"
+                [ngClass]="{'bg-primary-subtle': selectedAllResultsViewOption === allResultsViewOption.DETAILED}"
+                matTooltip="{{'MODEL_COMPARE.DETAILED_VIEW' | translate}}"
+                (click)="toggleAllResultsViewOption(allResultsViewOption.DETAILED)">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#008bce">
+            <path
+              d="m296-80-56-56 276-277 140 140 207-207 57 57-264 263-140-140L296-80Zm-136-40q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v168H160v472Zm0-552h560v-88H160v88Zm0 0v-88 88Z"/>
+          </svg>
+        </button>
+      </div>
 
-          <div *ngIf="selectedAllResultsViewOption === allResultsViewOption.SIMPLIFIED"
-               class="row justify-content-center m-3">
+      <div *ngIf="!runningNoLinearAdjustment">
+
+        <div *ngIf="selectedAllResultsViewOption === allResultsViewOption.SIMPLIFIED"
+             class="row justify-content-center m-3">
 
             <div *ngFor="let modelId of getNoLinearResultsModelIds()" class="col-6">
 
@@ -311,14 +306,14 @@
                             <span class="text-muted text-body-emphasis">
                                 <h5>{{ param.value }} <small class="text-muted">± {{ param.std_err }}</small></h5>
                               </span>
-                          </div>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="col-6">
-                      <div class="row">
-                        <div class="col mt-0">
+                  <div class="col-6">
+                    <div class="row">
+                      <div class="col mt-0">
                           <span
                             class="card-title text-muted float-end">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
                         </div>
@@ -329,12 +324,10 @@
                         </div>
                       </div>
 
-                    </div>
-
                   </div>
 
-
                 </div>
+
 
               </div>
 
@@ -342,19 +335,21 @@
 
           </div>
 
-          <div *ngIf="selectedAllResultsViewOption === allResultsViewOption.DETAILED"
-               class="row justify-content-center m-3">
+        </div>
 
-            <mat-accordion multi id="1">
+        <div *ngIf="selectedAllResultsViewOption === allResultsViewOption.DETAILED"
+             class="row justify-content-center m-3">
 
-              <div class="m-2">
-                <button mat-button color="primary"
-                        (click)="toggleAccordion(1, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
-                </button>
-                <button mat-button color="primary"
-                        (click)="toggleAccordion(1, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
-                </button>
-              </div>
+          <mat-accordion multi id="1">
+
+            <div class="m-2">
+              <button mat-button color="primary"
+                      (click)="toggleAccordion(1, 'expand')">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
+              </button>
+              <button mat-button color="primary"
+                      (click)="toggleAccordion(1, 'collapse')">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
+              </button>
+            </div>
 
               <div *ngFor="let modelId of getNoLinearResultsModelIds()" class="col-12">
 
@@ -366,11 +361,11 @@
                     </mat-panel-title>
                   </mat-expansion-panel-header>
 
-                  <ng-template matExpansionPanelContent>
-                    <div class="card">
-                      <div class="card-body d-flex flex-column">
-                        <p class="card-text mt-2"></p>
-                        <div class="table-responsive">
+                <ng-template matExpansionPanelContent>
+                  <div class="card">
+                    <div class="card-body d-flex flex-column">
+                      <p class="card-text mt-2"></p>
+                      <div class="table-responsive">
 
                           <table class="table">
                             <thead>
@@ -420,32 +415,35 @@
                                       class="badge fiuba-institutional-bg text-white">
                                   {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
                                 </span>
-                              </h5>
-                              <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
-                                           [useResizeHandler]="true"
-                                           [style]="{width: '100%', height: '100%'}"></plotly-plot>
+                            </h5>
+                            <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
+                                         [useResizeHandler]="true"
+                                         [style]="{width: '100%', height: '100%'}"></plotly-plot>
 
-                              <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
-                            </div>
+                            <plotly-plot [data]="item.residuals.graph?.data" [layout]="item.residuals.graph?.layout"
+                                         [useResizeHandler]="true"
+                                         [style]="{width: '100%', height: '100%'}"></plotly-plot>
+
+                            <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
                           </div>
-
                         </div>
 
-
                       </div>
+
+
                     </div>
-                  </ng-template>
+                  </div>
+                </ng-template>
 
-                </mat-expansion-panel>
+              </mat-expansion-panel>
 
-              </div>
+            </div>
 
-            </mat-accordion>
-
-          </div>
+          </mat-accordion>
 
         </div>
-      </ng-template>
+
+      </div>
 
     </mat-tab>
   </mat-tab-group>

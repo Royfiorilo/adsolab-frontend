@@ -1,6 +1,6 @@
 import {IGraph, IParameter, IStatistics, ITransformedData} from "../../common/common.interface";
 
-export interface INoLinearGraph {
+export interface INoLinearAdjustmentResult {
   parameters: IParameter[];
   statistics: IStatistics;
   residuals: IResiduals;
@@ -27,14 +27,19 @@ export interface INoLinearRequest {
 }
 
 
-export interface IResiduals {
+interface IResidualsAnalysis {
   normality_pvalue: number;
   homoscedasticity_pvalue: number;
   durbin_watson: number;
   passes_normality: number;
   passes_homoscedasticity: number;
   passes_independence: number;
+}
+
+export interface IResiduals {
+  analysis: IResidualsAnalysis
   values: number[];
+  graph?: IGraph;
 }
 
 
@@ -126,7 +131,7 @@ export interface ISaveRequest {
 export interface IRidgeSaveRequest {
   best_model: number;
   statistics: IStatistics;
-  residuals: IResiduals;
+  residuals: IResidualsAnalysis;
   results: ModelRidgeResult[];
 }
 

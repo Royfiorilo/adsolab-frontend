@@ -68,22 +68,3 @@
     </div>
   </div>
 </div>
-
-<ng-template #loadOnGoingInvestigationModal>
-  <h2 mat-dialog-title>
-    {{ 'INVESTIGATION.CONTINUE_INVESTIGATION_TITLE' | translate }}
-  </h2>
-  <mat-dialog-content class="mat-typography">
-    <p>
-      {{ 'INVESTIGATION.ONGOING_INVESTIGATION_DETECTED' | translate }}
-      <br>
-      {{ 'INVESTIGATION.CONTINUE_INVESTIGATION_QUESTION' | translate }}
-    </p>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button color="primary" mat-dialog-close>{{ 'INVESTIGATION.CONTINUE' | translate }}</button>
-    <button mat-flat-button color="primary" class="text-white" [mat-dialog-close]="true" (click)="resetInvestigation()">
-      {{ 'INVESTIGATION.CREATE_NEW' | translate }}
-    </button>
-  </mat-dialog-actions>
-</ng-template>
