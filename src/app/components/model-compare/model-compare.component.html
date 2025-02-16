@@ -1,5 +1,6 @@
 <div class="container-fluid m-3" *ngIf="!runningNoLinearAdjustment">
-  <app-data-visualizer *ngIf="this.dataSample" [data]="this.dataSample"></app-data-visualizer>
+  <app-data-visualizer *ngIf="state().investigation?.sample"
+                       [data]="state().investigation?.sample"></app-data-visualizer>
   <div class="d-flex justify-content-end" *ngIf="!runningNoLinearAdjustment">
     <button mat-button color="primary" class="m-2" (click)="runNonLinearModels()">
       <mat-icon>refresh</mat-icon>
@@ -58,12 +59,12 @@
                     <div *ngFor="let result of noLinearCompareResult!.heuristic!.results" class="col-md-6 col-lg-3">
 
                       <div
-                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                        {{ commonUtilsService.getModelById(result.model, models).name }}
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        {{ commonUtilsService.getModelById(result.model, state().models).name }}
                       </div>
 
                       <div
-                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
                         <div>{{ result.score }}</div>
                       </div>
 
@@ -86,12 +87,12 @@
                     <div *ngFor="let result of noLinearCompareResult!.ridge!.results" class="col-md-6 col-lg-3">
 
                       <div
-                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                        {{ commonUtilsService.getModelById(result.model, models).name }}
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        {{ commonUtilsService.getModelById(result.model, state().models).name }}
                       </div>
 
                       <div
-                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, models).name === commonUtilsService.getModelById(result.model, models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
                         <div>{{ result.coef }}</div>
                       </div>
 
@@ -164,15 +165,15 @@
                       <th scope="col">#</th>
                       <th scope="col">Ce</th>
                       <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                        {{ commonUtilsService.getModelById(+modelId, models).name }}
+                        {{ commonUtilsService.getModelById(+modelId, state().models).name }}
                       </th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let ceValue of dataSample?.ce; let i = index">
+                    <tr *ngFor="let ceValue of state().investigation?.sample?.ce; let i = index">
                       <th scope="row">{{ i + 1 }}</th>
                       <td>{{ ceValue }}</td>
-                      <td *ngFor="let modelId of selectedModels">
+                      <td *ngFor="let modelId of state().selectedModels">
                         {{ bestTransformedValue(modelId, i) || 'N/A' }}
                       </td>
                     </tr>
@@ -196,7 +197,7 @@
                       <tr>
                         <th>{{ 'NAME' | translate }}</th>
                         <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                          {{ commonUtilsService.getModelById(+modelId, models).name }}
+                          {{ commonUtilsService.getModelById(+modelId, state().models).name }}
                         </th>
                         <th>{{ 'MODEL_COMPARE.RIDGE' | translate }}</th>
                       </tr>
@@ -204,7 +205,7 @@
                       <tbody>
                       <tr *ngFor="let statName of getStatisticsRows()">
                         <td>{{ 'STATISTICS.' + statName | translate }}</td>
-                        <td *ngFor="let modelId of selectedModels">
+                        <td *ngFor="let modelId of state().selectedModels">
                           {{ bestStatisticValue(modelId, statName) || 'N/A' }}
                         </td>
                         <td>{{ getRidgeStatistic(statName) }}</td>
@@ -230,14 +231,14 @@
                       <tr>
                         <th>{{ 'NAME' | translate }}</th>
                         <th *ngFor="let modelId of Object.keys(noLinearResults)">
-                          {{ commonUtilsService.getModelById(+modelId, models).name }}
+                          {{ commonUtilsService.getModelById(+modelId, state().models).name }}
                         </th>
                       </tr>
                       </thead>
                       <tbody>
                       <tr *ngFor="let residualName of getResidualsRows()">
                         <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
-                        <td *ngFor="let modelId of selectedModels">
+                        <td *ngFor="let modelId of state().selectedModels">
                           {{ parseResiduals(bestResidualValue(modelId, residualName)) || 'N/A' }}
                         </td>
                       </tr>
@@ -282,12 +283,12 @@
           <div *ngIf="selectedAllResultsViewOption === allResultsViewOption.SIMPLIFIED"
                class="row justify-content-center m-3">
 
-            <div *ngFor="let modelId of selectedModels" class="col-6">
+            <div *ngFor="let modelId of state().selectedModels" class="col-6">
 
               <div class="card">
                 <div class="card-header fiuba-institutional mb-1">
                   <h4
-                    class="card-title text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
+                    class="card-title text-center">{{ commonUtilsService.getModelById(modelId, state().models).name }}</h4>
                 </div>
                 <div class="card-body d-flex flex-column">
 
@@ -351,13 +352,13 @@
                 </button>
               </div>
 
-              <div *ngFor="let modelId of selectedModels" class="col-12">
+              <div *ngFor="let modelId of state().selectedModels" class="col-12">
 
 
                 <mat-expansion-panel [expanded]="true">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
-                      <h4 class="text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
+                      <h4 class="text-center">{{ commonUtilsService.getModelById(modelId, state().models).name }}</h4>
                     </mat-panel-title>
                   </mat-expansion-panel-header>
 

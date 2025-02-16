@@ -58,12 +58,7 @@
                 </button>
               </div>
               <app-model-compare
-                [investigationId]="state().investigation?.investigation_id"
-                [dataSample]="state().investigation?.sample"
-                [selectedModels]="state().selectedModels"
-                [modelConfiguration]="state().modelConfiguration"
-                [stepId]="state().stepId"
-                [models]="state().models">
+                [modelConfiguration]="state().modelConfiguration">
               </app-model-compare>
             </ng-template>
           </mat-step>
