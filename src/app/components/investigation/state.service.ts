@@ -7,8 +7,9 @@ import {IInvestigationState} from "../../common/common.interface";
 export class StateService {
 
   private readonly INVESTIGATION = 'investigation';
-  
+
   private readonly initialState: IInvestigationState = {
+    shouldRender: true, // Ensure components render initially
     investigation: undefined,
     stepId: 0,
     models: [],
@@ -28,7 +29,6 @@ export class StateService {
       const storedState = localStorage.getItem(this.INVESTIGATION);
       return storedState ? JSON.parse(storedState) as IInvestigationState : this.initialState;
     } catch (error) {
-      console.error("Failed to parse state from localStorage", error);
       return this.initialState;
     }
   }
@@ -40,6 +40,10 @@ export class StateService {
   }
 
   resetState() {
-    this.state.set({...this.initialState});
+    //destroy components
+    this.state.update(state => ({...state, shouldRender: false}));
+    setTimeout(() => {
+      this.state.set({...this.initialState, shouldRender: true});
+    }, 10);
   }
 }

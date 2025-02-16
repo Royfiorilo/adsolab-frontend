@@ -95,6 +95,7 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
       ...this.state(),
       models: models,
     });
+    console.log("LoadedModels: ", this.state())
   }
 
   onSelectedModels(modelId: number) {
@@ -146,6 +147,11 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
 
   resetInvestigation() {
     this.stateService.resetState();
-    this.steps.get(this.state().stepId)?.select();
+
+    // Wait for state reset before selecting step
+    setTimeout(() => {
+      console.log("🔄 Selecting step after reset:", this.state().stepId);
+      this.steps.get(this.state().stepId)?.select();
+    }, 20); // Give some time for the state update
   }
 }

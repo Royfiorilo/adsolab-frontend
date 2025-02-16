@@ -1,4 +1,4 @@
-<ng-container *ngIf="selectedModels.length === 0">
+<ng-container *ngIf="state().selectedModels.length === 0">
   <div class="alert alert-warning" role="alert">
     {{ 'MODEL_CONFIGURATION.NOT_SELECTED_MODELS' | translate }}
   </div>
@@ -6,13 +6,14 @@
 
 <div class="container-fluid m-3">
   <div class="row justify-content-center">
-    <app-data-visualizer *ngIf="this.dataSample" [data]="this.dataSample"></app-data-visualizer>
+    <app-data-visualizer *ngIf="this.state().investigation"
+                         [data]="this.state().investigation?.sample"></app-data-visualizer>
 
-    <div *ngFor="let modelId of selectedModels" class="col-6">
+    <div *ngFor="let modelId of state().selectedModels" class="col-6">
       <div class="card">
         <div class="card-header fiuba-investigation mb-1">
           <h4
-            class="card-title text-center">{{ commonUtilsService.getModelById(modelId, models).name }}</h4>
+            class="card-title text-center">{{ commonUtilsService.getModelById(modelId, state().models).name }}</h4>
         </div>
         <div class="card-body d-flex flex-column">
 
@@ -27,7 +28,7 @@
                 <div *ngFor="let option of seedParamOptions">
 
                   <mat-option [value]="option.name === SeedParamOption.AUTOMATED"
-                              *ngIf="(option.name === SeedParamOption.AUTOMATED && commonUtilsService.getModelById(modelId, models).linearizations.length)
+                              *ngIf="(option.name === SeedParamOption.AUTOMATED && commonUtilsService.getModelById(modelId, state().models).linearizations.length)
                               || option.name === SeedParamOption.MANUAL">
                     {{ option.value }}
                   </mat-option>
@@ -84,7 +85,8 @@
             <div class="row" *ngIf="!linearizationGraphs[modelId]?.graphs?.length">
               <div class="col">
                 <small class="text-muted">{{ 'MODEL_CONFIGURATION.AVAILABLE_LINEARIZATIONS' | translate }}</small>
-                <div *ngFor="let linearization of commonUtilsService.getModelById(modelId,models).linearizations">
+                <div
+                  *ngFor="let linearization of commonUtilsService.getModelById(modelId,state().models).linearizations">
                   <h6 class="text-muted">- {{ linearization.name }}</h6>
                 </div>
                 <div class="mt-auto d-flex align-content-center justify-content-center">

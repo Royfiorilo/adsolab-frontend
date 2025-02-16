@@ -5,10 +5,10 @@
     </button>
   </div>
 
-  <div *ngIf="this.isTableVisible">
+  <div *ngIf="this.isTableVisible && data">
     <div class="card">
       <div class="card-body">
-        <h6 class="card-title text-center">{{data.title}}</h6>
+        <h6 class="card-title text-center">{{ data.title }}</h6>
         <table class="table table-striped">
           <thead>
           <tr>

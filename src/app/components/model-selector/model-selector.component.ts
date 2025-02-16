@@ -1,18 +1,10 @@
-import {Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, inject, Output, SimpleChanges, TemplateRef} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModelSelectorServiceService} from "./model-selector-service.service";
 import {Model} from "./model";
 import {catchError, firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
-
-
-interface Model2 {
-  name: string;
-  description: string;
-  selected: boolean;
-  icon?: string;
-}
-
+import {StateService} from "../investigation/state.service";
 
 @Component({
   selector: 'app-model-selector',
@@ -20,40 +12,13 @@ interface Model2 {
   styleUrl: './model-selector.component.css'
 })
 export class ModelSelectorComponent {
-  @Input() selectedModels!: number[];
-  @Input() models!: Model[];
-  @Input() stepId!: number;
   @Output() onSelectedModels: EventEmitter<number> = new EventEmitter();
   @Output() onLoadedModels: EventEmitter<Model[]> = new EventEmitter();
   private modalService = inject(NgbModal);
   protected loadingModels: boolean = false;
+  state = this.stateService.state;
 
-
-  protected models2: Model2[] = [
-    {
-      name: 'Langmuir',
-      description: 'Best for monolayer adsorption processes',
-      selected: false,
-      icon: 'analytics'
-    },
-    {
-      name: 'Freundlich',
-      description: 'Suitable for heterogeneous surface processes',
-      selected: false,
-      icon: 'show_chart'
-    }
-  ];
-
-  selectModel2(model: Model2): void {
-    // If you want single selection
-    this.models.forEach(m => m.selected = false);
-    model.selected = true;
-
-    // If you want multiple selection, use this instead:
-    // model.selected = !model.selected;
-  }
-
-  constructor(private modelService: ModelSelectorServiceService, private translateService: TranslateService) {
+  constructor(private modelService: ModelSelectorServiceService, private translateService: TranslateService, protected stateService: StateService) {
   }
 
   ngOnInit() {
@@ -61,7 +26,7 @@ export class ModelSelectorComponent {
   }
 
   private getModels() {
-    if (this.models.length === 0) {
+    if (this.state().models.length === 0) {
       this.loadingModels = true;
       this.modelService.getModels()
         .pipe(catchError(async (error) => {
@@ -74,12 +39,16 @@ export class ModelSelectorComponent {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnDestroy() {
+    console.log("ngOnDestroy");
+  }
 
-    if (changes['stepId'] && changes['stepId'].currentValue === 1) {
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("ngOnChanges");
+    this.getModels();
+    if (this.state().stepId && this.state().stepId === 1) {
       this.getModels();
     }
-
   }
 
   open(content: TemplateRef<any>) {
