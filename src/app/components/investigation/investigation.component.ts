@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Investigation} from "../data-selector/data-sample";
@@ -14,7 +14,7 @@ import {InvestigationModalComponent} from "./investigation-modal.component";
   templateUrl: './investigation.component.html',
   styleUrl: './investigation.component.css',
 })
-export class InvestigationComponent implements OnInit, AfterViewInit {
+export class InvestigationComponent implements OnInit {
   state = this.stateService.state;
 
   @ViewChildren(MatStep) steps!: QueryList<MatStep>;
@@ -25,23 +25,17 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (this.state().investigation) {
+
       const dialogRef = this.dialog.open(InvestigationModalComponent);
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.resetInvestigation();
+        } else {
+          this.steps.get(this.state().stepId)?.select();
         }
       });
     }
-  }
-
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.state().investigation) {
-        this.steps.get(this.state().stepId)?.select();
-      }
-    });
   }
 
   investigationCreated(investigation: Investigation) {
@@ -119,7 +113,7 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
     let configurationDone = Object.values(this.state().modelConfiguration).every(config =>
       Object.values(config.paramValues as Record<string, {
         value: number | null
-      }>).every(param => param.value !== undefined && param.value !== null)
+      }>).every(param => param.value)
     );
     this.stateService.state.set({
       ...this.state(),
@@ -147,11 +141,5 @@ export class InvestigationComponent implements OnInit, AfterViewInit {
 
   resetInvestigation() {
     this.stateService.resetState();
-
-    // Wait for state reset before selecting step
-    setTimeout(() => {
-      console.log("🔄 Selecting step after reset:", this.state().stepId);
-      this.steps.get(this.state().stepId)?.select();
-    }, 20); // Give some time for the state update
   }
 }

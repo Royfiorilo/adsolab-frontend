@@ -389,6 +389,10 @@ export class ModelCompareComponent {
     }
   }
 
+  getNoLinearResultsModelIds(): number[] {
+    return Object.keys(this.noLinearResults).map(key => +key);
+  }
+
 
   protected readonly Object = Object;
   protected readonly faSave = faCloudArrowUp;

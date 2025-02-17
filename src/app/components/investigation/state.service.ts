@@ -40,10 +40,6 @@ export class StateService {
   }
 
   resetState() {
-    //destroy components
-    this.state.update(state => ({...state, shouldRender: false}));
-    setTimeout(() => {
-      this.state.set({...this.initialState, shouldRender: true});
-    }, 10);
+    this.state.set({...this.initialState});
   }
 }
