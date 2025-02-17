@@ -6,13 +6,40 @@ import {IInvestigationState} from "../../common/common.interface";
 })
 export class StateService {
 
-  private INVESTIGATION = 'investigation';
+  private readonly INVESTIGATION = 'investigation';
 
-  state = signal<IInvestigationState>(
-    JSON.parse(localStorage.getItem(this.INVESTIGATION)!) as IInvestigationState
-  );
+  private readonly initialState: IInvestigationState = {
+    shouldRender: true, // Ensure components render initially
+    investigation: undefined,
+    stepId: 0,
+    models: [],
+    selectedModels: [],
+    modelConfiguration: {},
+    modelConfigurationDone: false
+  };
 
-  syncStorage = effect(() => {
-    localStorage.setItem(this.INVESTIGATION, JSON.stringify(this.state()));
-  });
+  state = signal<IInvestigationState>(this.loadState());
+
+  constructor() {
+    this.syncStorage();
+  }
+
+  private loadState(): IInvestigationState {
+    try {
+      const storedState = localStorage.getItem(this.INVESTIGATION);
+      return storedState ? JSON.parse(storedState) as IInvestigationState : this.initialState;
+    } catch (error) {
+      return this.initialState;
+    }
+  }
+
+  private syncStorage() {
+    effect(() => {
+      localStorage.setItem(this.INVESTIGATION, JSON.stringify(this.state()));
+    });
+  }
+
+  resetState() {
+    this.state.set({...this.initialState});
+  }
 }

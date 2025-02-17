@@ -7,6 +7,6 @@ import {DataSample} from "../data-selector/data-sample";
   styleUrl: './data-visualizer.component.css'
 })
 export class DataVisualizerComponent {
-  @Input() data!: DataSample;
+  @Input() data!: DataSample | undefined;
   @Input() isTableVisible: boolean = false;
 }

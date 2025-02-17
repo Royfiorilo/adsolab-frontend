@@ -63,6 +63,7 @@ export interface IErrorDialogData {
 }
 
 export interface IInvestigationState {
+  shouldRender: boolean;
   investigation: Investigation | undefined;
   stepId: number;
   models: Model[];

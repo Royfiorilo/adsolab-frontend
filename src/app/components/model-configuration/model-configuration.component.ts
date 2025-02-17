@@ -14,13 +14,13 @@ import {ModelConfigurationService} from "./model-configuration.service";
 import {ILinearizationGraph, ILinearizationRequest, ISeedParamOption, SeedParamOption} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {DataSample} from "../data-selector/data-sample";
 import {CommonUtilsService} from "../../common/common.service";
 import {IModelsConfigurations} from "../../common/common.interface";
 import {firstValueFrom} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
+import {StateService} from "../investigation/state.service";
 
 @Component({
   selector: 'app-model-configuration',
@@ -28,11 +28,8 @@ import {TranslateService} from "@ngx-translate/core";
   styleUrl: './model-configuration.component.css'
 })
 export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
-  @Input() dataSample: DataSample | undefined;
-  @Input() selectedModels!: number[];
-  @Input() investigationId: number | undefined;
+  state = this.stateService.state;
   @Input() modelConfiguration!: IModelsConfigurations;
-  @Input() models!: Model[];
   @Output() onSelectedParams = new EventEmitter<IModelsConfigurations>();
   protected linearizationGraphs: { [key: number]: { graphs: ILinearizationGraph[], error?: string } } = {};
   private modalService = inject(NgbModal);
@@ -41,7 +38,8 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
 
   constructor(private modelConfigurationService: ModelConfigurationService,
               protected commonUtilsService: CommonUtilsService,
-              private dialog: MatDialog, private translateService: TranslateService) {
+              private dialog: MatDialog, private translateService: TranslateService,
+              protected stateService: StateService) {
 
   }
 
@@ -82,10 +80,10 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   }
 
   runLinearization(modelId: number) {
-    let model: Model = this.commonUtilsService.getModelById(modelId, this.models);
-    if (this.investigationId) {
+    let model: Model = this.commonUtilsService.getModelById(modelId, this.state().models);
+    if (this.state().investigation) {
       let request: ILinearizationRequest = {
-        investigation_id: this.investigationId, models: [{
+        investigation_id: this.state().investigation?.investigation_id as number, models: [{ //As number porque a esta altura tengo al certeza de que viene con un valor
           model: model._id,
           linearizations: model.linearizations.map(linearization => linearization.linearization_id)
         }]

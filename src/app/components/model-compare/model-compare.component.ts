@@ -1,6 +1,4 @@
 import {Component, Input, QueryList, SimpleChanges, ViewChild, ViewChildren} from '@angular/core';
-import {DataSample} from "../data-selector/data-sample";
-import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
 import {
   AllResultsViewOption,
@@ -18,14 +16,13 @@ import {
 import {ModelCompareService} from "./model-compare.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 import {MatAccordion} from "@angular/material/expansion";
-import {faCloudArrowUp, faFileDownload} from "@fortawesome/free-solid-svg-icons";
-import * as XLSX from 'xlsx';
-import {saveAs} from 'file-saver';
+import {faCloudArrowUp} from "@fortawesome/free-solid-svg-icons";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {PlotlyComponent} from "angular-plotly.js";
+import {StateService} from "../investigation/state.service";
 
 
 @Component({
@@ -36,12 +33,7 @@ import {PlotlyComponent} from "angular-plotly.js";
 export class ModelCompareComponent {
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
-  @Input() investigationId: number | undefined;
-  @Input() selectedModels!: number[];
-  @Input() models!: Model[];
-  @Input() dataSample: DataSample | undefined;
   @Input() modelConfiguration!: IModelsConfigurations;
-  @Input() stepId!: number;
   protected noLinearResults: { [key: number]: { bestAdjustment: string, adjustments: INoLinearGraph[] } } = {};
   protected noLinearCompareResult: IComparison | undefined;
   protected runningNoLinearAdjustment: boolean = true;
@@ -57,6 +49,7 @@ export class ModelCompareComponent {
   protected xForCurvePlot: number[] = [];
   protected noLinearResponse: INoLinearResponse | undefined;
   protected noLinearFailed: boolean = false;
+  state = this.stateService.state;
 
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
@@ -66,7 +59,8 @@ export class ModelCompareComponent {
     langmuir: "green"
   }
 
-  constructor(protected commonUtilsService: CommonUtilsService,
+  constructor(protected stateService: StateService,
+              protected commonUtilsService: CommonUtilsService,
               protected modelCompareService: ModelCompareService,
               private dialog: MatDialog,
               private translateService: TranslateService) {
@@ -110,12 +104,12 @@ export class ModelCompareComponent {
   }
 
   getStatisticsRows(): string[] {
-    const sampleStats = this.noLinearResults[this.selectedModels[0]]?.adjustments[0]?.statistics || {};
+    const sampleStats = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.statistics || {};
     return Object.keys(sampleStats);
   }
 
   getResidualsRows(): string[] {
-    const sampleResiduals = this.noLinearResults[this.selectedModels[0]]?.adjustments[0]?.residuals || {};
+    const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.residuals || {};
     return Object.keys(sampleResiduals);
   }
 
@@ -144,7 +138,7 @@ export class ModelCompareComponent {
 
   saveInvestigation() {
 
-    const investigationId = this.investigationId as number;
+    const investigationId = this.state().investigation?.investigation_id as number;
     const response = this.noLinearResponse as INoLinearResponse;
 
     const ridgeRequest: IRidgeSaveRequest = {
@@ -187,7 +181,6 @@ export class ModelCompareComponent {
     });
   }
 
-
   runNonLinearModels() {
 
     this.selectedModelsChanged = false;
@@ -222,7 +215,7 @@ export class ModelCompareComponent {
 
 
     const request: INoLinearRequest = {
-      investigation_id: this.investigationId!,
+      investigation_id: this.state().investigation?.investigation_id!,
       models
     }
 
@@ -243,8 +236,8 @@ export class ModelCompareComponent {
         this.noLinearResponse = response;
         this.noLinearCompareResult = response.comparison;
 
-        let xPointX = this.dataSample?.ce!
-        let yPointX = this.dataSample?.qe!
+        let xPointX = this.state().investigation?.sample?.ce!
+        let yPointX = this.state().investigation?.sample?.qe!
 
         this.xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
 
@@ -301,7 +294,7 @@ export class ModelCompareComponent {
 
             if (adjustment.name === model.best_adjust) {
               let compareData = {...resultData};
-              let modelName = this.commonUtilsService.getModelById(model.model, this.models).name;
+              let modelName = this.commonUtilsService.getModelById(model.model, this.state().models).name;
               compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
               compareData.marker = {color: this.colorByMethod[modelName]}
               compareData.name = modelName + ` (${model.best_adjust})`
@@ -338,12 +331,11 @@ export class ModelCompareComponent {
     })
   }
 
-
   getBestComparisonModelOverall(): string {
 
     if (this.noLinearCompareResult?.heuristic.best_model === this.noLinearCompareResult?.ridge.best_model) {
 
-      return this.commonUtilsService.getModelById(this.noLinearCompareResult?.heuristic.best_model!, this.models).name;
+      return this.commonUtilsService.getModelById(this.noLinearCompareResult?.heuristic.best_model!, this.state().models).name;
 
     } else {
 
@@ -365,11 +357,6 @@ export class ModelCompareComponent {
       throw new Error("Best Fit not found")
     }
 
-  }
-
-  getRidgeResiduals(name: string) {
-
-    return (this.noLinearCompareResult!.ridge!.residuals as any)[name]
   }
 
   getRidgeStatistic(statName: string) {
@@ -402,136 +389,11 @@ export class ModelCompareComponent {
     }
   }
 
-  downloadExcelWithMultipleSheets(): void {
-    const workbook: XLSX.WorkBook = {Sheets: {}, SheetNames: []};
-
-    this.addMainDataSheet(workbook);
-    this.selectedModels.forEach((modelId) => this.addModelSheet(workbook, modelId));
-    this.addRidgeSheet(workbook);
-
-    const excelBuffer: any = XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
-    const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-    saveAs(blob, 'Adsolab.xlsx'); // Reemplazar por investigation name
-  }
-
-  private addMainDataSheet(workbook: XLSX.WorkBook): void {
-    const worksheetData: (string | number)[][] = [];
-
-    worksheetData.push(this.getHeaders('Ce'));
-    this.dataSample?.ce.forEach((ceValue, index) => {
-      worksheetData.push(this.getRowForCe(ceValue, index));
-    });
-
-    worksheetData.push([...this.getHeaders('Estadisticos'), 'Ridge']);
-    this.getStatisticsRows().forEach((statName) => {
-      worksheetData.push(this.getRowForStatistics(statName));
-    });
-
-    worksheetData.push([...this.getHeaders('Residuos'), 'Ridge']);
-    this.getResidualsRows().forEach((name) => {
-      worksheetData.push(this.getRowForResiduals(name));
-    });
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    this.addSheetToWorkbook(workbook, 'Data', worksheet);
-  }
-
-  private addRidgeSheet(workbook: XLSX.WorkBook): void {
-    if (!this.ridgeResult) return;
-
-    const sheetData: (string | number)[][] = [];
-    const headers = [
-      ...Object.keys(this.ridgeResult.statistics),
-      ...Object.keys(this.ridgeResult.residuals),
-      ...this.ridgeResult.results.map(result => this.getModelName(result.model))
-    ];
-
-    const values = [
-      ...Object.values(this.ridgeResult.statistics),
-      ...Object.values(this.ridgeResult.residuals),
-      ...this.ridgeResult.results.map(result => result.coef)
-    ];
-
-    sheetData.push(headers);
-    sheetData.push(values);
-
-    sheetData.push(['x', 'y']);
-    this.ridgeResult.y_pred.forEach((y, index) => {
-      sheetData.push([this.xForCurvePlot[index], y]);
-    });
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
-    this.addSheetToWorkbook(workbook, 'Ridge', worksheet);
-  }
-
-  private addModelSheet(workbook: XLSX.WorkBook, modelId: number): void {
-    const model = this.commonUtilsService.getModelById(+modelId, this.models);
-    const bestAdjust = this.getBestAdjustmentDataByModel(model._id);
-
-    const headers = [
-      ...bestAdjust.parameters.map(param => param.name),
-      ...Object.keys(bestAdjust.statistics),
-      ...Object.keys(bestAdjust.residuals)
-    ];
-
-    const values = [
-      ...bestAdjust.parameters.map(param => param.value),
-      ...Object.values(bestAdjust.statistics),
-      ...Object.values(bestAdjust.residuals)
-    ];
-
-    const sheetData: (string | number)[][] = [
-      [bestAdjust.adjustment_name],
-      headers,
-      values,
-      ['x', 'y'],
-      ...this.getGraphDataRows(bestAdjust.graph.data)
-    ];
-
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(sheetData);
-    this.addSheetToWorkbook(workbook, model.name, worksheet);
-  }
-
-  private addSheetToWorkbook(workbook: XLSX.WorkBook, sheetName: string, worksheet: XLSX.WorkSheet): void {
-    workbook.Sheets[sheetName] = worksheet;
-    workbook.SheetNames.push(sheetName);
-  }
-
-  private getHeaders(...additionalHeaders: string[]): string[] {
-    const modelHeaders = Object.keys(this.noLinearResults).map(modelId =>
-      this.getModelName(+modelId)
-    );
-    return [...additionalHeaders, ...modelHeaders];
-  }
-
-  private getGraphDataRows(graphData: { x: number[]; y: number[] }[]): (string | number)[][] {
-    const rows: (string | number)[][] = [];
-    graphData.forEach((data) => {
-      data.x.forEach((xValue, index) => {
-        rows.push([xValue, data.y[index]]);
-      });
-    });
-    return rows;
-  }
-
-  private getModelName(modelId: number): string {
-    return this.commonUtilsService.getModelById(modelId, this.models).name;
-  }
-
-  private getRowForCe(ceValue: number, index: number): (string | number)[] {
-    return [ceValue, ...this.selectedModels.map(modelId => this.bestTransformedValue(modelId, index))];
-  }
-
-  private getRowForStatistics(statName: string): (string | number)[] {
-    return [statName, ...this.selectedModels.map(modelId => this.bestStatisticValue(modelId, statName)), this.getRidgeStatistic(statName)];
-  }
-
-  private getRowForResiduals(name: string): (string | number)[] {
-    return [name, ...this.selectedModels.map(modelId => this.parseResiduals(this.bestResidualValue(modelId, name))), this.getRidgeResiduals(name)];
+  getNoLinearResultsModelIds(): number[] {
+    return Object.keys(this.noLinearResults).map(key => +key);
   }
 
 
   protected readonly Object = Object;
-  protected readonly faDownload = faFileDownload;
   protected readonly faSave = faCloudArrowUp;
 }
