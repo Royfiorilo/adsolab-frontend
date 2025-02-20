@@ -134,17 +134,19 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
                     y: linearization.transformed.y,
                     type: 'scatter',
                     mode: 'markers',
-                    marker: {color: 'red'}
+                    name: 'Muestra',
+                    marker: {color: 'black'}
                   },
                   {
                     x: [xMin, xMax],
                     y: [(slope * xMin + intercept), (slope * xMax + intercept)],
                     type: 'scatter',
                     mode: 'line',
+                    name: 'Linealización',
                     marker: {color: 'blue'}
                   },
                 ],
-                layout: {title: '', autosize: true}
+                layout: {title: '', autosize: true, xaxis: {title: 'Ce'}, yaxis: {title: 'Qe'}}
               }
             }
 

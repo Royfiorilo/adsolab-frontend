@@ -17,6 +17,7 @@ export interface IGraphData {
   y: (number)[];
   type: string;            // e.g., 'scatter'
   mode: string;            // e.g., 'markers', 'line'
+  name?: string;
   marker: IMarker;
   line?: { [key: string]: any };
 }
@@ -28,6 +29,8 @@ export interface IMarker {
 export interface IGraphLayout {
   title: string;
   autosize: boolean;
+  xaxis: { title: string };
+  yaxis: { title: string };
 }
 
 export interface IParameter {
