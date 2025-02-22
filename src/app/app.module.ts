@@ -8,7 +8,13 @@ import {GraphComponent} from './components/graph/graph.component';
 import Plotly from 'plotly.js-dist-min';
 //import locale from 'plotly.js-locales/es';
 import {PlotlyModule} from 'angular-plotly.js';
-import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+  provideHttpClient,
+  withInterceptorsFromDi
+} from "@angular/common/http";
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NavigationComponent} from './components/navigation/navigation.component';
 import {InvestigationComponent} from './components/investigation/investigation.component';
@@ -62,6 +68,8 @@ import {HistoricInvestigationComponent} from './components/historic-investigatio
 import {MatList, MatListItem} from "@angular/material/list";
 import {SnackBarComponent} from "./components/snack-bar/snack-bar.component";
 import { HistoricVersionComponent } from './components/historic-version/historic-version.component';
+import {LoginComponent} from './components/login/login.component';
+import {AuthInterceptor} from "./common/auth.interceptor";
 
 //Plotly.register(locale)
 
@@ -93,7 +101,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     DownloaderComponent,
     HistoricInvestigationComponent,
     SnackBarComponent,
-    HistoricVersionComponent
+    HistoricVersionComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -145,7 +154,11 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     provideAnimationsAsync(),
     {
       provide: ErrorHandler, useClass: CustomErrorHandler
-    }
+    },
+    provideHttpClient(
+      withInterceptorsFromDi(),
+    ),
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })
