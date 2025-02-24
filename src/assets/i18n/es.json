@@ -12,7 +12,7 @@
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "GRAPHS": "Gráficos",
-    "CONFIG": "Configuración"
+    "HIST": "Investigaciones Historicas"
   },
   "INVESTIGATION": {
     "CONTINUE": "Continuar",

@@ -1,0 +1,30 @@
+<div class="container-fluid p-5 ">
+  <div class="d-flex justify-content-center">
+    <div class="col-10">
+      <div class="investigation-container">
+        <mat-accordion *ngIf="investigations">
+          <mat-expansion-panel *ngFor="let investigation of investigations.investigations">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                ID: {{ investigation.investigation_id }} - Titulo: {{ investigation.sample.title }}
+              </mat-panel-title>
+              <mat-panel-description>
+                Descripcion: {{ investigation.sample.description }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="investigation-details">
+              <h6>Versiones Disponibles:</h6>
+              <mat-list>
+                <mat-list-item *ngFor="let version of ['version1', 'version2']">
+                  <div class="version-info">
+                    <span>{{ version }} - Descripcion de la version </span>
+                  </div>
+                </mat-list-item>
+              </mat-list>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </div>
+</div>
