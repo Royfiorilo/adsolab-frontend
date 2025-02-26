@@ -1,0 +1,71 @@
+<div class="container-fluid p-5">
+  <div class="d-flex justify-content-center">
+    <div class="col-10">
+      <div class="investigation-container">
+        <mat-accordion *ngIf="investigations">
+          <mat-expansion-panel *ngFor="let investigation of investigations.investigations">
+            <mat-expansion-panel-header (click)="fetchVersions(investigation.investigation_id)">
+              <mat-panel-title>
+                ID: {{ investigation.investigation_id }} - Titulo: {{ investigation.sample.title }}
+              </mat-panel-title>
+              <mat-panel-description>
+                Descripcion: {{ investigation.sample.description }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="investigation-details">
+              <mat-tab-group *ngIf="investigation.versions">
+                <mat-tab *ngFor="let version of investigation.versions">
+                  <ng-template mat-tab-label>
+                    <div class="tab-label" matRipple>
+                      Version {{ version.version_id }}
+                    </div>
+                  </ng-template>
+                  <div class="tab-content d-flex justify-content-center p-5" matRipple>
+                    <div class="card col-6">
+                      <div class="card-header fiuba-institutional text-center">
+                        Fecha de creación: {{ version.created_at }}
+                      </div>
+                      <div class="card-body">
+                        <div *ngFor="let model of version.fitted_models" class="mb-4 border-bottom pb-3">
+                          <div class="row">
+                            <div class="col-6">
+                              <p class="mb-0">
+                                <strong>Model ID:</strong> {{ model.model_id }}
+                              </p>
+                            </div>
+                            <div class="col-6 text-end">
+                              <p class="mb-0">
+                                <strong>Best Adjust:</strong>
+                                <span class="card-title text-muted text-body-emphasis">{{ model.best_adjust }}</span>
+                              </p>
+                            </div>
+                          </div>
+                          <div class="mt-2">
+                            <div *ngFor="let seed of model.seeds" class="mb-1">
+                              <span class="fiuba-institutional-text me-2">{{ seed.name }}</span>
+                              <span class="text-muted text-body-emphasis">
+            <h5 class="d-inline">
+              {{ seed.value }} <small class="text-muted">± {{ seed.stderr }}</small>
+            </h5>
+          </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <button mat-button color="primary">
+                            <fa-icon [icon]="faArrowUpRightFromSquare" class="m-2"></fa-icon>
+                            Restaurar versión
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </div>
+</div>

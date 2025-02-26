@@ -112,8 +112,13 @@ export class ModelCompareComponent {
   }
 
   getResidualsRows(): string[] {
-    const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.residuals || {};
-    return Object.keys(sampleResiduals.analysis);
+    try {
+      const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.residuals || {};
+      return Object.keys(sampleResiduals.analysis);
+    } catch (error) {
+      return []
+    }
+
   }
 
   bestResidualValue(modelId: number, residualName: string): number {

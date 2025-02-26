@@ -58,6 +58,8 @@ import {
 import {ErrorDialogComponent} from './components/error-dialog/error-dialog.component';
 import {InvestigationModalComponent} from "./components/investigation/investigation-modal.component";
 import {DownloaderComponent} from "./components/downloader/downloader.component";
+import {HistoricInvestigationComponent} from './components/historic-investigation/historic-investigation.component';
+import {MatList, MatListItem} from "@angular/material/list";
 
 //Plotly.register(locale)
 
@@ -86,7 +88,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ErrorComponent,
     ErrorDialogComponent,
     InvestigationModalComponent,
-    DownloaderComponent
+    DownloaderComponent,
+    HistoricInvestigationComponent
   ],
   imports: [
     BrowserModule,
@@ -130,7 +133,9 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
-    MatTabBody
+    MatTabBody,
+    MatList,
+    MatListItem
   ],
   providers: [
     provideAnimationsAsync(),
