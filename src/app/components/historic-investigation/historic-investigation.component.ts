@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {InvestigationService} from "./investigation.service";
-import {InvestigationResponse} from "./interface";
+import {InvestigationResponse, InvestigationVersionsResponse} from "./interface";
+import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-historic-investigation',
@@ -18,4 +19,23 @@ export class HistoricInvestigationComponent {
       this.investigations = data;
     });
   }
+
+  fetchVersions(investigationId: number): void {
+    const investigation = this.investigations?.investigations.find(
+      (inv: any) => inv.investigation_id === investigationId
+    );
+    if (investigation && investigation.versions === undefined) {
+      this.investigationService.getInvestigationVersions(investigationId).subscribe({
+        next: (response: InvestigationVersionsResponse) => {
+          investigation.versions = response.versions;
+        },
+        error: (error) => {
+          console.error('Error fetching versions:', error);
+        }
+      });
+    }
+
+  }
+
+  protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 }

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import {InvestigationResponse} from "./interface";
+import {InvestigationResponse, InvestigationVersionsResponse} from "./interface";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,10 @@ export class InvestigationService {
 
   getInvestigations(): Observable<InvestigationResponse> {
     return this.httpClient.get<InvestigationResponse>(`${this.backendBaseUrl}/investigations`);
+  }
+
+  getInvestigationVersions(investigationId: number): Observable<InvestigationVersionsResponse> {
+    return this.httpClient.get<InvestigationVersionsResponse>(`${this.backendBaseUrl}/investigation/${investigationId}/versions`);
   }
 
 }
