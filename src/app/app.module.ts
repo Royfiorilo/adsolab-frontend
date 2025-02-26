@@ -60,6 +60,7 @@ import {InvestigationModalComponent} from "./components/investigation/investigat
 import {DownloaderComponent} from "./components/downloader/downloader.component";
 import {HistoricInvestigationComponent} from './components/historic-investigation/historic-investigation.component';
 import {MatList, MatListItem} from "@angular/material/list";
+import {SnackBarComponent} from "./components/snack-bar/snack-bar.component";
 
 //Plotly.register(locale)
 
@@ -89,7 +90,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ErrorDialogComponent,
     InvestigationModalComponent,
     DownloaderComponent,
-    HistoricInvestigationComponent
+    HistoricInvestigationComponent,
+    SnackBarComponent
   ],
   imports: [
     BrowserModule,

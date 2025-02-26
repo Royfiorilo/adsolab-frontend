@@ -1,0 +1,8 @@
+<span class="example-pizza-party" matSnackBarLabel>
+  {{ data.message }}
+</span>
+<span matSnackBarActions>
+  <button mat-button matSnackBarAction color="primary" class="ms-5"
+          (click)="snackBarRef.dismissWithAction()">{{ 'ACCEPT' | translate }}
+  </button>
+</span>

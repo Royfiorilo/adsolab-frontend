@@ -8,6 +8,7 @@ import {StateService} from "./state.service";
 import {MatStep} from "@angular/material/stepper";
 import {MatDialog} from "@angular/material/dialog";
 import {InvestigationModalComponent} from "./investigation-modal.component";
+import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 
 @Component({
   selector: 'app-investigation',
@@ -43,9 +44,12 @@ export class InvestigationComponent implements OnInit {
       ...this.state(),
       investigation: investigation,
     });
-    this._snackBar.open("Investigación creada con éxito", "Aceptar", {
+    this._snackBar.openFromComponent(SnackBarComponent, {
       duration: 3000,
       verticalPosition: 'top',
+      data: {
+        message: "Investigación creada con éxito"
+      }
     });
   }
 

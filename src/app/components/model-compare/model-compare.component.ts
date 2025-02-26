@@ -25,6 +25,8 @@ import {firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {PlotlyComponent} from "angular-plotly.js";
 import {StateService} from "../investigation/state.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 
 
 @Component({
@@ -45,6 +47,7 @@ export class ModelCompareComponent {
   } = {};
   protected noLinearCompareResult: IComparison | undefined;
   protected runningNoLinearAdjustment: boolean = true;
+  protected savingInvestigation: boolean = false;
   protected summaryGraph: { [key: number]: IGraph } = {};
   protected compareGraph: IGraph | undefined;
   protected toggleValue: string = 'results';
@@ -71,7 +74,8 @@ export class ModelCompareComponent {
               protected commonUtilsService: CommonUtilsService,
               protected modelCompareService: ModelCompareService,
               private dialog: MatDialog,
-              private translateService: TranslateService) {
+              private translateService: TranslateService,
+              private _snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -148,6 +152,8 @@ export class ModelCompareComponent {
 
   saveInvestigation() {
 
+    this.savingInvestigation = true;
+
     const investigationId = this.state().investigation?.investigation_id as number;
     const response = this.noLinearResponse as INoLinearResponse;
 
@@ -187,6 +193,16 @@ export class ModelCompareComponent {
             error_message: error.message,
           }
         })
+      },
+      next: () => {
+        this._snackBar.openFromComponent(SnackBarComponent, {
+          duration: 3000,
+          verticalPosition: 'top',
+          data: {
+            message: 'Resultados guardados con éxito'
+          }
+        });
+        this.savingInvestigation = false
       },
     });
   }
