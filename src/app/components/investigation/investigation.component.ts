@@ -89,7 +89,6 @@ export class InvestigationComponent implements OnInit {
       ...this.state(),
       models: models,
     });
-    console.log("LoadedModels: ", this.state())
   }
 
   onSelectedModels(modelId: number) {

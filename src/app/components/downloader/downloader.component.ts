@@ -16,7 +16,7 @@ export class DownloaderComponent {
   @Input() modelConfiguration!: IModelsConfigurations;
   @Input() summaryGraph!: { [key: number]: IGraph };
   @Input() ridgeResult?: Ridge;
-  @Input() noLinearResults!: { [key: number]: { bestAdjustment: string; adjustments: any[] } };
+  @Input() noLinearResults!: { [key: number]: { bestAdjustment: string; successful_fits: any[] } };
   @Input() xForCurvePlot: number[] = [];
   state = this.stateService.state;
 
@@ -55,7 +55,7 @@ export class DownloaderComponent {
 
   getBestAdjustmentDataByModel(modelId: number) {
 
-    const adjustments = this.noLinearResults[modelId].adjustments;
+    const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment
@@ -126,19 +126,19 @@ export class DownloaderComponent {
   }
 
   private bestTransformedValue(modelId: number, index: number): number {
-    return this.noLinearResults[modelId]?.adjustments.find(
+    return this.noLinearResults[modelId]?.successful_fits.find(
       (adjustment) => adjustment.adjustment_name === this.noLinearResults[modelId].bestAdjustment
     )?.graph.data[1].y[index] ?? 0;
   }
 
   private bestStatisticValue(modelId: number, statName: string): number {
-    return this.noLinearResults[modelId]?.adjustments.find(
+    return this.noLinearResults[modelId]?.successful_fits.find(
       (adjustment) => adjustment.adjustment_name === this.noLinearResults[modelId].bestAdjustment
     )?.statistics[statName] ?? 0;
   }
 
   private bestResidualValue(modelId: number, residualName: string): number {
-    return this.noLinearResults[modelId]?.adjustments.find(
+    return this.noLinearResults[modelId]?.successful_fits.find(
       (adjustment) => adjustment.adjustment_name === this.noLinearResults[modelId].bestAdjustment
     )?.residuals[residualName] ?? 0;
   }
@@ -170,12 +170,12 @@ export class DownloaderComponent {
   }
 
   getStatisticsRows(): string[] {
-    const sampleStats = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.statistics || {};
+    const sampleStats = this.noLinearResults[this.state().selectedModels[0]]?.successful_fits[0]?.statistics || {};
     return Object.keys(sampleStats);
   }
 
   getResidualsRows(): string[] {
-    const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.residuals || {};
+    const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.successful_fits[0]?.residuals || {};
     return Object.keys(sampleResiduals);
   }
 

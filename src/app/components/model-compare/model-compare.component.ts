@@ -4,7 +4,8 @@ import {
   AllResultsViewOption,
   ComparisonViewOption,
   IComparison,
-  INoLinearAdjustmentResult,
+  INoLinearAdjustmentErrorResult,
+  INoLinearAdjustmentSuccessResult,
   INoLinearRequest,
   INoLinearRequestModel,
   INoLinearRequestSeed,
@@ -36,7 +37,11 @@ export class ModelCompareComponent {
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
   @Input() modelConfiguration!: IModelsConfigurations;
   protected noLinearResults: {
-    [key: number]: { bestAdjustment: string, adjustments: INoLinearAdjustmentResult[] }
+    [key: number]: {
+      bestAdjustment: string,
+      successful_fits: INoLinearAdjustmentSuccessResult[],
+      error_fits: INoLinearAdjustmentErrorResult[]
+    };
   } = {};
   protected noLinearCompareResult: IComparison | undefined;
   protected runningNoLinearAdjustment: boolean = true;
@@ -77,6 +82,8 @@ export class ModelCompareComponent {
 
   ngOnChanges(changes: SimpleChanges) {
 
+
+    //TODO: fix
     if (changes['selectedModels'] && changes['selectedModels'].currentValue !== changes['selectedModels'].previousValue) {
       this.selectedModelsChanged = true;
     }
@@ -88,7 +95,7 @@ export class ModelCompareComponent {
   }
 
   bestTransformedValue(modelId: number, index: number): number {
-    const adjustments = this.noLinearResults[modelId].adjustments;
+    const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment
@@ -107,22 +114,17 @@ export class ModelCompareComponent {
   }
 
   getStatisticsRows(): string[] {
-    const sampleStats = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.statistics || {};
+    const sampleStats = this.noLinearResults[this.state().selectedModels[0]]?.successful_fits[0]?.statistics || {};
     return Object.keys(sampleStats);
   }
 
   getResidualsRows(): string[] {
-    try {
-      const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.adjustments[0]?.residuals || {};
-      return Object.keys(sampleResiduals.analysis);
-    } catch (error) {
-      return []
-    }
-
+    const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.successful_fits[0]?.residuals || {};
+    return Object.keys(sampleResiduals.analysis);
   }
 
   bestResidualValue(modelId: number, residualName: string): number {
-    const adjustments = this.noLinearResults[modelId].adjustments;
+    const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment
@@ -132,7 +134,7 @@ export class ModelCompareComponent {
 
 
   bestStatisticValue(modelId: number, statName: string): number {
-    const adjustments = this.noLinearResults[modelId].adjustments;
+    const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment
@@ -190,8 +192,6 @@ export class ModelCompareComponent {
   }
 
   runNonLinearModels() {
-
-    this.selectedModelsChanged = false;
 
     this.noLinearResults = {};
 
@@ -293,7 +293,8 @@ export class ModelCompareComponent {
         for (const model of response.results) {
 
           this.noLinearResults[model.model] = {
-            adjustments: [],
+            successful_fits: [],
+            error_fits: [],
             bestAdjustment: model.best_adjust
           }
 
@@ -310,47 +311,59 @@ export class ModelCompareComponent {
 
           for (const adjustment of model.adjustment_methods) {
 
-            let resultData = {
-              x: adjustment.transformed.x,
-              y: adjustment.transformed.y,
-              type: 'scatter',
-              mode: 'lines',
-              name: adjustment.name,
-              line: {shape: 'spline', color: this.colorByMethod[adjustment.name]},
-              marker: {color: this.colorByMethod[adjustment.name]},
-            }
+            if (adjustment.success) {
+
+              let resultData = {
+                x: adjustment.transformed.x,
+                y: adjustment.transformed.y,
+                type: 'scatter',
+                mode: 'lines',
+                name: adjustment.name,
+                line: {shape: 'spline', color: this.colorByMethod[adjustment.name]},
+                marker: {color: this.colorByMethod[adjustment.name]},
+              }
 
 
-            if (adjustment.name === model.best_adjust) {
-              let compareData = {...resultData};
-              let modelName = this.commonUtilsService.getModelById(model.model, this.state().models).name;
-              compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
-              compareData.marker = {color: this.colorByMethod[modelName]}
-              compareData.name = modelName + ` (${model.best_adjust})`
-              this.compareGraph.data.push(compareData);
-            }
+              if (adjustment.name === model.best_adjust) {
+                let compareData = {...resultData};
+                let modelName = this.commonUtilsService.getModelById(model.model, this.state().models).name;
+                compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
+                compareData.marker = {color: this.colorByMethod[modelName]}
+                compareData.name = modelName + ` (${model.best_adjust})`
+                this.compareGraph.data.push(compareData);
+              }
 
-            this.summaryGraph[model.model].data.push(resultData)
+              this.summaryGraph[model.model].data.push(resultData)
 
-            let noLinearGraph: INoLinearAdjustmentResult = {
-              parameters: adjustment.parameters,
-              statistics: adjustment.statistics,
-              adjustment_name: adjustment.name,
-              residuals: await this.buildResidualsGraph(adjustment.residuals, xPointX),
-              graph: {
-                data: [
-                  resultData,
-                  baseData
-                ],
-                layout: {
-                  title: await firstValueFrom(this.translateService.get('MODEL_COMPARE.FIT')),
-                  autosize: true,
-                  xaxis: axisTitles.xaxis,
-                  yaxis: axisTitles.yaxis
+              let noLinearGraph: INoLinearAdjustmentSuccessResult = {
+                parameters: adjustment.parameters,
+                statistics: adjustment.statistics,
+                adjustment_name: adjustment.name,
+                residuals: await this.buildResidualsGraph(adjustment.residuals, xPointX),
+                graph: {
+                  data: [
+                    resultData,
+                    baseData
+                  ],
+                  layout: {
+                    title: await firstValueFrom(this.translateService.get('MODEL_COMPARE.FIT')),
+                    autosize: true,
+                    xaxis: axisTitles.xaxis,
+                    yaxis: axisTitles.yaxis
+                  }
                 }
               }
+              this.noLinearResults[model.model].successful_fits.push(noLinearGraph)
+
+            } else {
+
+              this.noLinearResults[model.model].error_fits.push({
+                adjustment_name: adjustment.name,
+                error: adjustment.error ?? 'error' //TODO: create generic error msg
+              })
+
             }
-            this.noLinearResults[model.model].adjustments.push(noLinearGraph)
+
           }
 
           this.summaryGraph[model.model].data.push(baseData)
@@ -411,7 +424,7 @@ export class ModelCompareComponent {
 
   getBestAdjustmentDataByModel(modelId: number) {
 
-    const adjustments = this.noLinearResults[modelId].adjustments;
+    const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment

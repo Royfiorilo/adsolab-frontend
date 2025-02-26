@@ -1,12 +1,19 @@
 import {IGraph, IParameter, IStatistics, ITransformedData} from "../../common/common.interface";
 
 export interface INoLinearAdjustmentResult {
+  adjustment_name: string;
+}
+
+export interface INoLinearAdjustmentSuccessResult extends INoLinearAdjustmentResult {
   parameters: IParameter[];
   statistics: IStatistics;
   residuals: IResiduals;
   graph: IGraph;
   best?: boolean;
-  adjustment_name: string;
+}
+
+export interface INoLinearAdjustmentErrorResult extends INoLinearAdjustmentResult {
+  error: string;
 }
 
 export interface INoLinearRequestSeed {
@@ -59,7 +66,8 @@ export interface INoLinearResultStats {
 export interface AdjustmentMethod {
   name: string;
   description: string;
-  status: boolean;
+  success: boolean;
+  error?: string;
   parameters: IParameter[];
   statistics: IStatistics;
   transformed: ITransformedData;

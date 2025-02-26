@@ -39,12 +39,7 @@ export class ModelSelectorComponent {
     }
   }
 
-  ngOnDestroy() {
-    console.log("ngOnDestroy");
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("ngOnChanges");
     this.getModels();
     if (this.state().stepId && this.state().stepId === 1) {
       this.getModels();
