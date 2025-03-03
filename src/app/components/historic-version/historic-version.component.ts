@@ -1,5 +1,5 @@
 import {Component, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {InvestigationService} from '../historic-investigation/investigation.service';
 import {MatAccordion} from '@angular/material/expansion';
 import {PlotlyComponent} from 'angular-plotly.js';
@@ -12,6 +12,9 @@ import {InvestigationData} from "./interface";
 import {Sample, Version} from "../historic-investigation/interface";
 import {VersionDataService} from "./version.service";
 import {IGraph} from "../../common/common.interface";
+import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
+import {StateService} from "../investigation/state.service";
+import {DataSample} from "../data-selector/data-sample";
 
 
 @Component({
@@ -20,9 +23,10 @@ import {IGraph} from "../../common/common.interface";
   styleUrl: './historic-version.component.css',
 })
 export class HistoricVersionComponent {
+  state = this.stateService.state;
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
-  sample: Sample | undefined;
+  sample: DataSample | undefined;
   versionId: string = '0';
   investigationId: string = '0';
   protected models: Model[] = [];
@@ -39,11 +43,12 @@ export class HistoricVersionComponent {
   }
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private investigationService: InvestigationService,
     private modelService: ModelSelectorServiceService,
     protected commonUtilsService: CommonUtilsService,
-    private translateService: TranslateService, private versionDataService: VersionDataService
+    private translateService: TranslateService, private versionDataService: VersionDataService, protected stateService: StateService
   ) {
   }
 
@@ -238,5 +243,26 @@ export class HistoricVersionComponent {
 
   }
 
+  navigateToInvestigation() {
+
+    let investigation = {
+      shouldRender: true,
+      investigation: {
+        investigation_id: +this.investigationId,
+        sample: this.sample!
+      },
+      stepId: 1,
+      models: this.models,
+      selectedModels: [],
+      modelConfiguration: {},
+      modelConfigurationDone: false
+    };
+
+    this.state.set({...investigation});
+
+    this.router.navigate(['/investigation']);
+  }
+
   protected readonly Object = Object;
+  protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 }

@@ -135,6 +135,7 @@
     "CREATION": "Fecha de creación: ",
     "DESCRIPTION": "Descripción: ",
     "RESTORE": "Restaurar Versión",
-    "BEST_ADJUST": "Mejor Ajuste: "
+    "BEST_ADJUST": "Mejor Ajuste: ",
+    "EDIT": "Continuar investigacion"
   }
 }

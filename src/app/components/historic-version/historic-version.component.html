@@ -1,3 +1,11 @@
+<div class="d-flex justify-content-center">
+  <button mat-button color="primary" class="m-2"
+          (click)="navigateToInvestigation()">
+    <fa-icon [icon]=" faArrowUpRightFromSquare
+                          " class="m-2"></fa-icon>
+    {{ 'VERSIONS.EDIT' | translate }}
+  </button>
+</div>
 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" *ngIf="models && data">
   <mat-tab selected label="{{'MODEL_COMPARE.COMPARISON' | translate}}">
     <div class="row justify-content-center m-3">
@@ -277,7 +285,7 @@
                   <div *ngIf="summaryGraph">
                     <plotly-plot [data]="summaryGraph[+model.model_id].data"
                                  [layout]="summaryGraph[+model.model_id].layout"
-                                 [config]="{responsive: true}"></plotly-plot>
+                    ></plotly-plot>
                   </div>
 
                   <div class="m-3" *ngFor="let adjustMethod of findAdjustMethods(model.model_id)">
@@ -292,11 +300,11 @@
                         </h5>
                         <plotly-plot [data]="adjustMethod.graph.data"
                                      [layout]="adjustMethod.graph.layout"
-                                     [config]="{responsive: true}"></plotly-plot>
+                        ></plotly-plot>
 
                         <plotly-plot [data]="adjustMethod.residuals.graph.data"
                                      [layout]="adjustMethod.residuals.graph.layout"
-                                     [config]="{responsive: true}"></plotly-plot>
+                        ></plotly-plot>
 
                         <app-fit-result [parameters]="adjustMethod.params" [statistics]="adjustMethod.statistics"/>
                       </div>
