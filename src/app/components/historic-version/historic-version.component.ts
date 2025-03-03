@@ -12,6 +12,8 @@ import {InvestigationData} from "./interface";
 import {Version} from "../historic-investigation/interface";
 import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {VersionDataService} from "./version.service";
+import {ComparisonViewOption} from "../model-compare/interface";
+import {DataSample} from "../data-selector/data-sample";
 
 
 @Component({
@@ -22,7 +24,7 @@ import {VersionDataService} from "./version.service";
 export class HistoricVersionComponent {
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
-
+  sample: DataSample | undefined;
   versionId: string = '0';
   investigationId: string = '0';
   protected models: Model[] = [];
@@ -72,7 +74,68 @@ export class HistoricVersionComponent {
   processData(jsonData: InvestigationData) {
     if (!jsonData) return;
     this.data = jsonData;
+    this.versionDataService.getSample(this.investigationId).subscribe({//pedir al back que manden el sample ID en los versions
+      next: (response) => this.sample = response,
+      error: (err) => console.error('Error fetching data:', err),
+    });
+
+  }
+
+  toggleAccordion(index: number, action: string): void {
+    const accordionArray = this.accordions.toArray();
+    if (accordionArray[index]) {
+      const accordion = accordionArray[index];
+      if (action === 'collapse') {
+        accordion.closeAll();
+      } else {
+        accordion.openAll();
+      }
+    }
+  }
+
+
+  findBestAdjustMethod(modelId: number) {
+    const fittedModel = this.data?.fitted_models.find(fittedModel => fittedModel.model_id === modelId);
+    return fittedModel?.adjustment_methods.find(method => method.name === fittedModel.best_adjust);
+  }
+
+  bestStatisticValue(modelId: number, statName: string): number {
+
+    const bestFit = this.findBestAdjustMethod(modelId)
+    return bestFit ? (bestFit.statistics as any)[statName] : 0
+  }
+
+  getRidgeStatistic(statName: string) {
+    return (this.data?.comparison.ml.statistics as any)[statName]
+  }
+
+  parseResiduals(residualValue: number): string | number {
+    if (residualValue === 0) {
+      return "False"
+    } else if (residualValue === 1) {
+      return "True"
+    } else {
+      return residualValue
+    }
+  }
+
+  getResidualsRows(): string[] {
+    const sampleResiduals = this.data?.comparison?.ml.residuals;
+    if (sampleResiduals) {
+      return Object.keys(sampleResiduals?.analysis);
+
+    } else {
+      return ["not", "found"]
+    }
+
+  }
+
+  bestResidualValue(modelId: number, residualName: string): number {
+    const bestFit = this.findBestAdjustMethod(modelId)
+    return bestFit ? (bestFit.residuals.analysis as any)[residualName] : 0
   }
 
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
+  protected readonly comparisonViewOptions = ComparisonViewOption;
+  protected readonly Object = Object;
 }

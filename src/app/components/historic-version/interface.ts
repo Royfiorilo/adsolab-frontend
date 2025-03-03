@@ -1,3 +1,6 @@
+import {IStatistics} from "../../common/common.interface";
+import {IResiduals} from "../model-compare/interface";
+
 export interface InvestigationData {
   comparison: {
     comparison_id: number;
@@ -19,7 +22,7 @@ export interface InvestigationData {
         };
         values: number[];
       };
-      statistics: Record<string, number>;
+      statistics: IStatistics;
       y_pred: number[];
     };
   };
@@ -32,10 +35,15 @@ export interface InvestigationData {
       name: string;
       params: { name: string; std_err: number; value: number }[];
       residuals: {
-        analysis: Record<string, number>;
+        analysis: IResiduals;
         values: number[];
       };
-      statistics: Record<string, number>;
+      statistics: IStatistics;
+      transformed: {
+        x: number[];
+        y: number[];
+      }
+
     }[];
     seeds: { name: string; stderr: number; value: number }[];
   }[];
