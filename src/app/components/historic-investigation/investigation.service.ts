@@ -23,4 +23,7 @@ export class InvestigationService {
     return this.httpClient.get<InvestigationVersionsResponse>(`${this.backendBaseUrl}/investigation/${investigationId}/versions`);
   }
 
+  deployDatasetVersion(investigationId: string, versionId: string): Observable<any> {
+    return this.httpClient.get(`${this.backendBaseUrl}/investigation/${investigationId}/version/${versionId}`);
+  }
 }

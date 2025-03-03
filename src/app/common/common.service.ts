@@ -7,6 +7,7 @@ import {Injectable} from "@angular/core";
 export class CommonUtilsService {
 
   getModelById(modelId: number, models: Model[]): Model {
+    console.log(models, modelId);
     return models.filter(model => model._id === modelId).pop()!;
   }
 
