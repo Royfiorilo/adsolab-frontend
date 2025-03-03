@@ -60,107 +60,118 @@
       </div>
     </div>
 
-    <div class="col-md-12">
-      <mat-accordion>
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <h4 class="text-center">{{ 'MODEL_COMPARE.CALCULATED_POINTS' | translate }}</h4>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+    <div class="row justify-content-center m-3">
+      <div class="col-md-8">
+        <plotly-plot #comparisonPlot [data]="compareGraph?.data" [layout]="compareGraph?.layout"
+                     [style]="{width: '100%', height: '450px'}" [config]="{responsive: true}"></plotly-plot>
+      </div>
+    </div>
 
-          <ng-template matExpansionPanelContent>
-            <table class="table table-striped">
-              <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">{{ 'CE' | translate }}</th>
-                <th *ngFor="let model of versionData?.fitted_models">
-                  {{ commonUtilsService.getModelById(model.model_id, this.models).name }}
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let ceValue of this.sample?.ce; let i = index">
-                <th scope="row">{{ i + 1 }}</th>
-                <td>{{ ceValue }}</td>
-                <td *ngFor="let model of versionData?.fitted_models">
-                  <!--                  {{ findBestAdjustMethod(model.model_id) || 'N/A' }}--> Back X
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </ng-template>
 
-        </mat-expansion-panel>
+    <div class="row justify-content-center m-3">
 
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <h4 class="text-center">{{ 'MODEL_COMPARE.STATISTICS' | translate }}</h4>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+      <div class="col-md-8">
+        <mat-accordion>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="text-center">{{ 'MODEL_COMPARE.CALCULATED_POINTS' | translate }}</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
 
-          <ng-template matExpansionPanelContent>
-            <div class="table-responsive">
+            <ng-template matExpansionPanelContent>
               <table class="table table-striped">
                 <thead>
                 <tr>
-                  <th>{{ 'NAME' | translate }}</th>
-                  <th *ngFor="let fittedModel of versionData?.fitted_models">
-                    {{ commonUtilsService.getModelById(fittedModel.model_id, this.models).name }}
-                  </th>
-                  <th>{{ 'MODEL_COMPARE.RIDGE' | translate }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let statName of Object.keys(data.comparison.ml.statistics)">
-                  <td>{{ 'STATISTICS.' + statName | translate }}</td>
-                  <td *ngFor="let model of versionData?.fitted_models">
-                    {{ bestStatisticValue(+model.model_id, statName) || 'N/A' }}
-                  </td>
-                  <td>{{ getRidgeStatistic(statName) }}</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          </ng-template>
-
-        </mat-expansion-panel>
-
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <h4 class="text-center">{{ 'MODEL_COMPARE.RESIDUALS_ANALYSIS' | translate }}</h4>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <ng-template matExpansionPanelContent>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                <tr>
-                  <th>{{ 'NAME' | translate }}</th>
+                  <th scope="col">#</th>
+                  <th scope="col">{{ 'CE' | translate }}</th>
                   <th *ngFor="let model of versionData?.fitted_models">
-                    {{ commonUtilsService.getModelById(+model.model_id, this.models).name }}
+                    {{ commonUtilsService.getModelById(model.model_id, this.models).name }}
                   </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let residualName of getResidualsRows()">
-                  <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                <tr *ngFor="let ceValue of this.sample?.ce; let i = index">
+                  <th scope="row">{{ i + 1 }}</th>
+                  <td>{{ ceValue }}</td>
                   <td *ngFor="let model of versionData?.fitted_models">
-                    {{ parseResiduals(bestResidualValue(+model.model_id, residualName)) || 'N/A' }}
+                    <!--                  {{ findBestAdjustMethod(model.model_id) || 'N/A' }}--> Back X
                   </td>
                 </tr>
                 </tbody>
               </table>
-            </div>
-          </ng-template>
+            </ng-template>
 
-        </mat-expansion-panel>
+          </mat-expansion-panel>
 
-      </mat-accordion>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="text-center">{{ 'MODEL_COMPARE.STATISTICS' | translate }}</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>{{ 'NAME' | translate }}</th>
+                    <th *ngFor="let fittedModel of versionData?.fitted_models">
+                      {{ commonUtilsService.getModelById(fittedModel.model_id, this.models).name }}
+                    </th>
+                    <th>{{ 'MODEL_COMPARE.RIDGE' | translate }}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let statName of Object.keys(data.comparison.ml.statistics)">
+                    <td>{{ 'STATISTICS.' + statName | translate }}</td>
+                    <td *ngFor="let model of versionData?.fitted_models">
+                      {{ bestStatisticValue(+model.model_id, statName) || 'N/A' }}
+                    </td>
+                    <td>{{ getRidgeStatistic(statName) }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-template>
+
+          </mat-expansion-panel>
+
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="text-center">{{ 'MODEL_COMPARE.RESIDUALS_ANALYSIS' | translate }}</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>{{ 'NAME' | translate }}</th>
+                    <th *ngFor="let model of versionData?.fitted_models">
+                      {{ commonUtilsService.getModelById(+model.model_id, this.models).name }}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let residualName of getResidualsRows()">
+                    <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                    <td *ngFor="let model of versionData?.fitted_models">
+                      {{ parseResiduals(bestResidualValue(+model.model_id, residualName)) || 'N/A' }}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-template>
+
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
     </div>
   </mat-tab>
   <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">

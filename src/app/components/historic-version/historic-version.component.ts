@@ -14,6 +14,7 @@ import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {VersionDataService} from "./version.service";
 import {ComparisonViewOption} from "../model-compare/interface";
 import {DataSample} from "../data-selector/data-sample";
+import {IGraph} from "../../common/common.interface";
 
 
 @Component({
@@ -29,6 +30,7 @@ export class HistoricVersionComponent {
   investigationId: string = '0';
   protected models: Model[] = [];
   protected data: InvestigationData | undefined;
+  protected compareGraph: IGraph | undefined;
   versionData: Version | undefined;
 
   constructor(
@@ -74,11 +76,81 @@ export class HistoricVersionComponent {
   processData(jsonData: InvestigationData) {
     if (!jsonData) return;
     this.data = jsonData;
+
     this.versionDataService.getSample(this.investigationId).subscribe({//pedir al back que manden el sample ID en los versions
-      next: (response) => this.sample = response,
+      next: (response) => {
+        this.sample = response;
+        this.generateGraphs()
+      },
       error: (err) => console.error('Error fetching data:', err),
     });
 
+  }
+
+  generateGraphs() {
+
+    let xPointX = this.sample?.ce!
+    let yPointX = this.sample?.qe!
+
+    let xForCurvePlot = this.data?.fitted_models[0]?.adjustment_methods[0].transformed.x;
+
+    let axisTitles = {
+      xaxis: {
+        title: 'CE'
+      },
+      yaxis: {
+        title: 'QE'
+      },
+    }
+
+    let baseData = {
+      x: xPointX,
+      y: yPointX,
+      type: 'scatter',
+      mode: 'markers',
+      name: 'SAMPLE',
+      marker: {color: 'black'}
+    }
+
+    let ridgeData = {
+      x: xForCurvePlot!,
+      y: this.data?.comparison.ml.y_pred!,
+      type: 'scatter',
+      mode: 'lines',
+      name: "Ridge",
+      line: {shape: 'spline', color: 'grey'},
+      marker: {color: 'grey'},
+
+    }
+
+    this.compareGraph = {
+      data: [ridgeData],
+      layout: {
+        title: "Mejor Ajuste por Modelo",
+        autosize: true,
+        xaxis: axisTitles.xaxis,
+        yaxis: axisTitles.yaxis
+      }
+    }
+    if (this.data?.fitted_models) {
+      for (const model of this.data?.fitted_models) {
+        let bestAdjust = this.findBestAdjustMethod(model.model_id)
+        let modelName = this.commonUtilsService.getModelById(model.model_id, this.models)
+        let graphData = {
+          x: bestAdjust?.transformed?.x!,
+          y: bestAdjust?.transformed?.y!,
+          type: 'scatter',
+          mode: 'lines',
+          name: modelName.name + " (" + bestAdjust?.name + ")",
+          line: {shape: 'spline', color: 'grey'},
+          marker: {color: 'grey'},
+
+        }
+        this.compareGraph.data.push(graphData);
+
+      }
+    }
+    this.compareGraph.data.push(baseData);
   }
 
   toggleAccordion(index: number, action: string): void {

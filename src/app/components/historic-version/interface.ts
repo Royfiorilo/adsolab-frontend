@@ -1,4 +1,4 @@
-import {IStatistics} from "../../common/common.interface";
+import {IGraph, IStatistics} from "../../common/common.interface";
 import {IResiduals} from "../model-compare/interface";
 
 export interface InvestigationData {
@@ -20,6 +20,7 @@ export interface InvestigationData {
           passes_independence: number;
           passes_normality: number;
         };
+        graph: IGraph;
         values: number[];
       };
       statistics: IStatistics;
