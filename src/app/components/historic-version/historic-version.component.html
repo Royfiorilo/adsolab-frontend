@@ -13,8 +13,8 @@
           </div>
           <h2 class="text-center">
               <span
-                [ngClass]="data.comparison.heuristic.best_model ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
-              {{ commonUtilsService.getModelById(data.comparison.heuristic.best_model, this.models).name }}
+                [ngClass]="getBestComparisonModelOverall() ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
+{{ getBestComparisonModelOverall() ?? ('UNDEFINED' | translate) }}
               </span>
           </h2>
           <div class="card m-3">
@@ -45,7 +45,7 @@
                 <div *ngFor="let result of data!.comparison.heuristic.results!; let index = index"
                      class="col-md-6 col-lg-3">
                   <div
-                    [ngClass]="result.model === data.comparison.heuristic.best_model ? 'fw-bold fiuba-institutional-text' : ''">
+                    [ngClass]="result.model ===  versionData?.best_model_ml  ? 'fw-bold fiuba-institutional-text' : ''">
                     {{ commonUtilsService.getModelById(result.model, this.models).name }}
                   </div>
                   <div
@@ -274,7 +274,34 @@
                       </tbody>
                     </table>
                   </div>
+                  <div *ngIf="summaryGraph">
+                    <plotly-plot [data]="summaryGraph[+model.model_id].data"
+                                 [layout]="summaryGraph[+model.model_id].layout"
+                                 [config]="{responsive: true}"></plotly-plot>
+                  </div>
 
+                  <div class="m-3" *ngFor="let adjustMethod of findAdjustMethods(model.model_id)">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="text-center">
+                          {{ adjustMethod.name }}
+                          <span *ngIf="model.best_adjust === adjustMethod.name"
+                                class="badge fiuba-institutional-bg text-white">
+                                                                {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
+                          </span>
+                        </h5>
+                        <plotly-plot [data]="adjustMethod.graph.data"
+                                     [layout]="adjustMethod.graph.layout"
+                                     [config]="{responsive: true}"></plotly-plot>
+
+                        <plotly-plot [data]="adjustMethod.residuals.graph.data"
+                                     [layout]="adjustMethod.residuals.graph.layout"
+                                     [config]="{responsive: true}"></plotly-plot>
+
+                        <app-fit-result [parameters]="adjustMethod.params" [statistics]="adjustMethod.statistics"/>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </ng-template>

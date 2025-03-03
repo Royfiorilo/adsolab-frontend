@@ -9,11 +9,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {Model} from '../model-selector/model';
 import {CommonUtilsService} from '../../common/common.service';
 import {InvestigationData} from "./interface";
-import {Version} from "../historic-investigation/interface";
-import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
+import {Sample, Version} from "../historic-investigation/interface";
 import {VersionDataService} from "./version.service";
-import {AllResultsViewOption, ComparisonViewOption} from "../model-compare/interface";
-import {DataSample} from "../data-selector/data-sample";
 import {IGraph} from "../../common/common.interface";
 
 
@@ -25,13 +22,21 @@ import {IGraph} from "../../common/common.interface";
 export class HistoricVersionComponent {
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
-  sample: DataSample | undefined;
+  sample: Sample | undefined;
   versionId: string = '0';
   investigationId: string = '0';
   protected models: Model[] = [];
   protected data: InvestigationData | undefined;
   protected compareGraph: IGraph | undefined;
   versionData: Version | undefined;
+  protected summaryGraph: { [key: number]: IGraph } = {};
+  private colorByMethod: { [key: string]: string } = {
+    cg: "blue",
+    leastsq: "#8f3237",
+    cobyla: "green",
+    freundlich: "orange",
+    langmuir: "green"
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +49,7 @@ export class HistoricVersionComponent {
 
   ngOnInit() {
     this.versionData = this.versionDataService.getVersionData();
+    this.sample = this.versionDataService.getSample();
     this.modelService
       .getModels()
       .pipe(
@@ -76,82 +82,96 @@ export class HistoricVersionComponent {
   processData(jsonData: InvestigationData) {
     if (!jsonData) return;
     this.data = jsonData;
-
-    this.versionDataService.getSample(this.investigationId).subscribe({//pedir al back que manden el sample ID en los versions
-      next: (response) => {
-        this.sample = response;
-        this.generateGraphs()
-      },
-      error: (err) => console.error('Error fetching data:', err),
-    });
-
+    this.generateGraphs()
   }
 
   generateGraphs() {
+    if (!this.data?.fitted_models) return;
+
 
     let xPointX = this.sample?.ce!
     let yPointX = this.sample?.qe!
 
-    let xForCurvePlot = this.data?.fitted_models[0]?.adjustment_methods[0].transformed.x;
 
     let axisTitles = {
       xaxis: {
-        title: 'CE'
+        title: "CE"
       },
       yaxis: {
-        title: 'QE'
+        title: "QE"
       },
     }
-
-    let baseData = {
-      x: xPointX,
-      y: yPointX,
-      type: 'scatter',
-      mode: 'markers',
-      name: 'SAMPLE',
-      marker: {color: 'black'}
-    }
-
-    let ridgeData = {
-      x: xForCurvePlot!,
-      y: this.data?.comparison.ml.y_pred!,
-      type: 'scatter',
-      mode: 'lines',
-      name: "Ridge",
-      line: {shape: 'spline', color: 'grey'},
-      marker: {color: 'grey'},
-
-    }
-
     this.compareGraph = {
-      data: [ridgeData],
+      data: [],
       layout: {
         title: "Mejor Ajuste por Modelo",
         autosize: true,
         xaxis: axisTitles.xaxis,
         yaxis: axisTitles.yaxis
       }
+    };
+    let baseData = {
+      x: xPointX,
+      y: yPointX,
+      type: 'scatter',
+      mode: 'markers',
+      name: "Sample",
+      marker: {color: 'black'}
     }
-    if (this.data?.fitted_models) {
-      for (const model of this.data?.fitted_models) {
-        let bestAdjust = this.findBestAdjustMethod(model.model_id)
-        let modelName = this.commonUtilsService.getModelById(model.model_id, this.models)
+
+
+    for (const model of this.data.fitted_models) {
+      this.summaryGraph[model.model_id] = {
+        data: [],
+        layout: {
+          title: "resumen",
+          autosize: true,
+          xaxis: axisTitles.xaxis,
+          yaxis: axisTitles.yaxis
+        }
+      }
+
+
+      let bestAdjust = this.findBestAdjustMethod(model.model_id);
+      let modelName = this.commonUtilsService.getModelById(model.model_id, this.models);
+
+      for (const adjustMethod of model.adjustment_methods) {
+        if (!adjustMethod.graph) {
+          adjustMethod.graph = {
+            layout: {
+              title: "resumen",
+              autosize: true,
+              xaxis: axisTitles.xaxis,
+              yaxis: axisTitles.yaxis,
+            }, data: []
+          };
+        }
+
         let graphData = {
-          x: bestAdjust?.transformed?.x!,
-          y: bestAdjust?.transformed?.y!,
+          x: adjustMethod?.transformed?.x || [],
+          y: adjustMethod?.transformed?.y || [],
           type: 'scatter',
           mode: 'lines',
-          name: modelName.name + " (" + bestAdjust?.name + ")",
-          line: {shape: 'spline', color: 'grey'},
-          marker: {color: 'grey'},
+          name: modelName.name + " (" + adjustMethod?.name + ")",
+          line: {shape: 'spline', color: this.colorByMethod[adjustMethod.name]},
+          marker: {color: this.colorByMethod[adjustMethod.name]},
+        };
 
+        adjustMethod.graph.data.push(graphData);
+        adjustMethod.graph.data.push(baseData);
+        this.summaryGraph[model.model_id].data.push(graphData)
+
+        if (adjustMethod.name === bestAdjust?.name) {
+          this.compareGraph?.data?.push(graphData);
         }
-        this.compareGraph.data.push(graphData);
-
       }
+      this.summaryGraph[model.model_id].data.push(baseData);
+
     }
-    this.compareGraph.data.push(baseData);
+    this.compareGraph?.data?.push(baseData);
+
   }
+
 
   findBestAdjustMethod(modelId: number) {
     const fittedModel = this.data?.fitted_models.find(fittedModel => fittedModel.model_id === modelId);
@@ -204,9 +224,19 @@ export class HistoricVersionComponent {
     return bestFit ? (bestFit.residuals.analysis as any)[residualName] : 0
   }
 
+  getBestComparisonModelOverall(): string | undefined {
 
-  protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
-  protected readonly comparisonViewOptions = ComparisonViewOption;
+    // @ts-ignore //Arreglar porque no se puede distinguir el coef.
+    if (this.data?.comparison?.ml?.coefs[this.data?.comparison.heuristic.best_model - 1] >= Math.max(...this.data?.comparison.ml.coefs)) {
+
+      return this.commonUtilsService.getModelById(this.data?.comparison.heuristic.best_model!, this.models).name;
+
+    } else {
+
+      return undefined;
+    }
+
+  }
+
   protected readonly Object = Object;
-  protected readonly allResultsViewOption = AllResultsViewOption;
 }

@@ -11,12 +11,14 @@ export interface FittedModels {
     residuals: {
       analysis: IResiduals;
       values: number[];
+      graph: IGraph;
     };
     statistics: IStatistics;
     transformed: {
       x: number[];
       y: number[];
-    }
+    };
+    graph: IGraph;
   }[];
   seeds: { name: string; stderr: number; value: number }[];
 
