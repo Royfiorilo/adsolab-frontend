@@ -8,6 +8,7 @@ import {ModelSelectorServiceService} from "../model-selector/model-selector-serv
 import {TranslateService} from "@ngx-translate/core";
 import {Model} from "../model-selector/model";
 import {CommonUtilsService} from "../../common/common.service";
+import {VersionDataService} from "../historic-version/version.service";
 
 @Component({
     selector: 'app-historic-investigation',
@@ -21,7 +22,8 @@ export class HistoricInvestigationComponent {
     constructor(private investigationService: InvestigationService, private router: Router,
                 private translateService: TranslateService,
                 protected commonUtilsService: CommonUtilsService,
-                private modelService: ModelSelectorServiceService
+                private modelService: ModelSelectorServiceService,
+                private versionDataService: VersionDataService
     ) {
     }
 
@@ -62,7 +64,12 @@ export class HistoricInvestigationComponent {
     }
 
     navigateToVersion(investigationId: number, versionId: number): void {
-        this.router.navigate(['/historic/version', investigationId, versionId]);
+        const investigation = this.investigations?.investigations.find(inv => inv.investigation_id === investigationId);
+        const version = investigation?.versions.find(v => v.version_id === versionId);
+        if (version) {
+            this.versionDataService.setVersionData(version);
+            this.router.navigate(['/historic/version', investigationId, versionId]);
+        }
     }
 
     protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;

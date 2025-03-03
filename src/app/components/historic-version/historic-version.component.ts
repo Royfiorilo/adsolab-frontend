@@ -9,6 +9,9 @@ import {TranslateService} from '@ngx-translate/core';
 import {Model} from '../model-selector/model';
 import {CommonUtilsService} from '../../common/common.service';
 import {InvestigationData} from "./interface";
+import {Version} from "../historic-investigation/interface";
+import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
+import {VersionDataService} from "./version.service";
 
 
 @Component({
@@ -19,22 +22,24 @@ import {InvestigationData} from "./interface";
 export class HistoricVersionComponent {
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
+
   versionId: string = '0';
   investigationId: string = '0';
   protected models: Model[] = [];
   protected data: InvestigationData | undefined;
-
+  versionData: Version | undefined;
 
   constructor(
     private route: ActivatedRoute,
     private investigationService: InvestigationService,
     private modelService: ModelSelectorServiceService,
     protected commonUtilsService: CommonUtilsService,
-    private translateService: TranslateService
+    private translateService: TranslateService, private versionDataService: VersionDataService
   ) {
   }
 
   ngOnInit() {
+    this.versionData = this.versionDataService.getVersionData();
     this.modelService
       .getModels()
       .pipe(
@@ -46,7 +51,6 @@ export class HistoricVersionComponent {
       )
       .subscribe((response) => {
         this.models = response.models;
-        console.log(this.models);
         this.route.paramMap.subscribe((params) => {
           this.versionId = params.get('verId') || '0';
           this.investigationId = params.get('invId') || '0';
@@ -70,4 +74,5 @@ export class HistoricVersionComponent {
     this.data = jsonData;
   }
 
+  protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 }

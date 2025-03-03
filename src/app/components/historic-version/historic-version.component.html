@@ -45,8 +45,56 @@
                     {{ commonUtilsService.getModelById(result.model, this.models).name }}
                   </div>
                   <div
-                    [ngClass]="result.model === data.comparison.heuristic.best_model ? 'fw-bold fiuba-institutional-text' : ''">
+                    [ngClass]="result.model ===  versionData?.best_model_ml ? 'fw-bold fiuba-institutional-text' : ''">
                     <div>{{ data.comparison.ml.coefs[index] }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
+    <div class="row justify-content-center m-3">
+      <div *ngFor="let model of versionData?.fitted_models" class="col-6">
+        <div class="card">
+          <div class="card-header fiuba-institutional mb-1">
+            <h4
+              class="card-title text-center">{{ commonUtilsService.getModelById(model.model_id, this.models).name }}</h4>
+          </div>
+          <div class="card-body d-flex flex-column">
+
+            <div class="row me-lg-4 ms-lg-4 me-md-2 ms-md-2 me-sm-1 ms-sm-1">
+              <div class="col-6">
+                <div class="row">
+                  <div class="col mt-0">
+                    <span class="text-muted">{{ 'MODEL_COMPARE.PARAMS' | translate }}</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col mt-0">
+                    <div *ngFor="let param of model.seeds"
+                         class="mb-0">
+                      <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
+                      <span class="text-muted text-body-emphasis">
+                                <h5>{{ param.value }} <small class="text-muted">± {{ param.stderr }}</small></h5>
+                              </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <div class="col mt-0">
+                          <span
+                            class="card-title text-muted float-end">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col mt-0">
+                    <h5 class="float-end">{{ model.best_adjust }}</h5>
                   </div>
                 </div>
               </div>
