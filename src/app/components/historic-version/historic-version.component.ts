@@ -7,11 +7,11 @@ import {catchError, firstValueFrom} from 'rxjs';
 import {ModelSelectorServiceService} from '../model-selector/model-selector-service.service';
 import {TranslateService} from '@ngx-translate/core';
 import {Model} from '../model-selector/model';
-import {CommonUtilsService} from '../../common/common.service';
+import {CommonUtilsService, DEFAULT_ITERATIONS} from '../../common/common.service';
 import {InvestigationData} from "./interface";
 import {Sample, Version} from "../historic-investigation/interface";
 import {VersionDataService} from "./version.service";
-import {IGraph} from "../../common/common.interface";
+import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {StateService} from "../investigation/state.service";
 import {DataSample} from "../data-selector/data-sample";
@@ -251,12 +251,33 @@ export class HistoricVersionComponent {
         investigation_id: +this.investigationId,
         sample: this.sample!
       },
-      stepId: 1,
+      stepId: 2,
       models: this.models,
       selectedModels: [],
-      modelConfiguration: {},
-      modelConfigurationDone: false
+      modelConfiguration: {} as IModelsConfigurations,
+      modelConfigurationDone: true
     };
+
+    if (this.data?.fitted_models) {
+      for (const fittedModel of this.data?.fitted_models) {
+        (investigation.selectedModels as number[]).push(fittedModel.model_id);
+        investigation.modelConfiguration[fittedModel.model_id] = {
+          automatedParams: false,
+          selectedLinearizations: [],
+          paramValues: {},
+          paramInfo: {},
+          paramSaved: undefined,
+          iterations: DEFAULT_ITERATIONS
+
+        };
+        for (const paramValues of fittedModel.seeds) {
+          investigation.modelConfiguration[fittedModel.model_id].paramValues[paramValues.name] = {
+            value: paramValues.value,
+            stderr: paramValues.stderr
+          }
+        }
+      }
+    }
 
     this.state.set({...investigation});
 
