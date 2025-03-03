@@ -1,6 +1,27 @@
 import {IGraph, IStatistics} from "../../common/common.interface";
 import {IResiduals} from "../model-compare/interface";
 
+export interface FittedModels {
+  best_adjust: string;
+  fitted_model_id: number | null;
+  model_id: number;
+  adjustment_methods: {
+    name: string;
+    params: { name: string; std_err: number; value: number }[];
+    residuals: {
+      analysis: IResiduals;
+      values: number[];
+    };
+    statistics: IStatistics;
+    transformed: {
+      x: number[];
+      y: number[];
+    }
+  }[];
+  seeds: { name: string; stderr: number; value: number }[];
+
+}
+
 export interface InvestigationData {
   comparison: {
     comparison_id: number;
@@ -28,26 +49,7 @@ export interface InvestigationData {
     };
   };
   created_at: string;
-  fitted_models: {
-    best_adjust: string;
-    fitted_model_id: number | null;
-    model_id: number;
-    adjustment_methods: {
-      name: string;
-      params: { name: string; std_err: number; value: number }[];
-      residuals: {
-        analysis: IResiduals;
-        values: number[];
-      };
-      statistics: IStatistics;
-      transformed: {
-        x: number[];
-        y: number[];
-      }
-
-    }[];
-    seeds: { name: string; stderr: number; value: number }[];
-  }[];
+  fitted_models: FittedModels[];
   investigation_id: number;
   iterations: number | null;
   steps: number | null;

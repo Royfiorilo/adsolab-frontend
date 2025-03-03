@@ -12,7 +12,7 @@ import {InvestigationData} from "./interface";
 import {Version} from "../historic-investigation/interface";
 import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {VersionDataService} from "./version.service";
-import {ComparisonViewOption} from "../model-compare/interface";
+import {AllResultsViewOption, ComparisonViewOption} from "../model-compare/interface";
 import {DataSample} from "../data-selector/data-sample";
 import {IGraph} from "../../common/common.interface";
 
@@ -153,22 +153,19 @@ export class HistoricVersionComponent {
     this.compareGraph.data.push(baseData);
   }
 
-  toggleAccordion(index: number, action: string): void {
-    const accordionArray = this.accordions.toArray();
-    if (accordionArray[index]) {
-      const accordion = accordionArray[index];
-      if (action === 'collapse') {
-        accordion.closeAll();
-      } else {
-        accordion.openAll();
-      }
-    }
-  }
-
-
   findBestAdjustMethod(modelId: number) {
     const fittedModel = this.data?.fitted_models.find(fittedModel => fittedModel.model_id === modelId);
     return fittedModel?.adjustment_methods.find(method => method.name === fittedModel.best_adjust);
+  }
+
+  findAdjustMethods(modelId: number) {
+    const model = this.data?.fitted_models?.find(fittedModel => fittedModel.model_id === modelId);
+    return model?.adjustment_methods || [];
+  }
+
+  findFittedModel(modelId: number) {
+    const model = this.data?.fitted_models?.find(fittedModel => fittedModel.model_id === modelId);
+    return model?.seeds || [];
   }
 
   bestStatisticValue(modelId: number, statName: string): number {
@@ -207,7 +204,9 @@ export class HistoricVersionComponent {
     return bestFit ? (bestFit.residuals.analysis as any)[residualName] : 0
   }
 
+
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly comparisonViewOptions = ComparisonViewOption;
   protected readonly Object = Object;
+  protected readonly allResultsViewOption = AllResultsViewOption;
 }
