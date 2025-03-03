@@ -53,7 +53,8 @@ export class HistoricInvestigationComponent {
     if (investigation && investigation.versions === undefined) {
       this.investigationService.getInvestigationVersions(investigationId).subscribe({
         next: (response: InvestigationVersionsResponse) => {
-          investigation.versions = response.versions;
+          investigation.versions = response.versions.sort((a, b) => b.version_id - a.version_id);
+
         },
         error: (error) => {
           console.error('Error fetching versions:', error);
