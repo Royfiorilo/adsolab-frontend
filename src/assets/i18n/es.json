@@ -126,5 +126,16 @@
     "UNEXPECTED_ERROR": "Hubo un error inesperado",
     "TECHNICAL_DETAILS": "Detalles técnicos",
     "GO_TO_HOME": "Ir al inicio"
+  },
+  "VERSIONS": {
+    "TITLE": "Título: ",
+    "VERSION": "Versión: ",
+    "ID": "ID: ",
+    "MODEL": "Modelo: ",
+    "CREATION": "Fecha de creación: ",
+    "DESCRIPTION": "Descripción: ",
+    "RESTORE": "Restaurar Versión",
+    "BEST_ADJUST": "Mejor Ajuste: ",
+    "EDIT": "Continuar investigacion"
   }
 }

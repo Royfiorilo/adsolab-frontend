@@ -5,13 +5,15 @@ import {InvestigationComponent} from "./components/investigation/investigation.c
 import {MainPageComponent} from "./components/main-page/main-page.component";
 import {ErrorComponent} from "./components/error/error.component";
 import {HistoricInvestigationComponent} from "./components/historic-investigation/historic-investigation.component";
+import {HistoricVersionComponent} from "./components/historic-version/historic-version.component";
 
 const routes: Routes = [
   {path: '', component: MainPageComponent},
   {path: 'graph', component: GraphComponent},
   {path: 'investigation', component: InvestigationComponent},
   {path: 'historic', component: HistoricInvestigationComponent},
-  {path: 'error', component: ErrorComponent}
+  {path: 'error', component: ErrorComponent},
+  {path: 'historic/version/:invId/:verId', component: HistoricVersionComponent},
 
 ];
 

@@ -61,6 +61,7 @@ import {DownloaderComponent} from "./components/downloader/downloader.component"
 import {HistoricInvestigationComponent} from './components/historic-investigation/historic-investigation.component';
 import {MatList, MatListItem} from "@angular/material/list";
 import {SnackBarComponent} from "./components/snack-bar/snack-bar.component";
+import { HistoricVersionComponent } from './components/historic-version/historic-version.component';
 
 //Plotly.register(locale)
 
@@ -91,7 +92,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     InvestigationModalComponent,
     DownloaderComponent,
     HistoricInvestigationComponent,
-    SnackBarComponent
+    SnackBarComponent,
+    HistoricVersionComponent
   ],
   imports: [
     BrowserModule,
