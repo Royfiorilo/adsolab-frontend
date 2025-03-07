@@ -103,7 +103,7 @@
                   <th scope="row">{{ i + 1 }}</th>
                   <td>{{ ceValue }}</td>
                   <td *ngFor="let model of versionData?.fitted_models">
-                    <!--                  {{ findBestAdjustMethod(model.model_id) || 'N/A' }}--> Back X
+                    {{ findMatchedTransformedValues(model.model_id, ceValue) || 'N/A' }}
                   </td>
                 </tr>
                 </tbody>
@@ -285,6 +285,8 @@
                   <div *ngIf="summaryGraph">
                     <plotly-plot [data]="summaryGraph[+model.model_id].data"
                                  [layout]="summaryGraph[+model.model_id].layout"
+                                 [style]="{width: '100%', height: '450px'}"
+                                 [config]="{responsive: true}"
                     ></plotly-plot>
                   </div>
 
@@ -300,10 +302,12 @@
                         </h5>
                         <plotly-plot [data]="adjustMethod.graph.data"
                                      [layout]="adjustMethod.graph.layout"
+                                     [config]="{responsive: true}"
                         ></plotly-plot>
 
                         <plotly-plot [data]="adjustMethod.residuals.graph.data"
                                      [layout]="adjustMethod.residuals.graph.layout"
+                                     [config]="{responsive: true}"
                         ></plotly-plot>
 
                         <app-fit-result [parameters]="adjustMethod.params" [statistics]="adjustMethod.statistics"/>

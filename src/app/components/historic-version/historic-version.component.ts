@@ -157,7 +157,7 @@ export class HistoricVersionComponent {
           y: adjustMethod?.transformed?.y || [],
           type: 'scatter',
           mode: 'lines',
-          name: modelName.name + " (" + adjustMethod?.name + ")",
+          name: adjustMethod?.name,
           line: {shape: 'spline', color: this.colorByMethod[adjustMethod.name]},
           marker: {color: this.colorByMethod[adjustMethod.name]},
         };
@@ -167,7 +167,9 @@ export class HistoricVersionComponent {
         this.summaryGraph[model.model_id].data.push(graphData)
 
         if (adjustMethod.name === bestAdjust?.name) {
-          this.compareGraph?.data?.push(graphData);
+          let bestGraphData = {...graphData};
+          bestGraphData.name = modelName.name + " (" + adjustMethod?.name + ")";
+          this.compareGraph?.data?.push(bestGraphData);
         }
       }
       this.summaryGraph[model.model_id].data.push(baseData);
@@ -283,6 +285,15 @@ export class HistoricVersionComponent {
 
     this.router.navigate(['/investigation']);
   }
+
+  findMatchedTransformedValues(modelId: number, value: number) {
+    let adjustmentMethod = this.findBestAdjustMethod(modelId);
+    if (!adjustmentMethod) return undefined;
+    let index = adjustmentMethod?.transformed?.x.indexOf(value);
+
+    return adjustmentMethod && index ? adjustmentMethod?.transformed?.y[index] : 0;
+  }
+
 
   protected readonly Object = Object;
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;

@@ -98,13 +98,16 @@ export class ModelCompareComponent {
 
   }
 
-  bestTransformedValue(modelId: number, index: number): number {
+  bestTransformedValue(modelId: number, value: number): number {
     const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment
     );
-    return bestFit ? bestFit.graph.data[1].y[index] : 0
+
+    let index = bestFit?.graph.data[0]?.x.indexOf(value);
+
+    return bestFit && index ? bestFit?.graph.data[0]?.y[index] : 0;
   }
 
   parseResiduals(residualValue: number): string | number {

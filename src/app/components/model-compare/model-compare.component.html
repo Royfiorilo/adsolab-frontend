@@ -175,7 +175,7 @@
                     <th scope="row">{{ i + 1 }}</th>
                     <td>{{ ceValue }}</td>
                     <td *ngFor="let modelId of getNoLinearResultsModelIds()">
-                      {{ bestTransformedValue(+modelId, i) || 'N/A' }}
+                      {{ bestTransformedValue(+modelId, ceValue) || 'N/A' }}
                     </td>
                   </tr>
                   </tbody>
