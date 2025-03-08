@@ -10,7 +10,7 @@ import {AuthService} from "./common/auth.service";
 export class AppComponent implements OnInit {
   title = 'adsolab';
 
-  constructor(translate: TranslateService, private authService: AuthService) {
+  constructor(translate: TranslateService, protected authService: AuthService) {
     translate.setDefaultLang('es');
     translate.use('es');
   }

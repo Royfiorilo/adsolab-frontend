@@ -49,6 +49,11 @@ export class AuthService {
   }
 
   isAuth() {
+
+    if (!environment.authEnabled) {
+      return true;
+    }
+
     return !!this.user();
   }
 

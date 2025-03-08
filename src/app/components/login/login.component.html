@@ -1,19 +1,27 @@
-<form [formGroup]="form">
-  <fieldset>
-    <legend>Login</legend>
-    <div class="form-field">
-      <label>Email:</label>
-      <input name="email" formControlName="email">
-    </div>
-    <div class="form-field">
-      <label>Password:</label>
-      <input name="password" formControlName="password"
-             type="password">
-    </div>
-  </fieldset>
-  <div class="form-buttons">
-    <button class="button button-primary"
-            (click)="login()">Login
-    </button>
-  </div>
-</form>
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-title class="fiuba-institutional login-card-title">
+      <div class="fw-bold">AdsoLab</div>
+    </mat-card-title>
+    <h4 class="fiuba-gray-text mt-3 mb-3">Login</h4>
+    <mat-card-content>
+      <form [formGroup]="form">
+        <mat-form-field class="full-width">
+          <mat-label>Email</mat-label>
+          <mat-icon color="primary" matPrefix>email</mat-icon>
+          <input matInput name="email" formControlName="email" type="email" required>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Password</mat-label>
+          <mat-icon color="primary" matPrefix>lock</mat-icon>
+          <input matInput name="password" formControlName="password" type="password" required>
+        </mat-form-field>
+
+        <div class="form-buttons">
+          <button mat-flat-button color="primary" class="text-white" (click)="login()">Iniciar sesión</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

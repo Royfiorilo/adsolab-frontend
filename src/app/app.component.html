@@ -1,5 +1,5 @@
 <ng-container class="min-vh-100">
-  <app-navigation></app-navigation>
+  <app-navigation *ngIf="authService.isAuth()"></app-navigation>
   <ng-container>
     <router-outlet></router-outlet>
   </ng-container>
