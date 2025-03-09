@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   inject,
@@ -7,7 +8,8 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
-  TemplateRef
+  TemplateRef,
+  viewChild
 } from '@angular/core';
 import {Model} from "../model-selector/model";
 import {ModelConfigurationService} from "./model-configuration.service";
@@ -21,11 +23,13 @@ import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
 import {StateService} from "../investigation/state.service";
+import {MatAccordion} from "@angular/material/expansion";
 
 @Component({
   selector: 'app-model-configuration',
   templateUrl: './model-configuration.component.html',
-  styleUrl: './model-configuration.component.css'
+  styleUrl: './model-configuration.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   state = this.stateService.state;
@@ -35,6 +39,7 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   private modalService = inject(NgbModal);
   protected runningLinearization: boolean = false;
   protected seedParamOptions: ISeedParamOption[] = []
+  accordion = viewChild.required(MatAccordion);
 
   constructor(private modelConfigurationService: ModelConfigurationService,
               protected commonUtilsService: CommonUtilsService,

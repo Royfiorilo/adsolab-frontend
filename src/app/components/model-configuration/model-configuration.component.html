@@ -8,118 +8,128 @@
   <div class="row justify-content-center">
     <app-data-visualizer *ngIf="this.state().investigation"
                          [data]="this.state().investigation?.sample"></app-data-visualizer>
+    <div class="m-2 d-flex justify-content-end">
+      <button mat-button color="primary"
+              (click)="accordion().openAll()">{{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
+      </button>
+      <button mat-button color="primary"
+              (click)="accordion().closeAll()">{{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
+      </button>
+    </div>
+    <mat-accordion multi class="row justify-content-center">
 
-    <div *ngFor="let modelId of state().selectedModels" class="col-6">
-      <div class="card">
-        <div class="card-header fiuba-investigation mb-1">
-          <h4
-            class="card-title text-center">{{ commonUtilsService.getModelById(modelId, state().models).name }}</h4>
-        </div>
-        <div class="card-body d-flex flex-column">
+      <div *ngFor="let modelId of state().selectedModels" class="col-12 col-lg-6">
+        <mat-expansion-panel class="card m-3" [expanded]="true">
+          <mat-expansion-panel-header class="card-header fiuba-investigation mb-1">
+            <h4
+              class="card-title text-center">{{ commonUtilsService.getModelById(modelId, state().models).name }}
+            </h4>
+          </mat-expansion-panel-header>
 
-          <div class="d-flex gap-2">
+          <div class="card-body d-flex flex-column">
 
-            <mat-form-field class="flex-grow-1">
-              <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
-              <mat-select [(value)]="modelConfiguration[modelId].automatedParams"
-                          [id]="modelId.toString()"
-              >
+            <div class="d-flex gap-2">
 
-                <div *ngFor="let option of seedParamOptions">
+              <mat-form-field class="flex-grow-1">
+                <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
+                <mat-select [(value)]="modelConfiguration[modelId].automatedParams"
+                            [id]="modelId.toString()"
+                >
 
-                  <mat-option [value]="option.name === SeedParamOption.AUTOMATED"
-                              *ngIf="(option.name === SeedParamOption.AUTOMATED && commonUtilsService.getModelById(modelId, state().models).linearizations.length)
+                  <div *ngFor="let option of seedParamOptions">
+
+                    <mat-option [value]="option.name === SeedParamOption.AUTOMATED"
+                                *ngIf="(option.name === SeedParamOption.AUTOMATED && commonUtilsService.getModelById(modelId, state().models).linearizations.length)
                               || option.name === SeedParamOption.MANUAL">
-                    {{ option.value }}
-                  </mat-option>
+                      {{ option.value }}
+                    </mat-option>
 
-                </div>
+                  </div>
 
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field class="flex-grow-2">
-              <mat-label>{{ 'MODEL_CONFIGURATION.ITERATIONS' | translate }}</mat-label>
-              <input
-                [id]="modelId.toString()"
-                [(ngModel)]="modelConfiguration[modelId].iterations"
-                matInput
-                type="number"
-                placeholder="{{ 'MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}"
-              >
-            </mat-form-field>
-          </div>
-
-
-          <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
-            <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="text-center">
-
-              <mat-form-field class="w-100">
-                <mat-label> {{ param.key }}</mat-label>
-                <input matInput
-                       [(ngModel)]="param.value.value"
-                       (change)="onChange($event,modelId, param.key)"
-                       id="{{param.key}}"
-                       type="number"/>
-                <mat-icon matSuffix (click)="open(content); $event.stopPropagation()">info</mat-icon>
+                </mat-select>
               </mat-form-field>
+              <mat-form-field class="flex-grow-2">
+                <mat-label>{{ 'MODEL_CONFIGURATION.ITERATIONS' | translate }}</mat-label>
+                <input
+                  [id]="modelId.toString()"
+                  [(ngModel)]="modelConfiguration[modelId].iterations"
+                  matInput
+                  type="number"
+                  placeholder="{{ 'MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}"
+                >
+              </mat-form-field>
+            </div>
 
-              <ng-template #content let-modal>
-                <div class="modal-header">
-                  <h4 class="modal-title"
-                      id="modal-basic-title">{{ 'MODEL_CONFIGURATION.PARAM' | translate:param }}</h4>
-                  <button (click)="modal.dismiss('Cross click')" class="btn-close"
-                          type="button"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <div class="input-group">
-                      {{ modelConfiguration[modelId].paramInfo[param.key] }}
+            <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
+              <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="text-center">
+
+                <mat-form-field class="w-100">
+                  <mat-label> {{ param.key }}</mat-label>
+                  <input matInput
+                         [(ngModel)]="param.value.value"
+                         (change)="onChange($event,modelId, param.key)"
+                         id="{{param.key}}"
+                         type="number"/>
+                  <mat-icon matSuffix (click)="open(content); $event.stopPropagation()">info</mat-icon>
+                </mat-form-field>
+
+                <ng-template #content let-modal>
+                  <div class="modal-header">
+                    <h4 class="modal-title"
+                        id="modal-basic-title">{{ 'MODEL_CONFIGURATION.PARAM' | translate:param }}</h4>
+                    <button (click)="modal.dismiss('Cross click')" class="btn-close"
+                            type="button"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <div class="input-group">
+                        {{ modelConfiguration[modelId].paramInfo[param.key] }}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </ng-template>
-            </div>
-          </ng-container>
-          <ng-template #automatedParams>
+                </ng-template>
+              </div>
+            </ng-container>
+            <ng-template #automatedParams>
 
-            <div class="row" *ngIf="!linearizationGraphs[modelId]?.graphs?.length">
-              <div class="col">
-                <small class="text-muted">{{ 'MODEL_CONFIGURATION.AVAILABLE_LINEARIZATIONS' | translate }}</small>
-                <div
-                  *ngFor="let linearization of commonUtilsService.getModelById(modelId,state().models).linearizations">
-                  <h6 class="text-muted">- {{ linearization.name }}</h6>
-                </div>
-                <div class="mt-auto d-flex align-content-center justify-content-center">
-                  <button (click)="runLinearization(modelId)"
-                          class="btn fiuba-investigation mt-3">{{ 'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
-                  </button>
+              <div class="row" *ngIf="!linearizationGraphs[modelId]?.graphs?.length">
+                <div class="col">
+                  <small class="text-muted">{{ 'MODEL_CONFIGURATION.AVAILABLE_LINEARIZATIONS' | translate }}</small>
+                  <div
+                    *ngFor="let linearization of commonUtilsService.getModelById(modelId,state().models).linearizations">
+                    <h6 class="text-muted">- {{ linearization.name }}</h6>
+                  </div>
+                  <div class="mt-auto d-flex align-content-center justify-content-center">
+                    <button (click)="runLinearization(modelId)"
+                            class="btn fiuba-investigation mt-3">{{ 'MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="row m-3" *ngFor="let item of linearizationGraphs[modelId]?.graphs">
+              <div class="row m-3" *ngFor="let item of linearizationGraphs[modelId]?.graphs">
 
-              <div class="col text-center">
-                <h5 class="text-center">
-                  {{ item.linearizationName }}
-                </h5>
-                <small class="text-center" *ngIf="item.isBestResult"
-                       class="badge fiuba-institutional-bg text-white">
-                  {{ 'MODEL_CONFIGURATION.BEST_LINEARIZATION' | translate }}
-                </small>
+                <div class="col text-center">
+                  <h5 class="text-center">
+                    {{ item.linearizationName }}
+                  </h5>
+                  <small *ngIf="item.isBestResult"
+                         class="text-center badge fiuba-institutional-bg text-white">
+                    {{ 'MODEL_CONFIGURATION.BEST_LINEARIZATION' | translate }}
+                  </small>
+                </div>
+                <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
+                             [config]="{responsive: true}"></plotly-plot>
+
+                <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
               </div>
+            </ng-template>
+          </div>
+        </mat-expansion-panel>
 
-              <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
-                           [config]="{responsive: true}"></plotly-plot>
 
-              <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
-            </div>
-
-          </ng-template>
-
-        </div>
       </div>
-    </div>
+    </mat-accordion>
   </div>
 
 </div>
