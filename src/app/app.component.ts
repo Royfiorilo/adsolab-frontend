@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
+import {AuthService} from "./common/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -9,8 +11,9 @@ import {TranslateService} from "@ngx-translate/core";
 export class AppComponent {
   title = 'adsolab';
 
-  constructor(translate: TranslateService) {
+  constructor(translate: TranslateService, protected authService: AuthService, protected router: Router) {
     translate.setDefaultLang('es');
     translate.use('es');
   }
+
 }

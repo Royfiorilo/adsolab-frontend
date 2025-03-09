@@ -1,3 +1,4 @@
 export interface IEnvironment {
-  backendBaseUrl: string
+  backendBaseUrl: string;
+  authEnabled: boolean;
 }

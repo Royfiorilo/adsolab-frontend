@@ -9,11 +9,20 @@ export class CustomErrorHandler implements ErrorHandler {
   constructor(private router: Router, private zone: NgZone) {
   }
 
-  handleError(error: string): void {
+  handleError(error: any): void {
 
     this.zone.run(() => {
       console.error(error);
-      this.router.navigateByUrl(`/error?message=${error}`);
+
+      let errorMessage = '';
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
+      this.router.navigateByUrl(`/error?message=${errorMessage}`);
     })
 
   }
