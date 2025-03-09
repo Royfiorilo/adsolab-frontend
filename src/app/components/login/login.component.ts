@@ -19,9 +19,10 @@ export class LoginComponent {
   private redirectURL: string | null = null;
 
   protected loginErrorMessage: string | null = null;
-
   protected emailErrorMessage: string | null = null;
   protected passwordErrorMessage: string | null = null;
+
+  protected gettingLoginData: boolean = false;
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
@@ -49,12 +50,14 @@ export class LoginComponent {
 
   ngOnInit(): void {
 
+    this.gettingLoginData = true;
+
     let params = this.route.snapshot.queryParams;
     if (params['redirectURL']) {
       this.redirectURL = params['redirectURL'];
     }
 
-    this.authService.loginData(this.redirectURL ?? '/');
+    this.authService.loginData(this.redirectURL ?? '/').add(() => this.gettingLoginData = false);
   }
 
   async login() {

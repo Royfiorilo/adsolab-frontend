@@ -1,4 +1,4 @@
-<div class="login-container">
+<div class="login-container" *ngIf="!gettingLoginData">
   <mat-card class="login-card">
     <mat-card-title class="fiuba-institutional login-card-title">
       <div class="fw-bold">{{ 'ADSOLAB_TITLE' | translate }}</div>
@@ -45,3 +45,5 @@
     </mat-card-content>
   </mat-card>
 </div>
+
+<app-loading *ngIf="gettingLoginData"></app-loading>
