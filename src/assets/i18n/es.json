@@ -10,6 +10,7 @@
   "SAMPLE": "Muestra",
   "UNDEFINED": "Indefinido",
   "ACCEPT": "Aceptar",
+  "ADSOLAB_TITLE": "AdsoLab",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "GRAPHS": "Gráficos",
@@ -137,5 +138,16 @@
     "RESTORE": "Restaurar Versión",
     "BEST_ADJUST": "Mejor Ajuste: ",
     "EDIT": "Continuar investigacion"
+  },
+  "LOGIN": {
+    "EMAIL": "E-mail",
+    "PASSWORD": "Contraseña",
+    "GO": "Ingresar",
+    "BAD_CREDENTIALS": "Credenciales incorrectas",
+    "MUST_ENTER_VALUE": "Debe ingresar un valor",
+    "INVALID_EMAIL": "Formato inválido",
+    "LOGIN": "Iniciar sesión",
+    "LOGOUT": "Cerrar sesión",
+    "REMEMBER_USER": "Recordar usuario"
   }
 }

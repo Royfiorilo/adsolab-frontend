@@ -96,16 +96,12 @@ $fiuba-investigacion-palette: (
 $adsolab-primary: mat.define-palette($fiuba-institucional-palette);
 $adsolab-accent: mat.define-palette($fiuba-investigacion-palette, A200, A100, A400);
 
-// The warn palette is optional (defaults to red).
-$adsolab-warn: mat.define-palette($fiuba-investigacion-palette);
-
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
 $adsolab-theme: mat.define-light-theme((
   color: (
     primary: $adsolab-primary,
     accent: $adsolab-accent,
-    warn: $adsolab-warn,
   ),
   typography: mat.define-typography-config(),
   density: 0

@@ -1,0 +1,49 @@
+<div class="login-container" *ngIf="!gettingLoginData">
+  <mat-card class="login-card">
+    <mat-card-title class="fiuba-institutional login-card-title">
+      <div class="fw-bold">{{ 'ADSOLAB_TITLE' | translate }}</div>
+    </mat-card-title>
+    <h4 class="fiuba-gray-text mt-4 mb-4">{{ 'LOGIN.LOGIN' | translate }}</h4>
+    <mat-card-content>
+      <form [formGroup]="form">
+        <mat-form-field appearance="outline" class="full-width mt-2 mb-2">
+          <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
+          <mat-icon color="{{this.form.controls['email'].invalid && this.form.touched ? 'warn' : 'primary'}}" matPrefix>
+            email
+          </mat-icon>
+          <input matInput name="email" formControlName="email" type="email" required>
+          @if (form.controls['email'].invalid) {
+            <mat-error>{{ emailErrorMessage }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width mt-2 mb-2">
+          <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
+          <mat-icon color="{{this.form.controls['password'].invalid && this.form.touched ? 'warn' : 'primary'}}"
+                    matPrefix>lock
+          </mat-icon>
+          <input matInput name="password" formControlName="password" type="password" required>
+          @if (form.controls['password'].invalid) {
+            <mat-error>{{ passwordErrorMessage }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-checkbox color="primary" formControlName="remember">{{ 'LOGIN.REMEMBER_USER' | translate }}</mat-checkbox>
+
+        <div *ngIf="loginErrorMessage">
+          <mat-icon class="error-icon" color="warn">error_outline</mat-icon>
+          <mat-error class="error-message">{{ loginErrorMessage }}</mat-error>
+        </div>
+
+        <div class="form-buttons">
+          <button mat-flat-button color="primary" class="text-white" (click)="login()">
+            <mat-icon>login</mat-icon>
+            {{ 'LOGIN.GO' | translate }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<app-loading *ngIf="gettingLoginData"></app-loading>

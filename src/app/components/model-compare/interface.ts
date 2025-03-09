@@ -142,8 +142,3 @@ export interface IRidgeSaveRequest {
   residuals: IResidualsAnalysis;
   results: ModelRidgeResult[];
 }
-
-//solo mostrar heuristica del mejor modelo
-//en ridge no mostrar los y_pred.
-//agregar stderror
-

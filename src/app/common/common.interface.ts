@@ -74,3 +74,18 @@ export interface IInvestigationState {
   modelConfiguration: IModelsConfigurations;
   modelConfigurationDone: boolean;
 }
+
+export interface IUser {
+  id: number;
+  email: string;
+}
+
+export interface ILoginRequest {
+  email: string;
+  password: string;
+  remember: boolean;
+}
+
+export interface ILoginResponse {
+  user: IUser;
+}
