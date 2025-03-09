@@ -67,9 +67,10 @@ import {DownloaderComponent} from "./components/downloader/downloader.component"
 import {HistoricInvestigationComponent} from './components/historic-investigation/historic-investigation.component';
 import {MatList, MatListItem} from "@angular/material/list";
 import {SnackBarComponent} from "./components/snack-bar/snack-bar.component";
-import { HistoricVersionComponent } from './components/historic-version/historic-version.component';
+import {HistoricVersionComponent} from './components/historic-version/historic-version.component';
 import {LoginComponent} from './components/login/login.component';
 import {AuthInterceptor} from "./common/auth.interceptor";
+import {MatCheckbox} from "@angular/material/checkbox";
 
 //Plotly.register(locale)
 
@@ -148,7 +149,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatDialogClose,
     MatTabBody,
     MatList,
-    MatListItem
+    MatListItem,
+    MatCheckbox
   ],
   providers: [
     provideAnimationsAsync(),

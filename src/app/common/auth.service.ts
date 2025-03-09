@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from "@angular/router";
 import {map} from "rxjs/operators";
-import {ILoginResponse, IUser} from "./common.interface";
+import {ILoginRequest, ILoginResponse, IUser} from "./common.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +29,8 @@ export class AuthService {
     })
   }
 
-  login(email: string, password: string) {
-    return this.httpClient.post<ILoginResponse>(`${this.backendBaseUrl}/login`, {
-      email,
-      password
-    }, {withCredentials: true})
+  login(request: ILoginRequest) {
+    return this.httpClient.post<ILoginResponse>(`${this.backendBaseUrl}/login`, request, {withCredentials: true})
       .pipe(
         map((res: ILoginResponse) => {
           this.user.set(res.user);

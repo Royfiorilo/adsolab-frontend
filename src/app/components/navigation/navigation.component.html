@@ -1,6 +1,7 @@
 <ng-container>
   <div class="main-header container-fluid d-flex justify-content-between align-items-center">
-    <span class="ml-2 text-white adsolab" style="cursor: pointer" routerLink="/">AdsoLab</span>
+    <span class="ml-2 text-white adsolab" style="cursor: pointer"
+          routerLink="/">{{ 'ADSOLAB_TITLE' | translate }}</span>
     <div *ngIf="authService.isAuth()" class="m-5">
       <div class="text-white">
         <mat-icon>person</mat-icon>
@@ -8,7 +9,7 @@
       </div>
       <button mat-button (click)="logout()" class="text-white">
         <mat-icon>logout</mat-icon>
-        Cerrar sesión
+        {{ 'LOGIN.LOGOUT' | translate }}
       </button>
     </div>
     <div style="flex:1" class="mr-2 adsolab-image h-100 w-auto ">
