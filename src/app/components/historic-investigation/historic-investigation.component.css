@@ -1,0 +1,36 @@
+.no-data-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+/ / Center content vertically text-align: center;
+}
+
+.no-data-card {
+  padding: 2rem;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+.no-data-icon {
+  font-size: 60px;
+  color: #757575;
+}
+
+.no-data-content h2 {
+  margin-top: 10px;
+  color: #424242;
+}
+
+.no-data-content p {
+  color: #757575;
+  font-size: 16px;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}

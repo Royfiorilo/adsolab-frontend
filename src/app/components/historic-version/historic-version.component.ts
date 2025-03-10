@@ -7,7 +7,7 @@ import {catchError, firstValueFrom} from 'rxjs';
 import {ModelSelectorServiceService} from '../model-selector/model-selector-service.service';
 import {TranslateService} from '@ngx-translate/core';
 import {Model} from '../model-selector/model';
-import {CommonUtilsService, DEFAULT_ITERATIONS} from '../../common/common.service';
+import {CommonUtilsService, DEFAULT_ITERATIONS, DEFAULT_STEPS} from '../../common/common.service';
 import {InvestigationData} from "./interface";
 import {Sample, Version} from "../historic-investigation/interface";
 import {VersionDataService} from "./version.service";
@@ -269,7 +269,8 @@ export class HistoricVersionComponent {
           paramValues: {},
           paramInfo: {},
           paramSaved: undefined,
-          iterations: DEFAULT_ITERATIONS
+          iterations: DEFAULT_ITERATIONS,
+          steps: DEFAULT_STEPS
 
         };
         for (const paramValues of fittedModel.seeds) {

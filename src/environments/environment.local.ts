@@ -2,5 +2,5 @@ import {IEnvironment} from "./interface";
 
 export const environment: IEnvironment = {
   backendBaseUrl: 'http://localhost:5000',
-  authEnabled: true
+  authEnabled: false
 };

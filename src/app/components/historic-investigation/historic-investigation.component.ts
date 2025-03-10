@@ -18,6 +18,7 @@ import {VersionDataService} from "../historic-version/version.service";
 export class HistoricInvestigationComponent {
   investigations: InvestigationResponse | undefined;
   models: Model[] = [];
+  protected loadingHistoric: boolean = true;
 
   constructor(private investigationService: InvestigationService, private router: Router,
               private translateService: TranslateService,
@@ -32,6 +33,7 @@ export class HistoricInvestigationComponent {
       .getModels()
       .pipe(
         catchError(async (error) => {
+          this.loadingHistoric = false;
           throw await firstValueFrom(
             this.translateService.get('MODEL_SELECTOR.ERROR_LOADING_MODELS', error)
           );
@@ -41,12 +43,14 @@ export class HistoricInvestigationComponent {
         this.models = response.models;
         this.investigationService.getInvestigations().subscribe((data: InvestigationResponse) => {
           this.investigations = data;
+          this.loadingHistoric = false;
         });
       });
 
   }
 
   fetchVersions(investigationId: number): void {
+    this.loadingHistoric = true;
     const investigation = this.investigations?.investigations.find(
       (inv: any) => inv.investigation_id === investigationId
     );
@@ -54,10 +58,13 @@ export class HistoricInvestigationComponent {
       this.investigationService.getInvestigationVersions(investigationId).subscribe({
         next: (response: InvestigationVersionsResponse) => {
           investigation.versions = response.versions.sort((a, b) => b.version_id - a.version_id);
+          this.loadingHistoric = false;
 
         },
         error: (error) => {
           console.error('Error fetching versions:', error);
+          this.loadingHistoric = false;
+
         }
       });
     }

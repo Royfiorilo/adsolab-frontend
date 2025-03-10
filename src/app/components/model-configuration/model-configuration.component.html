@@ -18,7 +18,7 @@
     </div>
     <mat-accordion multi class="row justify-content-center">
 
-      <div *ngFor="let modelId of state().selectedModels" class="col-12 col-lg-6">
+      <div *ngFor="let modelId of state().selectedModels" class="col-md-12 col-xxl-6">
         <mat-expansion-panel class="card m-3" [expanded]="true">
           <mat-expansion-panel-header class="card-header fiuba-investigation mb-1">
             <h4
@@ -28,37 +28,39 @@
 
           <div class="card-body d-flex flex-column">
 
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2" style="display: flex; width: 100%;">
 
-              <mat-form-field class="flex-grow-1">
+              <mat-form-field style="flex: 0 0 60%;">
                 <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
-                <mat-select [(value)]="modelConfiguration[modelId].automatedParams"
-                            [id]="modelId.toString()"
-                >
-
+                <mat-select [(value)]="modelConfiguration[modelId].automatedParams" [id]="modelId.toString()">
                   <div *ngFor="let option of seedParamOptions">
-
                     <mat-option [value]="option.name === SeedParamOption.AUTOMATED"
                                 *ngIf="(option.name === SeedParamOption.AUTOMATED && commonUtilsService.getModelById(modelId, state().models).linearizations.length)
-                              || option.name === SeedParamOption.MANUAL">
+                          || option.name === SeedParamOption.MANUAL">
                       {{ option.value }}
                     </mat-option>
-
                   </div>
-
                 </mat-select>
               </mat-form-field>
-              <mat-form-field class="flex-grow-2">
+
+              <mat-form-field style="flex: 0 0 20%;">
                 <mat-label>{{ 'MODEL_CONFIGURATION.ITERATIONS' | translate }}</mat-label>
-                <input
-                  [id]="modelId.toString()"
-                  [(ngModel)]="modelConfiguration[modelId].iterations"
-                  matInput
-                  type="number"
-                  placeholder="{{ 'MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}"
-                >
+                <input [id]="modelId.toString()"
+                       [(ngModel)]="modelConfiguration[modelId].iterations"
+                       matInput type="number"
+                       placeholder="{{ 'MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}">
               </mat-form-field>
+
+              <mat-form-field style="flex: 0 0 20%;">
+                <mat-label>{{ 'MODEL_CONFIGURATION.STEPS' | translate }}</mat-label>
+                <input [id]="modelId.toString()"
+                       [(ngModel)]="modelConfiguration[modelId].steps"
+                       matInput type="number"
+                       placeholder="{{ 'MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}">
+              </mat-form-field>
+
             </div>
+
 
             <ng-container *ngIf="!modelConfiguration[modelId].automatedParams;else automatedParams">
               <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="text-center">

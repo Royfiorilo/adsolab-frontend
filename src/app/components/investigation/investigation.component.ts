@@ -3,7 +3,7 @@ import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Investigation} from "../data-selector/data-sample";
 import {IModelsConfigurations} from "../../common/common.interface";
-import {DEFAULT_ITERATIONS} from '../../common/common.service';
+import {DEFAULT_ITERATIONS, DEFAULT_STEPS} from '../../common/common.service';
 import {StateService} from "./state.service";
 import {MatStep} from "@angular/material/stepper";
 import {MatDialog} from "@angular/material/dialog";
@@ -68,7 +68,8 @@ export class InvestigationComponent implements OnInit {
         paramInfo: model?.parameters || {},
         selectedLinearizations: [],
         paramSaved: undefined,
-        iterations: DEFAULT_ITERATIONS
+        iterations: DEFAULT_ITERATIONS,
+        steps: DEFAULT_STEPS
       }
     };
 
