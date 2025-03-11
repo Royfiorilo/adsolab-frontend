@@ -2,7 +2,7 @@
   <app-loading></app-loading>
 </ng-container>
 
-<ng-container *ngIf="investigations?.investigations">
+<ng-container *ngIf="investigations?.investigations && investigations?.investigations?.length === 0">
   <div class="no-data-container">
     <mat-card class="no-data-card">
       <mat-card-content class="no-data-content">
@@ -14,12 +14,9 @@
             {{ 'NO_DATA.CREATE' | translate }}
           </button>
         </div>
-
       </mat-card-content>
     </mat-card>
   </div>
-
-
 </ng-container>
 
 <div class="container-fluid p-5">
