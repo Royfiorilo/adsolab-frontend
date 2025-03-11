@@ -41,6 +41,10 @@
       {{ 'FILE_UPLOAD.VALID_FILE' | translate }}
     </div>
   </div>
+  <div class="row text-body-tertiary">
+    {{ 'FILE_UPLOAD.INFO' | translate }}
+
+  </div>
 </div>
 <div *ngIf="uploadedFile.valid" class="text-center mt-5">
   <span class="m-3 fw-bold"> {{ 'FILE_UPLOAD.SAMPLE_SPEC' | translate }} </span>
@@ -91,7 +95,7 @@
           id="temperature"
           matInput
           type="number"
-          placeholder="Ej. 25"
+          placeholder="Ej. 290 (Kelvin)"
           [value]=[dataSample.temperature]
           (change)="onChange($event)"
         >

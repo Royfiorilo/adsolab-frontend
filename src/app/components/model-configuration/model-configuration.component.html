@@ -121,7 +121,8 @@
                   </small>
                 </div>
                 <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
-                             [config]="{responsive: true}"></plotly-plot>
+                             [style]="{width: '100%', minHeight: '450px'}"
+                             [config]="{responsive:true, displaylogo: false, editable: true}"></plotly-plot>
 
                 <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
               </div>

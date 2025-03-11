@@ -1,6 +1,7 @@
 .upload-area {
   border: 1px dashed #008bce;
   padding: 20px;
+  padding-bottom: 5px;
   text-align: center;
   background-color: #f9f9f9;
   border-radius: 5px;

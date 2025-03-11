@@ -1,35 +1,6 @@
-.footer-color {
-  height: 20%;
-  background-image: url("assets/Header_Footer_Adsolab.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.adsolab-image {
-  background-image: url("assets/logo_front.png");
-  background-size: contain;
-  background-position: right;
-  background-repeat: no-repeat;
-}
-
-.adsolab {
-  font-size: 50px;
-  font-weight: bold;
-}
 
 .main-body {
   height: 85%;
-}
-
-.main-header {
-  background-color: #008bce;
-  height: 15%;
-}
-
-.responsive-img {
-  max-width: 100%;
-  height: auto;
 }
 
 .fiuba-institutional-bg {

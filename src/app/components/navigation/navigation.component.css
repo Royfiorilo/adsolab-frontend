@@ -1,0 +1,16 @@
+.adsolab {
+  font-size: 2.5vw;
+  font-weight: bold;
+}
+
+
+.main-header {
+  background-color: #008bce;
+  height: 15%;
+}
+
+.image-adsolab {
+  max-height: 10vh;
+  width: auto;
+  max-width: 100%;
+}
