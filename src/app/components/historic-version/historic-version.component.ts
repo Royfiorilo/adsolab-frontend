@@ -218,7 +218,7 @@ export class HistoricVersionComponent {
   getResidualsRows(): string[] {
     const sampleResiduals = this.data?.comparison?.ml.residuals;
     if (sampleResiduals) {
-      return Object.keys(sampleResiduals?.analysis);
+      return Object.keys(sampleResiduals);
 
     } else {
       return ["not", "found"]
@@ -229,20 +229,6 @@ export class HistoricVersionComponent {
   bestResidualValue(modelId: number, residualName: string): number {
     const bestFit = this.findBestAdjustMethod(modelId)
     return bestFit ? (bestFit.residuals.analysis as any)[residualName] : 0
-  }
-
-  getBestComparisonModelOverall(): string | undefined {
-
-    // @ts-ignore //Arreglar porque no se puede distinguir el coef.
-    if (this.data?.comparison?.ml?.coefs[this.data?.comparison.heuristic.best_model - 1] >= Math.max(...this.data?.comparison.ml.coefs)) {
-
-      return this.commonUtilsService.getModelById(this.data?.comparison.heuristic.best_model!, this.models).name;
-
-    } else {
-
-      return undefined;
-    }
-
   }
 
   navigateToInvestigation() {

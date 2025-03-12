@@ -45,10 +45,6 @@ export class HistoricInvestigationComponent {
         this.investigationService.getInvestigations().subscribe((data: InvestigationResponse) => {
           this.investigations = data;
           this.loadingHistoric = false;
-          console.log(this.investigations)
-
-          console.log(this.investigations.investigations.length)
-
         });
       });
 
@@ -72,6 +68,8 @@ export class HistoricInvestigationComponent {
 
         }
       });
+    } else {
+      this.loadingHistoric = false;
     }
 
   }
