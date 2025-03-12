@@ -21,8 +21,8 @@
           </div>
           <h2 class="text-center">
               <span
-                [ngClass]="getBestComparisonModelOverall() ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
-{{ getBestComparisonModelOverall() ?? ('UNDEFINED' | translate) }}
+                [ngClass]="this.commonUtilsService.getBestComparisonModelOverall(data.comparison.ml.best_model, data.comparison.heuristic.best_model, this.models) ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
+{{ this.commonUtilsService.getBestComparisonModelOverall(data.comparison.ml.best_model, data.comparison.heuristic.best_model, this.models) ?? ('UNDEFINED' | translate) }}
               </span>
           </h2>
           <div class="card m-3">
@@ -49,8 +49,7 @@
               <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h5>
 
               <div class="row justify-content-center">
-                <!--aca hay que arreglar el envio de data de Ridge, el formato de los coef no tienen asociados los modelos-->
-                <div *ngFor="let result of data!.comparison.heuristic.results!; let index = index"
+                <div *ngFor="let result of data!.comparison.ml.results!; let index = index"
                      class="col-md-6 col-lg-3">
                   <div
                     [ngClass]="result.model ===  versionData?.best_model_ml  ? 'fw-bold fiuba-institutional-text' : ''">
@@ -58,7 +57,7 @@
                   </div>
                   <div
                     [ngClass]="result.model ===  versionData?.best_model_ml ? 'fw-bold fiuba-institutional-text' : ''">
-                    <div>{{ data.comparison.ml.coefs[index] }}</div>
+                    <div>{{ result.coef }}</div>
                   </div>
                 </div>
               </div>
@@ -185,7 +184,7 @@
   <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
     <div class="row justify-content-center m-3">
       <div *ngFor="let model of versionData?.fitted_models" class="col-6">
-        <div class="card">
+        <div class="mt-4 m-2 card">
           <div class="card-header fiuba-institutional mb-1">
             <h4
               class="card-title text-center">{{ commonUtilsService.getModelById(model.model_id, this.models).name }}</h4>

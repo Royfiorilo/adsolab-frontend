@@ -32,20 +32,16 @@ export interface InvestigationData {
       results: { model: number; score: number }[];
     };
     ml: {
-      coefs: number[];
-      name: string;
+      best_model: number;
+      results: { coef: number; model: number }[];
       residuals: {
-        analysis: {
-          durbin_watson: number;
-          homoscedasticity_pvalue: number;
-          normality_pvalue: number;
-          passes_homoscedasticity: number;
-          passes_independence: number;
-          passes_normality: number;
-        };
-        graph: IGraph;
-        values: number[];
-      };
+        durbin_watson: number;
+        homoscedasticity_pvalue: number;
+        normality_pvalue: number;
+        passes_homoscedasticity: number;
+        passes_independence: number;
+        passes_normality: number;
+      }
       statistics: IStatistics;
       y_pred: number[];
     };

@@ -10,6 +10,21 @@ export class CommonUtilsService {
     return models.filter(model => model._id === modelId).pop()!;
   }
 
+
+  getBestComparisonModelOverall(modelOne: number, modelTwo: number, models: Model[]): string | undefined {
+
+    if (modelOne === modelTwo) {
+
+      return this.getModelById(modelOne, models).name;
+
+    } else {
+
+      return undefined;
+    }
+
+  }
+
+
 }
 
 export const DEFAULT_ITERATIONS = 10000;

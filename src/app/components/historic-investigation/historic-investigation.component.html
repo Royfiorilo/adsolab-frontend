@@ -24,7 +24,7 @@
     <div class="col-10">
       <div class="investigation-container">
         <mat-accordion *ngIf="investigations">
-          <mat-expansion-panel *ngFor="let investigation of investigations.investigations">
+          <mat-expansion-panel class="mt-4 m-2 " *ngFor="let investigation of investigations.investigations">
             <mat-expansion-panel-header (click)="fetchVersions(investigation.investigation_id)">
               <mat-panel-title>
                 {{ 'VERSIONS.ID' | translate }} {{ investigation.investigation_id }}
@@ -48,9 +48,21 @@
                         {{ 'VERSIONS.CREATION' | translate }} {{ version.created_at }}
                       </div>
                       <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <h5
+                            class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
+                        </div>
+                        <h2 class="text-center border-bottom pb-3 mb-4">
+              <span
+                [ngClass]="this.commonUtilsService.getBestComparisonModelOverall(version.best_model_ml, version.best_model_heuristic, this.models) ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
+{{ this.commonUtilsService.getBestComparisonModelOverall(version.best_model_ml, version.best_model_heuristic, this.models) ?? ('UNDEFINED' | translate) }}
+              </span>
+                        </h2>
+
                         <div *ngFor="let model of version.fitted_models"
                              class="mb-4 border-bottom pb-3">
                           <div class="row">
+
                             <div class="col-6">
                               <p class="mb-0">
                                 <strong> {{ 'VERSIONS.MODEL' | translate }} </strong> {{ commonUtilsService.getModelById(model.model_id, this.models).name }}
