@@ -71,6 +71,7 @@ import {HistoricVersionComponent} from './components/historic-version/historic-v
 import {LoginComponent} from './components/login/login.component';
 import {AuthInterceptor} from "./common/auth.interceptor";
 import {MatCheckbox} from "@angular/material/checkbox";
+import { UsersComponent } from './components/users/users.component';
 
 //Plotly.register(locale)
 
@@ -103,7 +104,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     HistoricInvestigationComponent,
     SnackBarComponent,
     HistoricVersionComponent,
-    LoginComponent
+    LoginComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,

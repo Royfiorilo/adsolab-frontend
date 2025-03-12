@@ -78,6 +78,16 @@ export interface IInvestigationState {
 export interface IUser {
   id: number;
   email: string;
+  roles: string[];
+  active: boolean;
+}
+
+export interface IUserPageResponse {
+  users: IUser[];
+  page: number;
+  per_page: number,
+  total: number,
+  pages: number
 }
 
 export interface ILoginRequest {

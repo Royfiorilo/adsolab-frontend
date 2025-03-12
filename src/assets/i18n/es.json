@@ -13,8 +13,8 @@
   "ADSOLAB_TITLE": "AdsoLab",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
-    "GRAPHS": "Gráficos",
-    "HIST": "Investigaciones Historicas"
+    "HIST": "Investigaciones Historicas",
+    "USERS": "Usuarios"
   },
   "INVESTIGATION": {
     "CONTINUE": "Continuar",

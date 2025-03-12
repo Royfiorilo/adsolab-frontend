@@ -8,6 +8,7 @@ import {HistoricInvestigationComponent} from "./components/historic-investigatio
 import {HistoricVersionComponent} from "./components/historic-version/historic-version.component";
 import {LoginComponent} from "./components/login/login.component";
 import {canActivate} from "./common/auth.service";
+import {UsersComponent} from "./components/users/users.component";
 
 const routes: Routes = [
   {path: '', component: MainPageComponent, canActivate: [canActivate]},
@@ -17,8 +18,7 @@ const routes: Routes = [
   {path: 'error', component: ErrorComponent},
   {path: 'historic/version/:invId/:verId', component: HistoricVersionComponent, canActivate: [canActivate]},
   {path: 'login', component: LoginComponent},
-
-
+  {path: 'users', component: UsersComponent, canActivate: [canActivate]},
 ];
 
 @NgModule({
