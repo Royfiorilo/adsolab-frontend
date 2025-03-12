@@ -26,4 +26,13 @@ export class InvestigationService {
   deployDatasetVersion(investigationId: string, versionId: string): Observable<any> {
     return this.httpClient.get(`${this.backendBaseUrl}/investigation/${investigationId}/version/${versionId}`);
   }
+
+  deleteInvestigationVersion(investigationId: number, versionId: number) {
+    return this.httpClient.delete(`${this.backendBaseUrl}/investigation/${investigationId}/version/${versionId}`);
+  }
+
+  deleteInvestigation(investigationId: number) {
+    return this.httpClient.delete(`${this.backendBaseUrl}/investigation/${investigationId}`);
+
+  }
 }

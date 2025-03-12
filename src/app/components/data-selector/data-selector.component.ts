@@ -1,13 +1,14 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
-import {catchError, firstValueFrom, Observable} from 'rxjs';
+import {catchError, finalize, firstValueFrom, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
 import {TranslateService} from '@ngx-translate/core';
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-data-selector',
@@ -124,5 +125,29 @@ export class DataSelectorComponent {
 
   setDataSample(dataSample: DataSample | undefined) {
     this.dataSample = dataSample;
+  }
+
+  protected readonly faTrash = faTrash;
+
+  deleteSample(sampleId: number | undefined) {
+    //agregar modal estas seguro
+
+    this.loadingDataSamples = true;
+    if (sampleId) {
+      this.sampleService.deleteSample(sampleId)
+        .pipe(finalize(() => this.loadingDataSamples = false))
+        .subscribe({
+          next: (response) => {
+            console.log('Version deleted successfully:', response);
+          },
+          error: (error) => {
+            console.error('Error deleting version:', error);
+          }
+        });
+    } else {
+      this.loadingDataSamples = false;
+
+    }
+
   }
 }
