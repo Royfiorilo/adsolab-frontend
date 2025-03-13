@@ -1,42 +1,62 @@
-import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {UserService} from '../../common/user.service';
+import {Component, Inject} from '@angular/core';
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
+import {UserService} from "../../common/user.service";
+import {TranslateService} from "@ngx-translate/core";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {firstValueFrom, merge} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {TranslateService} from "@ngx-translate/core";
-import {IUserCreationRequest} from '../../common/common.interface';
-import {MatDialogRef} from "@angular/material/dialog";
+import {IUser, IUserEditRequest} from "../../common/common.interface";
+
+function validatePassword(form: FormGroup): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+
+    let passwordValid = true;
+
+    const value = control.value;
+
+    if (!value && form.controls['changePassword'].value) {
+      passwordValid = false;
+    }
+
+    return !passwordValid ? {required: true} : null;
+  }
+}
 
 @Component({
-  selector: 'app-create-user',
-  templateUrl: './create-user.component.html',
-  styleUrl: './create-user.component.css'
+  selector: 'app-edit-user',
+  templateUrl: './edit-user.component.html',
+  styleUrl: './edit-user.component.css'
 })
-export class CreateUserComponent {
+export class EditUserComponent {
 
   protected form: FormGroup;
   protected emailErrorMessage: string | null = null;
   protected passwordErrorMessage: string | null = null;
-  protected userRoleErrorMessage: string | null = null;
-  protected userCreationErrorMessage: string | null = null;
-  protected creatingUser: boolean = false;
+  protected userEditErrorMessage: string | null = null;
+  protected editingUser: boolean = false;
+
+  protected password: string | undefined = undefined;
 
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) protected user: IUser,
     private fb: FormBuilder,
     private userService: UserService,
     private translateService: TranslateService,
-    private dialogRef: MatDialogRef<CreateUserComponent>
+    private dialogRef: MatDialogRef<EditUserComponent>
   ) {
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      userRole: ['', Validators.required]
+      email: [user.email, [Validators.required, Validators.email]],
+      userRole: [user.roles[0]],
+      active: [user.active],
+      changePassword: [false],
+      password: [''],
     });
+
+    this.form.get('password')?.setValidators(validatePassword(this.form))
 
     let emailControl = this.form.controls['email']
     let passwordControl = this.form.controls['password']
-    let userRoleControl = this.form.controls['userRole']
 
     merge(emailControl.statusChanges, emailControl.valueChanges)
       .pipe(takeUntilDestroyed())
@@ -45,10 +65,6 @@ export class CreateUserComponent {
     merge(passwordControl.statusChanges, passwordControl.valueChanges)
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.updatePasswordErrorMessage());
-
-    merge(userRoleControl.statusChanges, userRoleControl.valueChanges)
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.updateRoleErrorMessage());
   }
 
 
@@ -76,45 +92,43 @@ export class CreateUserComponent {
     }
   }
 
-  async updateRoleErrorMessage() {
 
-    let userRoleControl = this.form.controls['userRole'];
+  editUser() {
 
-    if (userRoleControl.hasError('required')) {
-      this.userRoleErrorMessage = await firstValueFrom(this.translateService.get('MUST_ENTER_VALUE'));
-    } else {
-      this.userRoleErrorMessage = null;
+    for (const control of Object.values(this.form.controls)) {
+
+      control.updateValueAndValidity();
+
     }
-  }
-
-  createUser() {
 
     if (!this.form.invalid) {
 
-      this.creatingUser = true;
+      this.editingUser = true;
 
-      let user: IUserCreationRequest = {
+      let userEditRequest: IUserEditRequest = {
         email: this.form.controls['email'].value,
         password: this.form.controls['password'].value,
-        role: this.form.controls['userRole'].value
+        role: this.form.controls['userRole'].value,
+        active: this.form.controls['active'].value
       }
 
-      this.userService.createUser(user).subscribe({
+      this.userService.editUser(this.user.id, userEditRequest).subscribe({
         next: () => {
           this.dialogRef.close(true);
-          this.creatingUser = false;
+          this.editingUser = false;
         },
         error: error => {
-          this.userCreationErrorMessage = error.message;
-          this.creatingUser = false;
+          this.userEditErrorMessage = error.message;
+          this.editingUser = false;
         }
       })
 
     } else {
+      console.log(this.form.errors)
       this.updateEmailErrorMessage()
       this.updatePasswordErrorMessage()
-      this.updateRoleErrorMessage()
     }
 
   }
+
 }

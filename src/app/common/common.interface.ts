@@ -88,6 +88,13 @@ export interface IUserCreationRequest {
   role: string;
 }
 
+export interface IUserEditRequest {
+  email: string;
+  password: string;
+  role: string;
+  active: boolean;
+}
+
 export interface IUserPageResponse {
   users: IUser[];
   page: number;

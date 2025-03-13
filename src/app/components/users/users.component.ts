@@ -6,6 +6,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {CreateUserComponent} from "../create-user/create-user.component";
+import {EditUserComponent} from "../edit-user/edit-user.component";
 
 @Component({
   selector: 'app-users',
@@ -111,5 +112,26 @@ export class UsersComponent implements OnInit {
 
   parseUserRole(roles: string[]) {
     return roles.map(role => this.roleMap[role]).join(", ");
+  }
+
+  openEditUserDialog(user: IUser) {
+
+    const editUserDialogRef = this.dialog.open(EditUserComponent, {
+      data: user
+    });
+
+    editUserDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadUsers(1, 10);
+        this._snackBar.openFromComponent(SnackBarComponent, {
+          duration: 3000,
+          verticalPosition: 'top',
+          data: {
+            message: "Usuario actualizado con éxito"
+          }
+        });
+      }
+    });
+
   }
 }

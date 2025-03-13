@@ -19,13 +19,14 @@
       }
     </mat-form-field>
 
+    <mat-label>Rol</mat-label>
     <mat-radio-group formControlName="userRole">
       <mat-radio-button color="primary" value="RESEARCHER">Investigador</mat-radio-button>
       <mat-radio-button color="primary" value="ADMIN">Admin</mat-radio-button>
+      @if (form.controls['userRole'].invalid && userRoleErrorMessage) {
+        <mat-error class="role-error-message">{{ userRoleErrorMessage }}</mat-error>
+      }
     </mat-radio-group>
-    @if (form.controls['userRole'].invalid) {
-      <mat-error class="role-error-message">{{ userRoleErrorMessage }}</mat-error>
-    }
 
     <div *ngIf="userCreationErrorMessage">
       <mat-icon class="error-icon" color="warn">error_outline</mat-icon>

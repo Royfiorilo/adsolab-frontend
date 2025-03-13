@@ -74,6 +74,8 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {UsersComponent} from './components/users/users.component';
 import {CreateUserComponent} from './components/create-user/create-user.component';
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
+import {EditUserComponent} from './components/edit-user/edit-user.component';
+import {MatSlideToggle} from "@angular/material/slide-toggle";
 
 //Plotly.register(locale)
 
@@ -108,7 +110,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     HistoricVersionComponent,
     LoginComponent,
     UsersComponent,
-    CreateUserComponent
+    CreateUserComponent,
+    EditUserComponent
   ],
   imports: [
     BrowserModule,
@@ -157,7 +160,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatListItem,
     MatCheckbox,
     MatRadioGroup,
-    MatRadioButton
+    MatRadioButton,
+    MatSlideToggle
   ],
   providers: [
     provideAnimationsAsync(),
