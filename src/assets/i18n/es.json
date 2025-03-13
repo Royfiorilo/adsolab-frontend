@@ -11,6 +11,8 @@
   "UNDEFINED": "Indefinido",
   "ACCEPT": "Aceptar",
   "ADSOLAB_TITLE": "AdsoLab",
+  "MUST_ENTER_VALUE": "Debe ingresar un valor",
+  "INVALID_FORMAT": "Formato inválido",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "HIST": "Investigaciones Historicas",
@@ -148,8 +150,6 @@
     "PASSWORD": "Contraseña",
     "GO": "Ingresar",
     "BAD_CREDENTIALS": "Credenciales incorrectas",
-    "MUST_ENTER_VALUE": "Debe ingresar un valor",
-    "INVALID_EMAIL": "Formato inválido",
     "LOGIN": "Iniciar sesión",
     "LOGOUT": "Cerrar sesión",
     "REMEMBER_USER": "Recordar usuario"

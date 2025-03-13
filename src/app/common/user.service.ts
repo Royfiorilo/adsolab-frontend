@@ -1,7 +1,7 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {IUser, IUserPageResponse} from "./common.interface";
+import {IUser, IUserCreationRequest, IUserPageResponse} from "./common.interface";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -18,8 +18,8 @@ export class UserService {
     return this.http.get<IUserPageResponse>(`${this.backendBaseUrl}/users?page=${page}&perPage=${perPage}`, {withCredentials: true});
   }
 
-  getUser(userId: number): Observable<IUser> {
-    return this.http.get<IUser>(`${this.backendBaseUrl}/${userId}`);
+  createUser(userData: Partial<IUserCreationRequest>): Observable<IUser> {
+    return this.http.post<IUser>(`${this.backendBaseUrl}/users`, userData, {withCredentials: true});
   }
 
   updateUser(userId: number, userData: Partial<IUser>): Observable<IUser> {

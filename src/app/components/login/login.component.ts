@@ -112,9 +112,9 @@ export class LoginComponent {
     let emailControl = this.form.controls['email'];
 
     if (emailControl.hasError('required')) {
-      this.emailErrorMessage = await firstValueFrom(this.translateService.get('LOGIN.MUST_ENTER_VALUE'));
+      this.emailErrorMessage = await firstValueFrom(this.translateService.get('MUST_ENTER_VALUE'));
     } else if (emailControl.hasError('email')) {
-      this.emailErrorMessage = await firstValueFrom(this.translateService.get('LOGIN.INVALID_EMAIL'));
+      this.emailErrorMessage = await firstValueFrom(this.translateService.get('INVALID_EMAIL'));
     } else {
       this.emailErrorMessage = null;
     }
@@ -125,7 +125,7 @@ export class LoginComponent {
     let passwordControl = this.form.controls['password'];
 
     if (passwordControl.hasError('required')) {
-      this.passwordErrorMessage = await firstValueFrom(this.translateService.get('LOGIN.MUST_ENTER_VALUE'));
+      this.passwordErrorMessage = await firstValueFrom(this.translateService.get('MUST_ENTER_VALUE'));
     } else {
       this.passwordErrorMessage = null;
     }

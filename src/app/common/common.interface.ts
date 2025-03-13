@@ -82,6 +82,12 @@ export interface IUser {
   active: boolean;
 }
 
+export interface IUserCreationRequest {
+  email: string;
+  password: string;
+  role: string;
+}
+
 export interface IUserPageResponse {
   users: IUser[];
   page: number;
