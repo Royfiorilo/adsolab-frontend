@@ -114,7 +114,7 @@ export class LoginComponent {
     if (emailControl.hasError('required')) {
       this.emailErrorMessage = await firstValueFrom(this.translateService.get('MUST_ENTER_VALUE'));
     } else if (emailControl.hasError('email')) {
-      this.emailErrorMessage = await firstValueFrom(this.translateService.get('INVALID_EMAIL'));
+      this.emailErrorMessage = await firstValueFrom(this.translateService.get('INVALID_FORMAT'));
     } else {
       this.emailErrorMessage = null;
     }

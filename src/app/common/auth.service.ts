@@ -12,7 +12,7 @@ export class AuthService {
 
   backendBaseUrl: string;
 
-  user = signal<IUser | null>(this.loadUser());
+  user = signal<IUser | undefined>(this.loadUser());
 
 
   constructor(private httpClient: HttpClient, private router: Router) {
@@ -22,9 +22,9 @@ export class AuthService {
   loadUser() {
     try {
       const userInfo = sessionStorage.getItem('user-info');
-      return userInfo ? JSON.parse(userInfo) as IUser : null;
+      return userInfo ? JSON.parse(userInfo) as IUser : undefined;
     } catch (error) {
-      return null;
+      return undefined;
     }
   }
 
@@ -54,7 +54,7 @@ export class AuthService {
 
   logout() {
     return this.httpClient.post<void>(`${this.backendBaseUrl}/logout`, null, {withCredentials: true}).subscribe(() => {
-      this.user.set(null);
+      this.user.set(undefined);
       this.router.navigateByUrl('/login')
     });
   }
@@ -85,6 +85,15 @@ export class AuthService {
     }
 
 
+  }
+
+  isAdmin(): boolean {
+    if (!environment.authEnabled) {
+      return false;
+    } else {
+      const userInfo = this.user();
+      return userInfo ? userInfo.roles.includes('ADMIN') : false;
+    }
   }
 }
 
