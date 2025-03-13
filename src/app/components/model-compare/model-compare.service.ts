@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
-import {INoLinearRequest, INoLinearResponse, ISaveRequest} from "./interface";
+import {INoLinearRequest, INoLinearResponse, ISaveRequest, ISaveResponse} from "./interface";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class ModelCompareService {
   }
 
 
-  saveInvestigation(request: ISaveRequest): Observable<any> {
+  saveInvestigation(request: ISaveRequest): Observable<ISaveResponse> {
 
     return this.httpClient.post<INoLinearResponse>(`${this.backendBaseUrl}/investigation/save`, request);
   }

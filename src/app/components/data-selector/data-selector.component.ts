@@ -7,8 +7,8 @@ import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
 import {TranslateService} from '@ngx-translate/core';
 import {MatDialog} from "@angular/material/dialog";
-import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 
 @Component({
   selector: 'app-data-selector',
@@ -16,7 +16,7 @@ import {faTrash} from "@fortawesome/free-solid-svg-icons";
   styleUrl: './data-selector.component.css'
 })
 export class DataSelectorComponent {
-  @Output() onInvestigationCreated: EventEmitter<Investigation> = new EventEmitter();
+  @Output() onInvestigationStarted: EventEmitter<Investigation> = new EventEmitter();
   @Input() investigation!: Investigation | undefined;
   protected dataSample: DataSample | undefined;
   protected availableDataSamples: DataSample[] = [];
@@ -81,8 +81,8 @@ export class DataSelectorComponent {
   }
 
   createInvestigation() {
-    if (this.dataSample) {
-      this.creatingInvestigation = true;
+    this.creatingInvestigation = true;
+    if (this.dataSample && this.dataSample.sample_id === undefined) {
       this.dataService
         .createInvestigation(this.dataSample)
         .subscribe({
@@ -98,15 +98,19 @@ export class DataSelectorComponent {
 
           },
           next: async (response) => {
-
+            if (this.dataSample) {
+              this.dataSample.sample_id = response.sample_id;
+            }
             this.creatingInvestigation = false;
-
-            let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
-            this.onInvestigationCreated.emit(investigation);
+            this.onInvestigationStarted.emit({sample: this.dataSample!, investigation_id: undefined});
 
           }
         });
+    } else {
+      this.creatingInvestigation = false;
+      this.onInvestigationStarted.emit({sample: this.dataSample!, investigation_id: undefined});
     }
+
   }
 
   validateUploadedDataSample(dataSample: DataSample): boolean {

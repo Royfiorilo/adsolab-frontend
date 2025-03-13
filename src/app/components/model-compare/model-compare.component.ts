@@ -157,7 +157,8 @@ export class ModelCompareComponent {
 
     this.savingInvestigation = true;
 
-    const investigationId = this.state().investigation?.investigation_id as number;
+
+    let investigationId = this.state().investigation?.investigation_id ? this.state().investigation?.investigation_id : undefined;
     const response = this.noLinearResponse as INoLinearResponse;
 
     const ridgeRequest: IRidgeSaveRequest = {
@@ -166,9 +167,11 @@ export class ModelCompareComponent {
       results: response.comparison.ridge.results,
       statistics: response.comparison.ridge.statistics,
     };
+    let sample_id = this.state().investigation?.sample.sample_id!
 
-    const request: ISaveRequest = {
+    let request: ISaveRequest = {
       investigation_id: investigationId,
+      sample_id: sample_id,
       comparison: {
         heuristic: response.comparison.heuristic,
         ridge: ridgeRequest,
@@ -197,13 +200,17 @@ export class ModelCompareComponent {
           }
         })
       },
-      next: () => {
+      next: (response) => {
         this._snackBar.openFromComponent(SnackBarComponent, {
           duration: 3000,
           verticalPosition: 'top',
           data: {
             message: 'Resultados guardados con éxito'
           }
+        });
+        this.stateService.state.set({
+          ...this.state(),
+          investigation: {investigation_id: response.investigation_id, sample: this.state().investigation?.sample!},
         });
         this.savingInvestigation = false
       },
@@ -242,7 +249,7 @@ export class ModelCompareComponent {
 
 
     const request: INoLinearRequest = {
-      investigation_id: this.state().investigation?.investigation_id!,
+      sample_id: this.state().investigation?.sample.sample_id!,
       models
     }
 

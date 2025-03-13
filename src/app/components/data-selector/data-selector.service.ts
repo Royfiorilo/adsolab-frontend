@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import {Observable} from "rxjs";
 import {CreateInvestigationResponse, DataSample} from "./data-sample";
+import {EMPTY, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -20,19 +20,17 @@ export class DataSelectorService {
   }
 
   createInvestigation(sample: DataSample): Observable<CreateInvestigationResponse> {
-
     sample.measure_unit = 'test'
 
     if (this.validateSampleData(sample)) {
       console.log("Invalid data sample");
     }
 
-    if (sample.sample_id) {
-      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation/sample`, {
-        sample_id: sample.sample_id
-      })
+    if (sample.sample_id === undefined) {
+      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/sample`, sample)
     } else {
-      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/investigation`, sample)
+      return EMPTY;
     }
   }
+
 }

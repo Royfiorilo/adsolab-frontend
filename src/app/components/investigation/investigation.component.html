@@ -11,7 +11,7 @@
               </button>
             </div>
             <app-data-selector [investigation]="state().investigation"
-                               (onInvestigationCreated)="investigationCreated($event)"></app-data-selector>
+                               (onInvestigationStarted)="investigationStarted($event)"></app-data-selector>
           </mat-step>
 
           <mat-step label="Selección de Modelos" [completed]="state().selectedModels.length !== 0">
