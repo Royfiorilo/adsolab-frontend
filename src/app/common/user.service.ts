@@ -15,7 +15,7 @@ export class UserService {
   }
 
   getUsers(page: number, perPage: number): Observable<IUserPageResponse> {
-    return this.http.get<IUserPageResponse>(`${this.backendBaseUrl}/users?page=${page}&perPage=${perPage}`, {withCredentials: true});
+    return this.http.get<IUserPageResponse>(`${this.backendBaseUrl}/users?page=${page}&per_page=${perPage}`, {withCredentials: true});
   }
 
   createUser(userData: Partial<IUserCreationRequest>): Observable<IUser> {

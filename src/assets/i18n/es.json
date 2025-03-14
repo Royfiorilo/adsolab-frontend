@@ -158,5 +158,13 @@
     "TITLE": "No se han encontrado investigaciones",
     "MESSAGE": "No se han encontrado versiones de investigaciones guardadas. Intente refrescar la pagina, o dirigase al inicio para crear una nueva.",
     "CREATE": "Crear una investigacion"
+  },
+  "PAGINATOR": {
+    "FIRST_PAGE": "Primera",
+    "LAST_PAGE": "Última",
+    "ITEMS_PER_PAGE": "Ítems por página",
+    "NEXT_PAGE": "Siguiente",
+    "PREVIOUS_PAGE": "Anterior",
+    "RANGE": "Página {{page}} de {{amountPages}} - Total de usuarios: {{length}}"
   }
 }

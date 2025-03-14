@@ -76,6 +76,7 @@ import {CreateUserComponent} from './components/create-user/create-user.componen
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {EditUserComponent} from './components/edit-user/edit-user.component';
 import {MatSlideToggle} from "@angular/material/slide-toggle";
+import {MatPaginator} from "@angular/material/paginator";
 
 //Plotly.register(locale)
 
@@ -161,7 +162,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatCheckbox,
     MatRadioGroup,
     MatRadioButton,
-    MatSlideToggle
+    MatSlideToggle,
+    MatPaginator
   ],
   providers: [
     provideAnimationsAsync(),
