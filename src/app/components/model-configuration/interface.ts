@@ -5,10 +5,34 @@ export interface ILinearizationRequest {
   models: IModelLinearizationRequest[];
 }
 
+export interface IPredictionRequest {
+  sample_id: number;
+  models: IModelLinearizationRequest[];
+}
+
+
 export interface IModelLinearizationRequest {
   model: number;
   linearizations: number[];
 }
+
+export interface ISeed {
+  name: string;
+  value: number;
+}
+
+export interface IPredResult {
+  id: number;
+  name: string;
+  seeds: ISeed[];
+}
+
+
+export interface IPredictionResponse {
+  sample_id: number;
+  results: IPredResult[]
+}
+
 
 export interface ILinearizationResponse {
   sample_id: number;

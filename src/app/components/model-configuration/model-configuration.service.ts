@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
-import {ILinearizationRequest, ILinearizationResponse} from "./interface";
+import {ILinearizationRequest, ILinearizationResponse, IPredictionRequest, IPredictionResponse} from "./interface";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,8 @@ export class ModelConfigurationService {
     return this.httpClient.post<ILinearizationResponse>(`${this.backendBaseUrl}/investigation/run-linearization`, request);
   }
 
-
-  ///investigation/predict-seeds
+  runPrediction(request: IPredictionRequest): Observable<IPredictionResponse> {
+    return this.httpClient.post<IPredictionResponse>(`${this.backendBaseUrl}/investigation/predict-seeds`, request);
+  }
 
 }

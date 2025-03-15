@@ -68,7 +68,9 @@
     "LINEARIZATION_ERROR": "No se pudo realizar la linealización. Por favor, ingrese los parámetros manualmente para poder avanzar.",
     "ITERATIONS": "Iteraciones",
     "ITERATIONS_EXAMPLE": "Ej. 5000",
-    "STEPS": "Steps"
+    "STEPS": "Steps",
+    "PREDICTED": "Estimar valores",
+    "PREDICTION_ERROR": "No se pudo realizar la estimacion. Por favor, ingrese los parámetros manualmente para poder avanzar."
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",

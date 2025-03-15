@@ -13,7 +13,14 @@ import {
 } from '@angular/core';
 import {Model} from "../model-selector/model";
 import {ModelConfigurationService} from "./model-configuration.service";
-import {ILinearizationGraph, ILinearizationRequest, ISeedParamOption, SeedParamOption} from "./interface";
+import {
+  ILinearizationGraph,
+  ILinearizationRequest,
+  IPredictionRequest,
+  IPredictionResponse,
+  ISeedParamOption,
+  SeedParamOption
+} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {CommonUtilsService} from "../../common/common.service";
@@ -92,8 +99,41 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   }
 
   predictSeeds(modelId: number) {
-    return 0;
+    let request: IPredictionRequest = {
+      sample_id: this.state().investigation?.sample.sample_id as number, models: [{model: modelId, linearizations: []}]
+    };
+    this.runningLinearization = true;
+
+    this.modelConfigurationService.runPrediction(request).subscribe({
+      error: async (error) => {
+        this.runningLinearization = false;
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            main_message: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.PREDICTION_ERROR')),
+            error_message: error.message,
+          }
+        });
+        this.modelConfiguration[modelId].automatedParams = false;
+
+      },
+      next: (response: IPredictionResponse) => {
+        let responseSeeds = response.results[0].seeds;
+        for (const seed of responseSeeds) {
+          this.modelConfiguration[modelId].paramValues[seed.name] = {
+            stderr: 0,
+            value: seed.value
+          }
+        }
+
+
+        this.runningLinearization = false;
+
+
+        this.onSelectedParams.emit(this.modelConfiguration);
+      }
+    });
   }
+
 
   runLinearization(modelId: number) {
     let model: Model = this.commonUtilsService.getModelById(modelId, this.state().models);
