@@ -91,14 +91,23 @@ export class HistoricInvestigationComponent {
   protected readonly faTrash = faTrash;
 
   deleteVersion(investigationId: number, versionId: number): void {
+    if (!confirm("Al continuar, se borrara la version seleccionada.")) {
+      return;
+    }
 
-    //agregar modal estas seguro
     this.loadingHistoric = true;
     this.investigationService.deleteInvestigationVersion(investigationId, versionId)
       .pipe(finalize(() => this.loadingHistoric = false))
       .subscribe({
         next: (response) => {
-          console.log('Version deleted successfully:', response);
+          this.investigations?.investigations.forEach(investigation => {
+            if (investigation.investigation_id === investigationId) {
+              investigation.versions = investigation.versions.filter(
+                version => version.version_id !== versionId
+              );
+            }
+          });
+
         },
         error: (error) => {
           console.error('Error deleting version:', error);
@@ -106,18 +115,24 @@ export class HistoricInvestigationComponent {
       });
   }
 
-  deleteInvestigation(investigationId: number) {
-    //agregar modal estas seguro
+  deleteInvestigation(investigationId: number): void {
+    if (!confirm("Al continuar, se borrara la investigacion seleccionada.")) {
+      return;
+    }
+
     this.loadingHistoric = true;
     this.investigationService.deleteInvestigation(investigationId)
       .pipe(finalize(() => this.loadingHistoric = false))
       .subscribe({
         next: (response) => {
-          console.log('Version deleted successfully:', response);
+          this.investigations!.investigations = this.investigations!.investigations.filter(
+            investigation => investigation.investigation_id !== investigationId
+          );
         },
         error: (error) => {
-          console.error('Error deleting version:', error);
+          console.error('Error deleting investigation:', error);
         }
       });
   }
+
 }
