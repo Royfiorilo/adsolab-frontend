@@ -24,6 +24,8 @@ export class LoginComponent {
 
   protected gettingLoginData: boolean = false;
 
+  protected showPassword: boolean = false;
+
   constructor(private fb: FormBuilder,
               private authService: AuthService,
               private router: Router,
@@ -129,6 +131,10 @@ export class LoginComponent {
     } else {
       this.passwordErrorMessage = null;
     }
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
 }

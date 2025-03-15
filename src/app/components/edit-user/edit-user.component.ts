@@ -35,8 +35,7 @@ export class EditUserComponent {
   protected userEditErrorMessage: string | null = null;
   protected editingUser: boolean = false;
 
-  protected password: string | undefined = undefined;
-
+  protected showPassword: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) protected user: IUser,
@@ -129,6 +128,10 @@ export class EditUserComponent {
       this.updatePasswordErrorMessage()
     }
 
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
 }
