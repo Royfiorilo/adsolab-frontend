@@ -71,6 +71,12 @@ import {HistoricVersionComponent} from './components/historic-version/historic-v
 import {LoginComponent} from './components/login/login.component';
 import {AuthInterceptor} from "./common/auth.interceptor";
 import {MatCheckbox} from "@angular/material/checkbox";
+import {UsersComponent} from './components/users/users.component';
+import {CreateUserComponent} from './components/create-user/create-user.component';
+import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
+import {EditUserComponent} from './components/edit-user/edit-user.component';
+import {MatSlideToggle} from "@angular/material/slide-toggle";
+import {MatPaginator} from "@angular/material/paginator";
 
 //Plotly.register(locale)
 
@@ -103,7 +109,10 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     HistoricInvestigationComponent,
     SnackBarComponent,
     HistoricVersionComponent,
-    LoginComponent
+    LoginComponent,
+    UsersComponent,
+    CreateUserComponent,
+    EditUserComponent
   ],
   imports: [
     BrowserModule,
@@ -150,7 +159,11 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatTabBody,
     MatList,
     MatListItem,
-    MatCheckbox
+    MatCheckbox,
+    MatRadioGroup,
+    MatRadioButton,
+    MatSlideToggle,
+    MatPaginator
   ],
   providers: [
     provideAnimationsAsync(),

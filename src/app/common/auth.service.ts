@@ -1,4 +1,4 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {effect, inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from "@angular/router";
@@ -12,11 +12,25 @@ export class AuthService {
 
   backendBaseUrl: string;
 
-  user = signal<IUser | null>(null);
+  user = signal<IUser | undefined>(this.loadUser());
+
 
   constructor(private httpClient: HttpClient, private router: Router) {
     this.backendBaseUrl = environment.backendBaseUrl;
   }
+
+  loadUser() {
+    try {
+      const userInfo = sessionStorage.getItem('user-info');
+      return userInfo ? JSON.parse(userInfo) as IUser : undefined;
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  syncStorage = effect(() => {
+    sessionStorage.setItem('user-info', JSON.stringify(this.user()));
+  });
 
   loginData(redirectURL: string | null) {
     return this.httpClient.get<any>(`${this.backendBaseUrl}/login`, {withCredentials: true}).subscribe((response) => {
@@ -40,7 +54,7 @@ export class AuthService {
 
   logout() {
     return this.httpClient.post<void>(`${this.backendBaseUrl}/logout`, null, {withCredentials: true}).subscribe(() => {
-      this.user.set(null);
+      this.user.set(undefined);
       this.router.navigateByUrl('/login')
     });
   }
@@ -71,6 +85,15 @@ export class AuthService {
     }
 
 
+  }
+
+  isAdmin(): boolean {
+    if (!environment.authEnabled) {
+      return false;
+    } else {
+      const userInfo = this.user();
+      return userInfo ? userInfo.roles.includes('ADMIN') : false;
+    }
   }
 }
 
