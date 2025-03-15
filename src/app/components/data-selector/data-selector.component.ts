@@ -1,12 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
-import {catchError, firstValueFrom, Observable} from 'rxjs';
+import {catchError, finalize, firstValueFrom, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
 import {SampleSelectorService} from "./sample-selector.service";
 import {TranslateService} from '@ngx-translate/core';
 import {MatDialog} from "@angular/material/dialog";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 
 @Component({
@@ -15,7 +16,7 @@ import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
   styleUrl: './data-selector.component.css'
 })
 export class DataSelectorComponent {
-  @Output() onInvestigationCreated: EventEmitter<Investigation> = new EventEmitter();
+  @Output() onInvestigationStarted: EventEmitter<Investigation> = new EventEmitter();
   @Input() investigation!: Investigation | undefined;
   protected dataSample: DataSample | undefined;
   protected availableDataSamples: DataSample[] = [];
@@ -80,8 +81,8 @@ export class DataSelectorComponent {
   }
 
   createInvestigation() {
-    if (this.dataSample) {
-      this.creatingInvestigation = true;
+    this.creatingInvestigation = true;
+    if (this.dataSample && this.dataSample.sample_id === undefined) {
       this.dataService
         .createInvestigation(this.dataSample)
         .subscribe({
@@ -97,15 +98,19 @@ export class DataSelectorComponent {
 
           },
           next: async (response) => {
-
+            if (this.dataSample) {
+              this.dataSample.sample_id = response.sample_id;
+            }
             this.creatingInvestigation = false;
-
-            let investigation: Investigation = {investigation_id: response.investigation_id, sample: this.dataSample!}
-            this.onInvestigationCreated.emit(investigation);
+            this.onInvestigationStarted.emit({sample: this.dataSample!, investigation_id: undefined});
 
           }
         });
+    } else {
+      this.creatingInvestigation = false;
+      this.onInvestigationStarted.emit({sample: this.dataSample!, investigation_id: undefined});
     }
+
   }
 
   validateUploadedDataSample(dataSample: DataSample): boolean {
@@ -124,5 +129,29 @@ export class DataSelectorComponent {
 
   setDataSample(dataSample: DataSample | undefined) {
     this.dataSample = dataSample;
+  }
+
+  protected readonly faTrash = faTrash;
+
+  deleteSample(sampleId: number | undefined) {
+    //agregar modal estas seguro
+
+    this.loadingDataSamples = true;
+    if (sampleId) {
+      this.sampleService.deleteSample(sampleId)
+        .pipe(finalize(() => this.loadingDataSamples = false))
+        .subscribe({
+          next: (response) => {
+            console.log('Version deleted successfully:', response);
+          },
+          error: (error) => {
+            console.error('Error deleting version:', error);
+          }
+        });
+    } else {
+      this.loadingDataSamples = false;
+
+    }
+
   }
 }

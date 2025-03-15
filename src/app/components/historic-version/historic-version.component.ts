@@ -26,6 +26,7 @@ export class HistoricVersionComponent {
   state = this.stateService.state;
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
+  protected loadingHistoric: boolean = true;
   sample: DataSample | undefined;
   versionId: string = '0';
   investigationId: string = '0';
@@ -53,12 +54,14 @@ export class HistoricVersionComponent {
   }
 
   ngOnInit() {
+
     this.versionData = this.versionDataService.getVersionData();
     this.sample = this.versionDataService.getSample();
     this.modelService
       .getModels()
       .pipe(
         catchError(async (error) => {
+          this.loadingHistoric = false;
           throw await firstValueFrom(
             this.translateService.get('MODEL_SELECTOR.ERROR_LOADING_MODELS', error)
           );
@@ -79,8 +82,14 @@ export class HistoricVersionComponent {
     this.investigationService
       .deployDatasetVersion(this.investigationId, this.versionId)
       .subscribe({
-        next: (response) => this.processData(response),
-        error: (err) => console.error('Error fetching data:', err),
+        next: (response) => {
+          this.processData(response);
+          this.loadingHistoric = false;
+        },
+        error: (err) => {
+          console.error('Error fetching data:', err);
+          this.loadingHistoric = false;
+        },
       });
   }
 

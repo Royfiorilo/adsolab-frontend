@@ -1,7 +1,6 @@
 import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {Investigation} from "../data-selector/data-sample";
 import {IModelsConfigurations} from "../../common/common.interface";
 import {DEFAULT_ITERATIONS, DEFAULT_STEPS} from '../../common/common.service';
 import {StateService} from "./state.service";
@@ -9,6 +8,7 @@ import {MatStep} from "@angular/material/stepper";
 import {MatDialog} from "@angular/material/dialog";
 import {InvestigationModalComponent} from "./investigation-modal.component";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
+import {Investigation} from "../data-selector/data-sample";
 
 @Component({
   selector: 'app-investigation',
@@ -39,10 +39,10 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
-  investigationCreated(investigation: Investigation) {
+  investigationStarted(inboundInvestigation: Investigation) {
     this.stateService.state.set({
       ...this.state(),
-      investigation: investigation,
+      investigation: inboundInvestigation,
     });
     this._snackBar.openFromComponent(SnackBarComponent, {
       duration: 3000,

@@ -24,8 +24,13 @@
                      [matAutocomplete]="auto">
 
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                  {{ option }}
+                <mat-option *ngFor="let option of filteredOptions | async"
+                            [value]="option">
+                  <button mat-icon-button color="warn" (click)="deleteSample(dataSample?.sample_id)">
+                    <fa-icon [icon]="faTrash"></fa-icon>
+                  </button>
+                  <span>{{ option }}</span>
+
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>

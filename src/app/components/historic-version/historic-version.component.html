@@ -1,3 +1,7 @@
+<ng-container *ngIf="loadingHistoric">
+  <app-loading></app-loading>
+</ng-container>
+
 <div class="d-flex justify-content-center">
   <button mat-button color="primary" class="m-2"
           (click)="navigateToInvestigation()">

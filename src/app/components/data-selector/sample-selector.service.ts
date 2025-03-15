@@ -27,4 +27,9 @@ export class SampleSelectorService {
   syncMaterials(): Observable<any> {
     return this.httpClient.get<any>(`${this.backendBaseUrl}/materials_sync`);
   }
+
+  deleteSample(sampleId: number) {
+    return this.httpClient.delete(`${this.backendBaseUrl}/sample/${sampleId}`);
+
+  }
 }

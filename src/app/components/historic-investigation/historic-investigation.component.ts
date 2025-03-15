@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {InvestigationService} from "./investigation.service";
 import {InvestigationResponse, InvestigationVersionsResponse} from "./interface";
-import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
+import {faArrowUpRightFromSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Router} from "@angular/router";
-import {catchError, firstValueFrom} from "rxjs";
+import {catchError, finalize, firstValueFrom} from "rxjs";
 import {ModelSelectorServiceService} from "../model-selector/model-selector-service.service";
 import {TranslateService} from "@ngx-translate/core";
 import {Model} from "../model-selector/model";
@@ -88,4 +88,36 @@ export class HistoricInvestigationComponent {
   }
 
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
+  protected readonly faTrash = faTrash;
+
+  deleteVersion(investigationId: number, versionId: number): void {
+
+    //agregar modal estas seguro
+    this.loadingHistoric = true;
+    this.investigationService.deleteInvestigationVersion(investigationId, versionId)
+      .pipe(finalize(() => this.loadingHistoric = false))
+      .subscribe({
+        next: (response) => {
+          console.log('Version deleted successfully:', response);
+        },
+        error: (error) => {
+          console.error('Error deleting version:', error);
+        }
+      });
+  }
+
+  deleteInvestigation(investigationId: number) {
+    //agregar modal estas seguro
+    this.loadingHistoric = true;
+    this.investigationService.deleteInvestigation(investigationId)
+      .pipe(finalize(() => this.loadingHistoric = false))
+      .subscribe({
+        next: (response) => {
+          console.log('Version deleted successfully:', response);
+        },
+        error: (error) => {
+          console.error('Error deleting version:', error);
+        }
+      });
+  }
 }

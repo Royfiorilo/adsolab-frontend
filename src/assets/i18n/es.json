@@ -138,6 +138,8 @@
     "CREATION": "Fecha de creación: ",
     "DESCRIPTION": "Descripción: ",
     "RESTORE": "Restaurar Versión",
+    "DELETE_VER": "Eliminar Versión",
+    "DELETE_INV": "Eliminar",
     "BEST_ADJUST": "Mejor Ajuste: ",
     "EDIT": "Continuar investigacion"
   },

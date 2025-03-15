@@ -88,7 +88,7 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
     let model: Model = this.commonUtilsService.getModelById(modelId, this.state().models);
     if (this.state().investigation) {
       let request: ILinearizationRequest = {
-        investigation_id: this.state().investigation?.investigation_id as number, models: [{ //As number porque a esta altura tengo al certeza de que viene con un valor
+        sample_id: this.state().investigation?.sample.sample_id as number, models: [{ //As number porque a esta altura tengo al certeza de que viene con un valor
           model: model._id,
           linearizations: model.linearizations.map(linearization => linearization.linearization_id)
         }]

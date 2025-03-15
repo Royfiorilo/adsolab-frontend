@@ -37,6 +37,5 @@ export class VersionDataService {
   getSample(): any {
     return this.sampleData.value || JSON.parse(sessionStorage.getItem('sampleData') || 'null');
   }
-
-
+  
 }

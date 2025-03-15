@@ -1,7 +1,7 @@
 import {IGraph, IParameter, IStatistics, ITransformedData} from "../../common/common.interface";
 
 export interface ILinearizationRequest {
-  investigation_id: number;
+  sample_id: number;
   models: IModelLinearizationRequest[];
 }
 
@@ -11,7 +11,7 @@ export interface IModelLinearizationRequest {
 }
 
 export interface ILinearizationResponse {
-  investigation_id: number;
+  sample_id: number;
   results: IResult[];
 }
 

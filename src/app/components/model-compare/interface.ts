@@ -29,7 +29,7 @@ export interface INoLinearRequestModel {
 }
 
 export interface INoLinearRequest {
-  investigation_id: number;
+  sample_id: number;
   models: INoLinearRequestModel[];
 }
 
@@ -83,6 +83,7 @@ export interface INoLinearResult {
 }
 
 export interface INoLinearResponse {
+  sample_id: number;
   investigation_id: number;
   results: INoLinearResult[];
   comparison: IComparison;
@@ -128,12 +129,17 @@ export enum ComparisonViewOption {
 }
 
 export interface ISaveRequest {
-  investigation_id: number;
+  investigation_id: number | undefined;
+  sample_id: number;
   comparison: {
     heuristic: Heuristic,
     ridge: IRidgeSaveRequest
   };
   results: INoLinearResult[];
+}
+
+export interface ISaveResponse {
+  investigation_id: number;
 }
 
 export interface IRidgeSaveRequest {
