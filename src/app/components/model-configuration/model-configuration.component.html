@@ -34,9 +34,7 @@
                 <mat-label>{{ 'MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
                 <mat-select [(value)]="modelConfiguration[modelId].automatedParams" [id]="modelId.toString()">
                   <div *ngFor="let option of seedParamOptions">
-                    <mat-option [value]="option.name === SeedParamOption.AUTOMATED"
-                                *ngIf="(option.name === SeedParamOption.AUTOMATED && commonUtilsService.getModelById(modelId, state().models).linearizations.length)
-                          || option.name === SeedParamOption.MANUAL">
+                    <mat-option [value]="option.name === SeedParamOption.AUTOMATED">
                       {{ option.value }}
                     </mat-option>
                   </div>
@@ -94,7 +92,21 @@
             </ng-container>
             <ng-template #automatedParams>
 
-              <div class="row" *ngIf="!linearizationGraphs[modelId]?.graphs?.length">
+              <div class="row"
+                   *ngIf="modelConfiguration[modelId] && modelConfiguration[modelId].selectedLinearizations && modelConfiguration[modelId].selectedLinearizations.length === 0">
+                <div class="col">
+                  <small class="text-muted">Predicted values</small>
+                  <div class="mt-auto d-flex align-content-center justify-content-center">
+                    <button (click)="predictSeeds(modelId)"
+                            class="btn fiuba-investigation mt-3">Predicted values
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row"
+                   *ngIf="!(modelConfiguration[modelId] && modelConfiguration[modelId].selectedLinearizations && modelConfiguration[modelId].selectedLinearizations.length === 0) && !linearizationGraphs[modelId]?.graphs?.length">
                 <div class="col">
                   <small class="text-muted">{{ 'MODEL_CONFIGURATION.AVAILABLE_LINEARIZATIONS' | translate }}</small>
                   <div

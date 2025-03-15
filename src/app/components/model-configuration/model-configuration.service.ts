@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import {DataSample} from "../data-selector/data-sample";
 import {Observable} from "rxjs";
 import {ILinearizationRequest, ILinearizationResponse} from "./interface";
 
@@ -18,4 +17,8 @@ export class ModelConfigurationService {
   runLinearization(request: ILinearizationRequest): Observable<ILinearizationResponse> {
     return this.httpClient.post<ILinearizationResponse>(`${this.backendBaseUrl}/investigation/run-linearization`, request);
   }
+
+
+  ///investigation/predict-seeds
+
 }

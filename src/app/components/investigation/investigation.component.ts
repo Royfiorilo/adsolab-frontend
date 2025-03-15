@@ -66,17 +66,18 @@ export class InvestigationComponent implements OnInit {
   addModel(modelId: number) {
     const newSelectedModels = [...this.state().selectedModels, modelId];
     const model = this.state().models.find(m => m._id === modelId);
+    const linearizations = model ? model.linearizations : [];
 
     const newModelConfiguration = {
       ...this.state().modelConfiguration,
       [modelId]: {
-        automatedParams: !!model?.linearizations && model.linearizations.length > 0,
+        automatedParams: true,
         paramValues: Object.keys(model?.parameters || {}).reduce((acc, key) => ({
           ...acc,
           [key]: {value: 0, stderr: 0}
         }), {}),
         paramInfo: model?.parameters || {},
-        selectedLinearizations: [],
+        selectedLinearizations: linearizations,
         paramSaved: undefined,
         iterations: DEFAULT_ITERATIONS,
         steps: DEFAULT_STEPS

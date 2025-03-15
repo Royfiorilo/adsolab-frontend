@@ -91,6 +91,10 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
     this.modalService.open(content)
   }
 
+  predictSeeds(modelId: number) {
+    return 0;
+  }
+
   runLinearization(modelId: number) {
     let model: Model = this.commonUtilsService.getModelById(modelId, this.state().models);
     if (this.state().investigation) {
