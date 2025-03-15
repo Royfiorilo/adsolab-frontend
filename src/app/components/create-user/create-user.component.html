@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>
-  Crear nuevo usuario
+  {{ 'USERS.CREATE_USER' | translate }}
 </h2>
 <mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="createUser()">
@@ -19,10 +19,10 @@
       }
     </mat-form-field>
 
-    <mat-label>Rol</mat-label>
+    <mat-label>{{ 'USERS.ROLE' | translate }}</mat-label>
     <mat-radio-group formControlName="userRole">
-      <mat-radio-button color="primary" value="RESEARCHER">Investigador</mat-radio-button>
-      <mat-radio-button color="primary" value="ADMIN">Admin</mat-radio-button>
+      <mat-radio-button color="primary" value="RESEARCHER">{{ 'USERS.RESEARCHER' | translate }}</mat-radio-button>
+      <mat-radio-button color="primary" value="ADMIN">{{ 'USERS.ADMIN' | translate }}</mat-radio-button>
       @if (form.controls['userRole'].invalid && userRoleErrorMessage) {
         <mat-error class="role-error-message">{{ userRoleErrorMessage }}</mat-error>
       }
@@ -35,9 +35,9 @@
 
 
     <mat-dialog-actions align="end">
-      <button mat-button color="primary" matDialogClose>Cancelar</button>
+      <button mat-button color="primary" matDialogClose>{{ 'CANCEL' | translate }}</button>
 
-      <button mat-flat-button type="submit" color="primary" class="text-white">Confirmar</button>
+      <button mat-flat-button type="submit" color="primary" class="text-white">{{ 'CONFIRM' | translate }}</button>
     </mat-dialog-actions>
   </form>
 </mat-dialog-content>

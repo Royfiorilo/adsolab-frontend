@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>
-  Editar usuario
+  {{ 'USERS.EDIT_USER' | translate }}
 </h2>
 <mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="editUser()">
@@ -12,7 +12,8 @@
       }
     </mat-form-field>
 
-    <mat-checkbox color="primary" formControlName="changePassword">Cambiar contraseña</mat-checkbox>
+    <mat-checkbox color="primary" formControlName="changePassword">{{ 'USERS.CHANGE_PASSWORD' | translate }}
+    </mat-checkbox>
     <mat-form-field *ngIf="this.form.controls['changePassword'].value" appearance="outline"
                     class="full-width mt-2 mb-2">
       <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
@@ -24,20 +25,20 @@
     </mat-form-field>
 
     <div class="mt-2">
-      <mat-label>Rol</mat-label>
+      <mat-label>{{ 'USERS.ROLE' | translate }}</mat-label>
       <mat-radio-group formControlName="userRole">
         <mat-radio-button color="primary" value="RESEARCHER">
-          Investigador
+          {{ 'USERS.RESEARCHER' | translate }}
         </mat-radio-button>
         <mat-radio-button color="primary" value="ADMIN">
-          Admin
+          {{ 'USERS.ADMIN' | translate }}
         </mat-radio-button>
       </mat-radio-group>
     </div>
 
 
     <div class="mt-2">
-      <mat-label>Activo</mat-label>
+      <mat-label>{{ 'USERS.ACTIVE' | translate }}</mat-label>
       <mat-slide-toggle formControlName="active" color="primary" labelPosition="before"/>
     </div>
 
@@ -47,9 +48,9 @@
     </div>
 
     <mat-dialog-actions align="end">
-      <button mat-button color="primary" matDialogClose>Cancelar</button>
+      <button mat-button color="primary" matDialogClose>{{ 'CANCEL' | translate }}</button>
 
-      <button mat-flat-button type="submit" color="primary" class="text-white">Confirmar</button>
+      <button mat-flat-button type="submit" color="primary" class="text-white">{{ 'CONFIRM' | translate }}</button>
     </mat-dialog-actions>
   </form>
 </mat-dialog-content>

@@ -13,6 +13,10 @@
   "ADSOLAB_TITLE": "AdsoLab",
   "MUST_ENTER_VALUE": "Debe ingresar un valor",
   "INVALID_FORMAT": "Formato inválido",
+  "CANCEL": "Cancelar",
+  "CONFIRM": "Confirmar",
+  "EDIT": "Editar",
+  "DELETE": "Borrar",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "HIST": "Investigaciones Historicas",
@@ -159,12 +163,28 @@
     "MESSAGE": "No se han encontrado versiones de investigaciones guardadas. Intente refrescar la pagina, o dirigase al inicio para crear una nueva.",
     "CREATE": "Crear una investigacion"
   },
+  "USERS": {
+    "TITLE": "Usuarios",
+    "CREATE_NEW": "Crear nuevo",
+    "CREATE_USER": "Crear usuario",
+    "ID": "ID",
+    "EMAIL": "E-mail",
+    "ROLE": "Rol",
+    "ACTIVE": "Activo",
+    "ACTIONS": "Acciones",
+    "DELETE": "Borrar usuario",
+    "DELETE_CONFIRMATION": "¿Seguro que desea eliminar a {{ email }}?",
+    "RESEARCHER": "Investigador",
+    "ADMIN": "Administrador",
+    "EDIT_USER": "Editar usuario",
+    "CHANGE_PASSWORD": "Cambiar contraseña"
+  },
   "PAGINATOR": {
     "FIRST_PAGE": "Primera",
     "LAST_PAGE": "Última",
     "ITEMS_PER_PAGE": "Ítems por página",
     "NEXT_PAGE": "Siguiente",
     "PREVIOUS_PAGE": "Anterior",
-    "RANGE": "Página {{page}} de {{amountPages}} - Total de usuarios: {{length}}"
+    "RANGE": "Página {{ page }} de {{ amountPages }} - Total de usuarios: {{ length }}"
   }
 }

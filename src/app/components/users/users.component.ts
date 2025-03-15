@@ -11,6 +11,7 @@ import {catchError, merge, of} from 'rxjs';
 import {MatPaginator, MatPaginatorIntl} from "@angular/material/paginator";
 import {map, startWith, switchMap} from "rxjs/operators";
 import {CustomTablePaginator} from "../../common/custom-table-paginator";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-users',
@@ -26,15 +27,9 @@ export class UsersComponent implements AfterViewInit {
   @ViewChild("deleteUserDialog") deleteUserDialog!: TemplateRef<any>;
   @ViewChild(MatPaginator) paginator!: MatPaginator
 
-  private roleMap: { [key: string]: string } = {
-    "RESEARCHER": "Investigador",
-    "ADMIN": "Administrador",
-  };
-
   private DEFAULT_PAGE = 1;
-  private DEFAULT_PAGE_SIZE = 10;
 
-  constructor(private userService: UserService, private dialog: MatDialog, private _snackBar: MatSnackBar) {
+  constructor(private userService: UserService, private dialog: MatDialog, private _snackBar: MatSnackBar, private translateService: TranslateService) {
   }
 
   ngAfterViewInit(): void {
@@ -149,10 +144,6 @@ export class UsersComponent implements AfterViewInit {
         });
       }
     });
-  }
-
-  parseUserRole(roles: string[]) {
-    return roles.map(role => this.roleMap[role]).join(", ");
   }
 
   openEditUserDialog(user: IUser) {
