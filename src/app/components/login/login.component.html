@@ -22,7 +22,12 @@
           <mat-icon color="{{this.form.controls['password'].invalid && this.form.touched ? 'warn' : 'primary'}}"
                     matPrefix>lock
           </mat-icon>
-          <input matInput name="password" formControlName="password" type="password" required>
+          <input matInput name="password" formControlName="password" [type]="showPassword ? 'text' : 'password'"
+                 required>
+          <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+                  aria-label="Toggle password visibility">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
           @if (form.controls['password'].invalid) {
             <mat-error>{{ passwordErrorMessage }}</mat-error>
           }

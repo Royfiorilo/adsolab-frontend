@@ -105,3 +105,7 @@ html, body {
   font-size: 0.9rem;
   color: #666;
 }
+
+.full-width {
+  width: 100%;
+}

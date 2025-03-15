@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>
+  {{ 'USERS.CREATE_USER' | translate }}
+</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="createUser()">
+    <mat-form-field appearance="outline" class="full-width mt-2 mb-2">
+      <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
+      <input matInput name="email" formControlName="email" type="email" required autocomplete="new-password">
+      @if (form.controls['email'].invalid) {
+        <mat-error>{{ emailErrorMessage }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width mt-2 mb-2">
+      <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
+      <input matInput name="password" formControlName="password" type="password" required autocomplete="new-password">
+      @if (form.controls['password'].invalid) {
+        <mat-error>{{ passwordErrorMessage }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-label>{{ 'USERS.ROLE' | translate }}</mat-label>
+    <mat-radio-group formControlName="userRole">
+      <mat-radio-button color="primary" value="RESEARCHER">{{ 'USERS.RESEARCHER' | translate }}</mat-radio-button>
+      <mat-radio-button color="primary" value="ADMIN">{{ 'USERS.ADMIN' | translate }}</mat-radio-button>
+      @if (form.controls['userRole'].invalid && userRoleErrorMessage) {
+        <mat-error class="role-error-message">{{ userRoleErrorMessage }}</mat-error>
+      }
+    </mat-radio-group>
+
+    <div *ngIf="userCreationErrorMessage">
+      <mat-icon class="error-icon" color="warn">error_outline</mat-icon>
+      <mat-error class="error-message">{{ userCreationErrorMessage }}</mat-error>
+    </div>
+
+
+    <mat-dialog-actions align="end">
+      <button mat-button color="primary" matDialogClose>{{ 'CANCEL' | translate }}</button>
+
+      <button mat-flat-button type="submit" color="primary" class="text-white">{{ 'CONFIRM' | translate }}</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>
