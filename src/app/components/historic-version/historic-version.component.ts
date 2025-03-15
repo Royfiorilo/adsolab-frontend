@@ -149,7 +149,7 @@ export class HistoricVersionComponent {
       let bestAdjust = this.findBestAdjustMethod(model.model_id);
       let modelName = this.commonUtilsService.getModelById(model.model_id, this.models);
 
-      for (const adjustMethod of model.adjustment_methods) {
+      for (let adjustMethod of model.adjustment_methods) {
         if (!adjustMethod.graph) {
           adjustMethod.graph = {
             layout: {
@@ -159,6 +159,7 @@ export class HistoricVersionComponent {
               yaxis: axisTitles.yaxis,
             }, data: []
           };
+
         }
 
         let graphData = {

@@ -69,14 +69,21 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   }
 
   private cleanLinearizationGraphs(changes: SimpleChanges) {
-    if (changes['selectedModels'] && !changes['selectedModels'].firstChange && changes['selectedModels'].currentValue !== changes['selectedModels'].previousValue) {
+    if (changes['modelConfiguration'] &&
+      !changes['modelConfiguration'].firstChange &&
+      changes['modelConfiguration'].currentValue !== changes['modelConfiguration'].previousValue) {
+
+      const currentModels = Object.keys(changes['modelConfiguration'].currentValue).map(Number);
+      const previousModels = changes['modelConfiguration'].previousValue
+        ? Object.keys(changes['modelConfiguration'].previousValue).map(Number)
+        : [];
 
       let modelSelectionDiff = [
-        ...changes['selectedModels'].currentValue?.filter((modelId: number) => !changes['selectedModels'].previousValue?.includes(modelId)),
-        ...changes['selectedModels'].previousValue?.filter((modelId: number) => !changes['selectedModels'].currentValue?.includes(modelId))
+        ...currentModels.filter(modelId => !previousModels.includes(modelId)),
+        ...previousModels.filter(modelId => !currentModels.includes(modelId))
       ];
 
-      modelSelectionDiff.forEach(modelId => delete this.linearizationGraphs[modelId])
+      modelSelectionDiff.forEach(modelId => delete this.linearizationGraphs[modelId]);
     }
   }
 

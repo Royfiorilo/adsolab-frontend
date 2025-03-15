@@ -303,16 +303,18 @@
                                                                 {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
                           </span>
                         </h5>
-                        <plotly-plot [data]="adjustMethod.graph.data"
-                                     [layout]="adjustMethod.graph.layout"
-                                     [config]="{responsive: true}"
-                        ></plotly-plot>
+                        <ng-container *ngIf="adjustMethod">
 
-                        <plotly-plot [data]="adjustMethod.residuals.graph.data"
-                                     [layout]="adjustMethod.residuals.graph.layout"
-                                     [config]="{responsive: true}"
-                        ></plotly-plot>
+                          <plotly-plot [data]="adjustMethod.graph.data"
+                                       [layout]="adjustMethod.graph.layout"
+                                       [config]="{responsive: true}"
+                          ></plotly-plot>
 
+                          <plotly-plot [data]="adjustMethod.residuals.graph.data"
+                                       [layout]="adjustMethod.residuals.graph.layout"
+                                       [config]="{responsive: true}"
+                          ></plotly-plot>
+                        </ng-container>
                         <app-fit-result [parameters]="adjustMethod.params" [statistics]="adjustMethod.statistics"/>
                       </div>
                     </div>
