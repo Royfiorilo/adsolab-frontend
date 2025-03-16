@@ -1,114 +1,136 @@
-<ng-container *ngIf="loadingHistoric">
-  <app-loading></app-loading>
-</ng-container>
-
-<ng-container *ngIf="investigations?.investigations && investigations?.investigations?.length === 0">
-  <div class="no-data-container">
-    <mat-card class="no-data-card">
-      <mat-card-content class="no-data-content">
-        <h2>{{ 'NO_DATA.TITLE' | translate }}</h2>
-        <p>{{ 'NO_DATA.MESSAGE' | translate }}</p>
-        <div class="actions">
-          <button mat-stroked-button color="accent" routerLink="/investigation">
-            <mat-icon>home</mat-icon>
-            {{ 'NO_DATA.CREATE' | translate }}
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</ng-container>
-
 <div class="container-fluid p-5">
-  <div class="d-flex justify-content-center">
-    <div class="col-10">
-      <div class="investigation-container">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="fiuba-institutional-text">{{ 'VERSIONS.HISTORIC_TITLE' | translate }}</h1>
+    </div>
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ 'SEARCH' | translate }}</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="{{ 'VERSIONS.FILTER_PLACEHOLDER' | translate }}">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
 
-        <mat-accordion *ngIf="investigations">
+  <ng-container *ngIf="loadingHistoric">
+    <app-loading></app-loading>
+  </ng-container>
 
-          <mat-expansion-panel class="mt-4 m-2 " *ngFor="let investigation of investigations.investigations">
-            <mat-expansion-panel-header (click)="fetchVersions(investigation.investigation_id)">
-              <mat-panel-title>
-                <button mat-button color="warn" (click)="deleteInvestigation(investigation.investigation_id)">
-                  {{ 'VERSIONS.DELETE_INV' | translate }}
-                  <fa-icon [icon]="faTrash" class="mr-5"></fa-icon>
-                </button>
-                {{ 'VERSIONS.ID' | translate }} {{ investigation.investigation_id }}
-                -    {{ 'VERSIONS.TITLE' | translate }} {{ investigation.sample.title }}
-              </mat-panel-title>
-              <mat-panel-description>
-                {{ 'VERSIONS.DESCRIPTION' | translate }} {{ investigation.sample.description }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div class="investigation-details">
-              <mat-tab-group *ngIf="investigation.versions">
-                <mat-tab *ngFor="let version of investigation.versions">
+  <ng-container *ngIf="dataSource.data.length === 0 && !loadingHistoric">
+    <div class="no-data-container">
+      <mat-card class="no-data-card">
+        <mat-card-content class="no-data-content">
+          <h2>{{ 'NO_DATA.TITLE' | translate }}</h2>
+          <p>{{ 'NO_DATA.MESSAGE' | translate }}</p>
+          <div class="actions">
+            <button mat-stroked-button color="accent" routerLink="/investigation">
+              <mat-icon>home</mat-icon>
+              {{ 'NO_DATA.CREATE' | translate }}
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+
+  <div class="mat-elevation-z8" *ngIf="dataSource.data.length > 0 && !loadingHistoric">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ELIMINAR' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="warn"
+                  (click)="openDeleteInvestigationDialog(element.investigation_id, $event)">
+            <fa-icon [icon]="faTrash"></fa-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="investigation_id">
+        <th mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.ID' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.investigation_id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.TITLE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.sample.title }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.DESCRIPTION' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.sample.description }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+          <div class="element-detail"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+
+            <div class="row container-fluid p-3" *ngIf="element.versions && element.versions.length > 0">
+              <mat-tab-group>
+                <mat-tab *ngFor="let version of element.versions">
                   <ng-template mat-tab-label>
-                    <div class="tab-label" matRipple>
+                    <div class="tab-label">
                       {{ 'VERSIONS.VERSION' | translate }} {{ version.version_id }}
-
                     </div>
                   </ng-template>
-                  <div class="tab-content d-flex justify-content-center p-5" matRipple>
-                    <div class="card col-6">
+
+                  <div class="tab-content d-flex justify-content-center p-4">
+                    <div class="card col-10 col-md-6">
                       <div class="card-header fiuba-institutional text-center">
                         {{ 'VERSIONS.CREATION' | translate }} {{ version.created_at }}
                       </div>
                       <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                          <h5
-                            class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
+                          <h5 class="card-title mb-0 flex-grow-1 text-center">
+                            {{ 'MODEL_COMPARE.BEST_MODEL' | translate }}
+                          </h5>
                         </div>
                         <h2 class="text-center border-bottom pb-3 mb-4">
-              <span
-                [ngClass]="this.commonUtilsService.getBestComparisonModelOverall(version.best_model_ml, version.best_model_heuristic, this.models) ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
-{{ this.commonUtilsService.getBestComparisonModelOverall(version.best_model_ml, version.best_model_heuristic, this.models) ?? ('UNDEFINED' | translate) }}
-              </span>
+                          <span
+                            [ngClass]="commonUtilsService.getBestComparisonModelOverall(version.best_model_ml, version.best_model_heuristic, models) ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
+                            {{ commonUtilsService.getBestComparisonModelOverall(version.best_model_ml, version.best_model_heuristic, models) ?? ('UNDEFINED' | translate) }}
+                          </span>
                         </h2>
 
-                        <div *ngFor="let model of version.fitted_models"
-                             class="mb-4 border-bottom pb-3">
+                        <div *ngFor="let model of version.fitted_models" class="mb-4 border-bottom pb-3">
                           <div class="row">
-
                             <div class="col-6">
                               <p class="mb-0">
-                                <strong> {{ 'VERSIONS.MODEL' | translate }} </strong> {{ commonUtilsService.getModelById(model.model_id, this.models).name }}
+                                <strong>{{ 'VERSIONS.MODEL' | translate }}</strong>
+                                {{ commonUtilsService.getModelById(model.model_id, models).name }}
                               </p>
                             </div>
                             <div class="col-6 text-end">
                               <p class="mb-0">
-                                <strong> {{ 'VERSIONS.BEST_ADJUST' | translate }}</strong>
+                                <strong>{{ 'VERSIONS.BEST_ADJUST' | translate }}</strong>
                                 <span class="card-title text-muted text-body-emphasis">{{ model.best_adjust }}</span>
                               </p>
                             </div>
                           </div>
+
                           <div class="mt-2">
                             <div *ngFor="let seed of model.seeds" class="mb-1">
                               <span class="fiuba-institutional-text me-2">{{ seed.name }}</span>
                               <span class="text-muted text-body-emphasis">
-            <h5 class="d-inline">
-              {{ seed.value }} <small class="text-muted">± {{ seed.stderr }}</small>
-            </h5>
-          </span>
+                                <h5 class="d-inline">
+                                  {{ seed.value }} <small class="text-muted">± {{ seed.stderr }}</small>
+                                </h5>
+                              </span>
                             </div>
                           </div>
                         </div>
+
                         <div class="d-flex justify-content-evenly">
                           <button mat-button color="primary"
-                                  (click)="navigateToVersion(investigation.investigation_id, version.version_id)">
-                            <fa-icon [icon]=" faArrowUpRightFromSquare
-                          " class="m-2"></fa-icon>
+                                  (click)="navigateToVersion(element.investigation_id, version.version_id)">
+                            <fa-icon [icon]="faArrowUpRightFromSquare" class="me-2"></fa-icon>
                             {{ 'VERSIONS.RESTORE' | translate }}
                           </button>
-
                           <button mat-button color="warn"
-                                  (click)="deleteVersion(investigation.investigation_id ,version.version_id)">
-                            <fa-icon [icon]=" faTrash
-                          " class="m-2"></fa-icon>
+                                  (click)="openDeleteVersionDialog(element.investigation_id, version.version_id, $event)">
+                            <fa-icon [icon]="faTrash" class="me-2"></fa-icon>
                             {{ 'VERSIONS.DELETE_VER' | translate }}
                           </button>
-
-
                         </div>
                       </div>
                     </div>
@@ -116,9 +138,72 @@
                 </mat-tab>
               </mat-tab-group>
             </div>
-          </mat-expansion-panel>
-        </mat-accordion>
-      </div>
-    </div>
+
+            <div class="p-3 text-center" *ngIf="element.versions === undefined">
+              <mat-spinner diameter="40" class="mx-auto"></mat-spinner>
+              <p class="mt-2">{{ 'VERSIONS.LOADING_VERSIONS' | translate }}</p>
+            </div>
+
+            <div class="p-3 text-center" *ngIf="element.versions && element.versions.length === 0">
+              <p>{{ 'VERSIONS.NO_VERSIONS' | translate }}</p>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+          class="element-row"
+          [class.expanded-row]="expandedElement === element"
+          (click)="toggleRow(element)"></tr>
+
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
+          class="detail-row"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
+                   showFirstLastButtons
+                   aria-label="Select page of investigations">
+    </mat-paginator>
   </div>
 </div>
+
+<ng-template let-data #deleteInvestigationDialog>
+  <h2 mat-dialog-title>
+    {{ 'VERSIONS.INVESTIGATION_DELETE' | translate }}
+  </h2>
+  <mat-dialog-content class="mat-typography">
+    <p>
+      {{ 'VERSIONS.INVESTIGATION_DELETE_MSG' | translate:data }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button color="primary" mat-dialog-close>
+      {{ 'CANCEL' | translate }}
+    </button>
+    <button mat-flat-button color="warn" class="text-white" [mat-dialog-close]="true"
+            (click)="deleteInvestigation(data.investigationId)">
+      {{ 'CONFIRM' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template let-data #deleteVersionDialog>
+  <h2 mat-dialog-title>
+    {{ 'VERSIONS.VERSION_DELETE' | translate }}
+  </h2>
+  <mat-dialog-content class="mat-typography">
+    <p>
+      {{ 'VERSIONS.VERSION_DELETE_MSG' | translate:data }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button color="primary" mat-dialog-close>
+      {{ 'CANCEL' | translate }}
+    </button>
+    <button mat-flat-button color="warn" class="text-white" [mat-dialog-close]="true"
+            (click)="deleteVersion(data.investigationId, data.versionId)">
+      {{ 'CONFIRM' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
