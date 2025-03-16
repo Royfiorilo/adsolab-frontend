@@ -77,6 +77,11 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
         this.investigationService.getInvestigations().subscribe((data: InvestigationResponse) => {
           this.investigations = data;
           this.dataSource.data = data.investigations;
+          setTimeout(() => {
+            if (this.paginator) {
+              this.dataSource.paginator = this.paginator;
+            }
+          });
           this.loadingHistoric = false;
         });
       });
