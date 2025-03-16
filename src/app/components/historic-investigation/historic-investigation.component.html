@@ -35,29 +35,31 @@
 
   <div class="mat-elevation-z8" *ngIf="dataSource.data.length > 0 && !loadingHistoric">
     <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+
+
+      <ng-container matColumnDef="investigation_id">
+        <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.ID' | translate }}</th>
+        <td mat-cell class="text-center" *matCellDef="let element">{{ element.investigation_id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.TITLE' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element">{{ element.sample.title }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.DESCRIPTION' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element">{{ element.sample.description }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>{{ 'ELIMINAR' | translate }}</th>
-        <td mat-cell *matCellDef="let element">
+        <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'ELIMINAR' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
           <button mat-icon-button color="warn"
                   (click)="openDeleteInvestigationDialog(element.investigation_id, $event)">
             <fa-icon [icon]="faTrash"></fa-icon>
           </button>
         </td>
-      </ng-container>
-
-      <ng-container matColumnDef="investigation_id">
-        <th mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.ID' | translate }}</th>
-        <td mat-cell *matCellDef="let element">{{ element.investigation_id }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.TITLE' | translate }}</th>
-        <td mat-cell *matCellDef="let element">{{ element.sample.title }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.DESCRIPTION' | translate }}</th>
-        <td mat-cell *matCellDef="let element">{{ element.sample.description }}</td>
       </ng-container>
 
       <ng-container matColumnDef="expandedDetail">

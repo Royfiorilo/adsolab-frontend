@@ -31,9 +31,8 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   models: Model[] = [];
   protected loadingHistoric: boolean = true;
 
-  // Table properties
   dataSource = new MatTableDataSource<Investigation>([]);
-  displayedColumns: string[] = ['actions', 'investigation_id', 'title', 'description'];
+  displayedColumns: string[] = ['investigation_id', 'title', 'description', 'actions'];
   expandedElement: Investigation | null = null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -114,6 +113,11 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
           investigation.versions = response.versions.sort((a, b) => b.version_id - a.version_id);
           this.dataSource.data = [...this.dataSource.data];
           this.loadingHistoric = false;
+          setTimeout(() => {
+            if (this.paginator) {
+              this.dataSource.paginator = this.paginator;
+            }
+          });
         },
         error: (error) => {
           console.error('Error fetching versions:', error);
