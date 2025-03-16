@@ -34,6 +34,9 @@ export class AuthService {
 
   loginData(redirectURL: string | null) {
     return this.httpClient.get<any>(`${this.backendBaseUrl}/login`, {withCredentials: true}).subscribe((response) => {
+      if (response.response) {
+        sessionStorage.setItem('XSRF-TOKEN', response.response.csrf_token)
+      }
       if (response.user) {
         this.user.set(response.user as IUser);
         if (redirectURL) {
@@ -55,6 +58,7 @@ export class AuthService {
   logout() {
     return this.httpClient.post<void>(`${this.backendBaseUrl}/logout`, null, {withCredentials: true}).subscribe(() => {
       this.user.set(undefined);
+      sessionStorage.removeItem('XSRF-TOKEN');
       this.router.navigateByUrl('/login')
     });
   }
