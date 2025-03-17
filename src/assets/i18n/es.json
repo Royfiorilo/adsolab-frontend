@@ -17,6 +17,8 @@
   "CONFIRM": "Confirmar",
   "EDIT": "Editar",
   "DELETE": "Borrar",
+  "ELIMINAR": "Eliminar",
+  "SEARCH": "Buscar",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
     "HIST": "Investigaciones Historicas",
@@ -74,7 +76,9 @@
     "LINEARIZATION_ERROR": "No se pudo realizar la linealización. Por favor, ingrese los parámetros manualmente para poder avanzar.",
     "ITERATIONS": "Iteraciones",
     "ITERATIONS_EXAMPLE": "Ej. 5000",
-    "STEPS": "Steps"
+    "STEPS": "Steps",
+    "PREDICTED": "Estimar valores",
+    "PREDICTION_ERROR": "No se pudo realizar la estimacion. Por favor, ingrese los parámetros manualmente para poder avanzar."
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",
@@ -137,17 +141,23 @@
     "GO_TO_HOME": "Ir al inicio"
   },
   "VERSIONS": {
-    "TITLE": "Título: ",
-    "VERSION": "Versión: ",
-    "ID": "ID: ",
+    "TITLE": "Título",
+    "VERSION": "Versión",
+    "ID": "ID",
     "MODEL": "Modelo: ",
     "CREATION": "Fecha de creación: ",
-    "DESCRIPTION": "Descripción: ",
+    "DESCRIPTION": "Descripción",
     "RESTORE": "Restaurar Versión",
     "DELETE_VER": "Eliminar Versión",
     "DELETE_INV": "Eliminar",
     "BEST_ADJUST": "Mejor Ajuste: ",
-    "EDIT": "Continuar investigacion"
+    "EDIT": "Continuar investigacion",
+    "HISTORIC_TITLE": "Investigaciones Historicas",
+    "INVESTIGATION_DELETE": "Borrar Investigacion",
+    "VERSION_DELETE": "Borrar Versión",
+    "INVESTIGATION_DELETE_MSG": "¿Está seguro que desea borrar la investigación {{ investigationId }}?",
+    "VERSION_DELETE_MSG": "¿Está seguro que desea borrar la versión {{versionId}} de la investigación {{ investigationId }}?",
+    "FILTER_PLACEHOLDER": "Ingrese el codigo de investigación"
   },
   "LOGIN": {
     "EMAIL": "E-mail",

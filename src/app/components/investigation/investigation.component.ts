@@ -17,7 +17,6 @@ import {Investigation} from "../data-selector/data-sample";
 })
 export class InvestigationComponent implements OnInit {
   state = this.stateService.state;
-
   @ViewChildren(MatStep) steps!: QueryList<MatStep>;
   @ViewChild("loadOnGoingInvestigationModal") loadOnGoingInvestigationModal!: TemplateRef<any>;
 
@@ -53,20 +52,32 @@ export class InvestigationComponent implements OnInit {
     });
   }
 
+  private removeModel(modelId: number) {
+    const updatedModelConfiguration = {...this.state().modelConfiguration};
+    delete updatedModelConfiguration[modelId];
+
+    this.stateService.state.set({
+      ...this.state(),
+      selectedModels: this.state().selectedModels.filter(selectedModel => selectedModel !== modelId),
+      modelConfiguration: updatedModelConfiguration,
+    });
+  }
+
   addModel(modelId: number) {
     const newSelectedModels = [...this.state().selectedModels, modelId];
     const model = this.state().models.find(m => m._id === modelId);
+    const linearizations = model ? model.linearizations : [];
 
     const newModelConfiguration = {
       ...this.state().modelConfiguration,
       [modelId]: {
-        automatedParams: !!model?.linearizations && model.linearizations.length > 0,
+        automatedParams: true,
         paramValues: Object.keys(model?.parameters || {}).reduce((acc, key) => ({
           ...acc,
           [key]: {value: 0, stderr: 0}
         }), {}),
         paramInfo: model?.parameters || {},
-        selectedLinearizations: [],
+        selectedLinearizations: linearizations,
         paramSaved: undefined,
         iterations: DEFAULT_ITERATIONS,
         steps: DEFAULT_STEPS
@@ -96,15 +107,6 @@ export class InvestigationComponent implements OnInit {
     });
   }
 
-  onSelectedModels(modelId: number) {
-    if (this.state().selectedModels.includes(modelId)) {
-      this.removeModel(modelId);
-    } else {
-      this.addModel(modelId);
-    }
-    this.checkConfigurationDone();
-  }
-
   onSelectedParams(modelsConfigurations: IModelsConfigurations) {
     this.stateService.state.set({
       ...this.state(),
@@ -122,17 +124,6 @@ export class InvestigationComponent implements OnInit {
     this.stateService.state.set({
       ...this.state(),
       modelConfigurationDone: configurationDone,
-    });
-  }
-
-  private removeModel(modelId: number) {
-    const updatedModelConfiguration = {...this.state().modelConfiguration};
-    delete updatedModelConfiguration[modelId];
-
-    this.stateService.state.set({
-      ...this.state(),
-      selectedModels: this.state().selectedModels.filter(selectedModel => selectedModel !== modelId),
-      modelConfiguration: updatedModelConfiguration,
     });
   }
 

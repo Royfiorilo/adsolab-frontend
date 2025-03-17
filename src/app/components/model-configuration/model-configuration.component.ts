@@ -13,7 +13,14 @@ import {
 } from '@angular/core';
 import {Model} from "../model-selector/model";
 import {ModelConfigurationService} from "./model-configuration.service";
-import {ILinearizationGraph, ILinearizationRequest, ISeedParamOption, SeedParamOption} from "./interface";
+import {
+  ILinearizationGraph,
+  ILinearizationRequest,
+  IPredictionRequest,
+  IPredictionResponse,
+  ISeedParamOption,
+  SeedParamOption
+} from "./interface";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {CommonUtilsService} from "../../common/common.service";
@@ -69,20 +76,64 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   }
 
   private cleanLinearizationGraphs(changes: SimpleChanges) {
-    if (changes['selectedModels'] && !changes['selectedModels'].firstChange && changes['selectedModels'].currentValue !== changes['selectedModels'].previousValue) {
+    if (changes['modelConfiguration'] &&
+      !changes['modelConfiguration'].firstChange &&
+      changes['modelConfiguration'].currentValue !== changes['modelConfiguration'].previousValue) {
+
+      const currentModels = Object.keys(changes['modelConfiguration'].currentValue).map(Number);
+      const previousModels = changes['modelConfiguration'].previousValue
+        ? Object.keys(changes['modelConfiguration'].previousValue).map(Number)
+        : [];
 
       let modelSelectionDiff = [
-        ...changes['selectedModels'].currentValue?.filter((modelId: number) => !changes['selectedModels'].previousValue?.includes(modelId)),
-        ...changes['selectedModels'].previousValue?.filter((modelId: number) => !changes['selectedModels'].currentValue?.includes(modelId))
+        ...currentModels.filter(modelId => !previousModels.includes(modelId)),
+        ...previousModels.filter(modelId => !currentModels.includes(modelId))
       ];
 
-      modelSelectionDiff.forEach(modelId => delete this.linearizationGraphs[modelId])
+      modelSelectionDiff.forEach(modelId => delete this.linearizationGraphs[modelId]);
     }
   }
 
   open(content: TemplateRef<any>) {
     this.modalService.open(content)
   }
+
+  predictSeeds(modelId: number) {
+    let request: IPredictionRequest = {
+      sample_id: this.state().investigation?.sample.sample_id as number, models: [{model: modelId, linearizations: []}]
+    };
+    this.runningLinearization = true;
+
+    this.modelConfigurationService.runPrediction(request).subscribe({
+      error: async (error) => {
+        this.runningLinearization = false;
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            main_message: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.PREDICTION_ERROR')),
+            error_message: error.message,
+          }
+        });
+        this.modelConfiguration[modelId].automatedParams = false;
+
+      },
+      next: (response: IPredictionResponse) => {
+        let responseSeeds = response.results[0].seeds;
+        for (const seed of responseSeeds) {
+          this.modelConfiguration[modelId].paramValues[seed.name] = {
+            stderr: 0,
+            value: seed.value
+          }
+        }
+
+
+        this.runningLinearization = false;
+
+
+        this.onSelectedParams.emit(this.modelConfiguration);
+      }
+    });
+  }
+
 
   runLinearization(modelId: number) {
     let model: Model = this.commonUtilsService.getModelById(modelId, this.state().models);
