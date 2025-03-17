@@ -11,7 +11,11 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>,
             next: HttpHandler): Observable<HttpEvent<any>> {
 
-    const xsrfToken = this.cookieService.get("XSRF-TOKEN")
+    let xsrfToken: string | null = this.cookieService.get("XSRF-TOKEN")
+
+    if (!xsrfToken) {
+      xsrfToken = sessionStorage.getItem("XSRF-TOKEN");
+    }
 
     if (xsrfToken) {
       const cloned = req.clone({
