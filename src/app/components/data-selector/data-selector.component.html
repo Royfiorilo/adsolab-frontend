@@ -26,8 +26,8 @@
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
                 <mat-option *ngFor="let option of filteredOptions | async"
                             [value]="option">
-                  <div style="display: flex; align-items: center; width: 100%;">
-                    <span style="flex-grow: 1;">{{ option }}</span>
+                  <div class="w-100 flex-grow-1 d-flex align-items-center justify-content-between">
+                    <span class="w-100 flex-grow-1">{{ option }}</span>
                     <button mat-icon-button color="warn" type="button"
                             (click)="$event.stopPropagation(); openDeleteSampleDialog(option)">
                       <fa-icon [icon]="faTrash"></fa-icon>

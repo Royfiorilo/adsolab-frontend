@@ -179,6 +179,7 @@ export class ModelCompareComponent {
         ridge: ridgeRequest,
       },
       results: response.results.map(result => {
+        result.adjustment_methods = result.adjustment_methods.filter(adjustmentMethod => adjustmentMethod.success)
         const modelId = result.model;
         const seeds: INoLinearRequestSeed[] = Object.entries(this.modelConfiguration[modelId]?.paramValues || {}).map(([paramName, paramValue]) => ({
           name: paramName,
@@ -194,13 +195,23 @@ export class ModelCompareComponent {
 
 
     this.modelCompareService.saveInvestigation(request).subscribe({
-      error: async (error) => {
-        this.dialog.open(ErrorDialogComponent, {
-          data: {
-            main_message: await firstValueFrom(this.translateService.get('MODEL_COMPARE.ERROR_SAVING_RESULTS', error)),
-            error_message: error.message,
-          }
-        })
+      error: (error) => {
+        if (error.status === 403) {
+          this._snackBar.openFromComponent(SnackBarComponent, {
+            duration: 3000,
+            verticalPosition: 'top',
+            data: {
+              message: this.translateService.instant('MODEL_COMPARE.NOT_AUTHORIZED')
+            }
+          });
+        } else {
+          this.dialog.open(ErrorDialogComponent, {
+            data: {
+              main_message: this.translateService.instant('MODEL_COMPARE.ERROR_SAVING_RESULTS'),
+              error_message: error.message,
+            }
+          })
+        }
       },
       next: (response) => {
         this._snackBar.openFromComponent(SnackBarComponent, {
@@ -320,7 +331,7 @@ export class ModelCompareComponent {
         }
 
         this.compareGraph = {
-          data: [ridgeData],
+          data: [{...ridgeData}],
           layout: {
             title: await firstValueFrom(this.translateService.get("MODEL_COMPARE.PLOT.BEST_FIT_BY_MODEL")),
             autosize: true,
@@ -369,10 +380,10 @@ export class ModelCompareComponent {
                 compareData.line = {shape: 'spline', color: this.colorByMethod[modelName]}
                 compareData.marker = {color: this.colorByMethod[modelName]}
                 compareData.name = modelName + ` (${model.best_adjust})`
-                this.compareGraph.data.push(compareData);
+                this.compareGraph.data.push({...compareData});
               }
 
-              this.summaryGraph[model.model].data.push(resultData)
+              this.summaryGraph[model.model].data.push({...resultData})
 
               let noLinearGraph: INoLinearAdjustmentSuccessResult = {
                 parameters: adjustment.parameters,
@@ -383,6 +394,7 @@ export class ModelCompareComponent {
                   data: [
                     resultData,
                     baseData
+
                   ],
                   layout: {
                     title: await firstValueFrom(this.translateService.get('MODEL_COMPARE.FIT')),
@@ -392,7 +404,7 @@ export class ModelCompareComponent {
                   }
                 }
               }
-              this.noLinearResults[model.model].successful_fits.push(noLinearGraph)
+              this.noLinearResults[model.model].successful_fits.push({...noLinearGraph})
 
             } else {
 
@@ -405,10 +417,10 @@ export class ModelCompareComponent {
 
           }
 
-          this.summaryGraph[model.model].data.push(baseData)
+          this.summaryGraph[model.model].data.push({...baseData})
 
         }
-        this.compareGraph.data.push(baseData);
+        this.compareGraph.data.push({...baseData});
 
         this.noLinearFailed = false;
 

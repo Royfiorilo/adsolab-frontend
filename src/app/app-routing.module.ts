@@ -16,7 +16,7 @@ const routes: Routes = [
   {path: 'investigation', component: InvestigationComponent, canActivate: [canActivate]},
   {path: 'historic', component: HistoricInvestigationComponent, canActivate: [canActivate]},
   {path: 'error', component: ErrorComponent},
-  {path: 'historic/version/:invId/:verId', component: HistoricVersionComponent, canActivate: [canActivate]},
+  {path: 'historic/version/:invId/:verId/:usrId', component: HistoricVersionComponent, canActivate: [canActivate]},
   {path: 'login', component: LoginComponent},
   {path: 'users', component: UsersComponent, canActivate: [canActivate]},
 ];

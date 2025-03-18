@@ -402,6 +402,7 @@
                       <div *ngIf="summaryGraph">
                         <plotly-plot [data]="summaryGraph[+modelId].data"
                                      [layout]="summaryGraph[+modelId].layout"
+                                     [style]="{width: '100%', height: '450px'}"
                                      [config]="{responsive: true}"></plotly-plot>
                       </div>
 
@@ -417,9 +418,11 @@
                                 </span>
                             </h5>
                             <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
+                                         [style]="{width: '100%', height: '450px'}"
                                          [config]="{responsive: true}"></plotly-plot>
 
                             <plotly-plot [data]="item.residuals.graph?.data" [layout]="item.residuals.graph?.layout"
+                                         [style]="{width: '100%', height: '450px'}"
                                          [config]="{responsive: true}"></plotly-plot>
 
                             <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>

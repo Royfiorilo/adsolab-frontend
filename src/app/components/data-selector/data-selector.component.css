@@ -1,0 +1,14 @@
+::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
+  display: flex !important;
+  width: 100% !important;
+  flex-grow: 1 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+::ng-deep .mat-mdc-option {
+  white-space: normal !important;
+  height: auto !important;
+  line-height: normal !important;
+  padding: 8px 16px !important;
+}
