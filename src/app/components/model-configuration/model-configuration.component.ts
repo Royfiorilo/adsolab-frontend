@@ -25,12 +25,13 @@ import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {CommonUtilsService} from "../../common/common.service";
 import {IModelsConfigurations} from "../../common/common.interface";
-import {firstValueFrom} from "rxjs";
+import {finalize, firstValueFrom, takeUntil} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
 import {StateService} from "../investigation/state.service";
 import {MatAccordion} from "@angular/material/expansion";
+import {RequestCancellationService} from "../../common/request-cancellation.service";
 
 @Component({
   selector: 'app-model-configuration',
@@ -46,12 +47,13 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   private modalService = inject(NgbModal);
   protected runningLinearization: boolean = false;
   protected seedParamOptions: ISeedParamOption[] = []
+  private currentRequestId: string | null = null;
   accordion = viewChild.required(MatAccordion);
 
   constructor(private modelConfigurationService: ModelConfigurationService,
               protected commonUtilsService: CommonUtilsService,
               private dialog: MatDialog, private translateService: TranslateService,
-              protected stateService: StateService) {
+              protected stateService: StateService, private cancellationService: RequestCancellationService) {
 
   }
 
@@ -151,77 +153,91 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
         graphs: []
       }
 
-      this.modelConfigurationService.runLinearization(request).subscribe({
-        error: async (error) => {
+      this.currentRequestId = `request-${Date.now()}`;
+      const cancellationSubject = this.cancellationService.getCancellationSubject(this.currentRequestId);
 
-          this.runningLinearization = false;
-          this.dialog.open(ErrorDialogComponent, {
-            data: {
-              main_message: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.LINEARIZATION_ERROR')),
-              error_message: error.message,
+      this.modelConfigurationService.runLinearization(request)
+        .pipe(
+          takeUntil(cancellationSubject), // This will cancel the subscription when cancellationSubject emits
+          finalize(() => {
+            this.runningLinearization = false;
+            if (this.currentRequestId) {
+              this.cancellationService.finishRequest(this.currentRequestId);
+              this.currentRequestId = null;
             }
-          });
-          this.modelConfiguration[modelId].automatedParams = false;
+          })
+        )
+        .subscribe({
+          error: async (error) => {
 
-        },
-        next: (response) => {
-
-          this.runningLinearization = false;
-
-          this.linearizationGraphs[model._id].graphs = [];
-          let linearizations = response.results[0].linearizations;
-
-          for (const linearization of linearizations) {
-
-            let slope: number = linearization.slope;
-            let intercept: number = linearization.intercept;
-            let xTransformed = linearization.transformed.x;
-            let xMin: number = this.getMinValue(xTransformed!);
-            let xMax: number = this.getMaxValue(xTransformed!);
-            let linearizationGraph: ILinearizationGraph = {
-              parameters: linearization.parameters,
-              statistics: linearization.statistics,
-              isBestResult: linearization.id === +response.results[0].best_result,
-              linearizationName: linearization.name,
-              graph: {
-                data: [
-                  {
-                    x: xTransformed,
-                    y: linearization.transformed.y,
-                    type: 'scatter',
-                    mode: 'markers',
-                    name: 'Muestra',
-                    marker: {color: 'black'}
-                  },
-                  {
-                    x: [xMin, xMax],
-                    y: [(slope * xMin + intercept), (slope * xMax + intercept)],
-                    type: 'scatter',
-                    mode: 'line',
-                    name: 'Linealización',
-                    marker: {color: 'blue'}
-                  },
-                ],
-                layout: {title: '', autosize: true, xaxis: {title: 'Ce'}, yaxis: {title: 'Qe'}}
+            this.runningLinearization = false;
+            this.dialog.open(ErrorDialogComponent, {
+              data: {
+                main_message: await firstValueFrom(this.translateService.get('MODEL_CONFIGURATION.LINEARIZATION_ERROR')),
+                error_message: error.message,
               }
-            }
+            });
+            this.modelConfiguration[modelId].automatedParams = false;
 
-            //asign param values
-            if (linearizationGraph.isBestResult) {
-              for (const parameter of linearization.parameters) {
-                this.modelConfiguration[modelId].paramValues[parameter.name] = {
-                  value: parameter.value,
-                  stderr: parameter.std_err
+          },
+          next: (response) => {
+
+            this.runningLinearization = false;
+
+            this.linearizationGraphs[model._id].graphs = [];
+            let linearizations = response.results[0].linearizations;
+
+            for (const linearization of linearizations) {
+
+              let slope: number = linearization.slope;
+              let intercept: number = linearization.intercept;
+              let xTransformed = linearization.transformed.x;
+              let xMin: number = this.getMinValue(xTransformed!);
+              let xMax: number = this.getMaxValue(xTransformed!);
+              let linearizationGraph: ILinearizationGraph = {
+                parameters: linearization.parameters,
+                statistics: linearization.statistics,
+                isBestResult: linearization.id === +response.results[0].best_result,
+                linearizationName: linearization.name,
+                graph: {
+                  data: [
+                    {
+                      x: xTransformed,
+                      y: linearization.transformed.y,
+                      type: 'scatter',
+                      mode: 'markers',
+                      name: 'Muestra',
+                      marker: {color: 'black'}
+                    },
+                    {
+                      x: [xMin, xMax],
+                      y: [(slope * xMin + intercept), (slope * xMax + intercept)],
+                      type: 'scatter',
+                      mode: 'line',
+                      name: 'Linealización',
+                      marker: {color: 'blue'}
+                    },
+                  ],
+                  layout: {title: '', autosize: true, xaxis: {title: 'Ce'}, yaxis: {title: 'Qe'}}
                 }
               }
+
+              //asign param values
+              if (linearizationGraph.isBestResult) {
+                for (const parameter of linearization.parameters) {
+                  this.modelConfiguration[modelId].paramValues[parameter.name] = {
+                    value: parameter.value,
+                    stderr: parameter.std_err
+                  }
+                }
+              }
+
+              this.linearizationGraphs[modelId].graphs.push(linearizationGraph);
             }
 
-            this.linearizationGraphs[modelId].graphs.push(linearizationGraph);
+            this.onSelectedParams.emit(this.modelConfiguration);
           }
-
-          this.onSelectedParams.emit(this.modelConfiguration);
-        }
-      });
+        });
     }
   }
 
@@ -243,4 +259,11 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
 
 
   protected readonly SeedParamOption = SeedParamOption;
+
+  cancelCurrentRequest(): void {
+    if (this.currentRequestId) {
+      this.cancellationService.cancelRequest(this.currentRequestId);
+      this.currentRequestId = null;
+    }
+  }
 }
