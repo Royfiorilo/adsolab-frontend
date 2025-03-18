@@ -467,5 +467,5 @@
 
 </div>
 <ng-container *ngIf="runningNoLinearAdjustment || savingInvestigation">
-  <app-loading></app-loading>
+  <app-loading [cancellable]="true" (cancelRequestEvent)="cancelCurrentRequest()"></app-loading>
 </ng-container>

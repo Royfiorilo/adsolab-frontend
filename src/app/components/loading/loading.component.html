@@ -1,3 +1,6 @@
 <div class="loading">
   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  <button *ngIf="cancellable" mat-raised-button color="primary" class="cancel-button" (click)="cancelRequest()">
+    Cancelar
+  </button>
 </div>

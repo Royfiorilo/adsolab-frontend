@@ -23,3 +23,8 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.cancel-button {
+  margin-top: 20px;
+  z-index: 1000;
+}
