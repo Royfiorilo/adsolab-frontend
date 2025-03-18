@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-loading',
@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrl: './loading.component.css'
 })
 export class LoadingComponent {
+  @Input() cancellable: boolean = false;
+  @Output() cancelRequestEvent = new EventEmitter<void>();
+
+  cancelRequest(): void {
+    this.cancelRequestEvent.emit();
+  }
 
 }
