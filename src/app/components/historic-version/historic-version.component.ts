@@ -73,6 +73,7 @@ export class HistoricVersionComponent {
         this.route.paramMap.subscribe((params) => {
           this.versionId = params.get('verId') || '0';
           this.investigationId = params.get('invId') || '0';
+          
           this.fetchData();
         });
       });
