@@ -3,7 +3,7 @@
 </ng-container>
 
 <div class="d-flex justify-content-center">
-  <button mat-button color="primary" class="m-2"
+  <button *ngIf="this.userId === this.userId" mat-button color="primary" class="m-2"
           (click)="navigateToInvestigation()">
     <fa-icon [icon]=" faArrowUpRightFromSquare
                           " class="m-2"></fa-icon>

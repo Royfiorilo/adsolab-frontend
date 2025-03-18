@@ -30,6 +30,7 @@ export class HistoricVersionComponent {
   sample: DataSample | undefined;
   versionId: string = '0';
   investigationId: string = '0';
+  userId: string = '0';
   protected models: Model[] = [];
   protected data: InvestigationData | undefined;
   protected compareGraph: IGraph | undefined;
@@ -72,6 +73,7 @@ export class HistoricVersionComponent {
         this.route.paramMap.subscribe((params) => {
           this.versionId = params.get('verId') || '0';
           this.investigationId = params.get('invId') || '0';
+          this.investigationId = params.get('usrId') || '0';
           this.fetchData();
         });
       });

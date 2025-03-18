@@ -195,13 +195,23 @@ export class ModelCompareComponent {
 
 
     this.modelCompareService.saveInvestigation(request).subscribe({
-      error: async (error) => {
-        this.dialog.open(ErrorDialogComponent, {
-          data: {
-            main_message: await firstValueFrom(this.translateService.get('MODEL_COMPARE.ERROR_SAVING_RESULTS', error)),
-            error_message: error.message,
-          }
-        })
+      error: (error) => {
+        if (error.status === 403) {
+          this._snackBar.openFromComponent(SnackBarComponent, {
+            duration: 3000,
+            verticalPosition: 'top',
+            data: {
+              message: this.translateService.instant('MODEL_COMPARE.NOT_AUTHORIZED')
+            }
+          });
+        } else {
+          this.dialog.open(ErrorDialogComponent, {
+            data: {
+              main_message: this.translateService.instant('MODEL_COMPARE.ERROR_SAVING_RESULTS'),
+              error_message: error.message,
+            }
+          })
+        }
       },
       next: (response) => {
         this._snackBar.openFromComponent(SnackBarComponent, {
@@ -384,7 +394,7 @@ export class ModelCompareComponent {
                   data: [
                     resultData,
                     baseData
-                  
+
                   ],
                   layout: {
                     title: await firstValueFrom(this.translateService.get('MODEL_COMPARE.FIT')),

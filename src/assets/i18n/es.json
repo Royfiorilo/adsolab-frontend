@@ -91,6 +91,7 @@
     "BEST_MODEL": "Mejor modelo",
     "HEURISTIC": "Heurística",
     "RIDGE": "Ridge",
+    "NOT_AUTHORIZED": "No puede crear una nueva version de una investigacion que no es suya.",
     "SCORE": "Puntaje",
     "COEFFICIENT": "Coeficiente",
     "RERUN_COMPARISON": "Volver a ejecutar comparación",
