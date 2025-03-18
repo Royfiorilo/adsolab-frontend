@@ -11,6 +11,7 @@ export interface Investigation {
   sample: Sample;
   sample_id: number;
   versions: Version[];
+  user_id: number;
 }
 
 export interface Sample {

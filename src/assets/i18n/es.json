@@ -160,7 +160,9 @@
     "VERSION_DELETE": "Borrar Versión",
     "INVESTIGATION_DELETE_MSG": "¿Está seguro que desea borrar la investigación {{ investigationId }}?",
     "VERSION_DELETE_MSG": "¿Está seguro que desea borrar la versión {{versionId}} de la investigación {{ investigationId }}?",
-    "FILTER_PLACEHOLDER": "Ingrese el codigo de investigación"
+    "FILTER_PLACEHOLDER": "Ingrese el codigo de investigación",
+    "MY_INVESTIGATIONS": "Mis investigaciones",
+    "ALL_INVESTIGATIONS": "Todas las investigaciones"
   },
   "LOGIN": {
     "EMAIL": "E-mail",
