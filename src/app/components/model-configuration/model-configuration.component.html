@@ -150,5 +150,5 @@
 </div>
 
 <ng-container *ngIf="runningLinearization">
-  <app-loading></app-loading>
+  <app-loading [cancellable]="true" (cancelRequestEvent)="cancelCurrentRequest()"></app-loading>
 </ng-container>
