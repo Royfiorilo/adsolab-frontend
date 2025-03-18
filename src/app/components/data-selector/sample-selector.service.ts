@@ -28,7 +28,7 @@ export class SampleSelectorService {
     return this.httpClient.get<any>(`${this.backendBaseUrl}/materials_sync`);
   }
 
-  deleteSample(sampleId: number) {
+  deleteSample(sampleId: number | undefined) {
     return this.httpClient.delete(`${this.backendBaseUrl}/sample/${sampleId}`);
 
   }

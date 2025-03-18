@@ -22,7 +22,7 @@ export class ModelCompareService {
 
   saveInvestigation(request: ISaveRequest): Observable<ISaveResponse> {
 
-    return this.httpClient.post<INoLinearResponse>(`${this.backendBaseUrl}/investigation/save`, request);
+    return this.httpClient.post<INoLinearResponse>(`${this.backendBaseUrl}/investigation/save`, request, {withCredentials: true});
   }
 
 }

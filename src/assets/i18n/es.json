@@ -58,7 +58,10 @@
     "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
     "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
     "ERROR_LOADING_PREVIOUS_SAMPLES": "Error al cargar muestras anteriores: {{ message }}",
-    "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación."
+    "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación.",
+    "SAMPLE_ERROR": "Error al inicializar las muestras.",
+    "DELETE": "Borrar sample",
+    "DELETE_CONFIRMATION": "¿Seguro que desea eliminar la muestra {{ optionValue }}?"
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo",
@@ -157,7 +160,9 @@
     "VERSION_DELETE": "Borrar Versión",
     "INVESTIGATION_DELETE_MSG": "¿Está seguro que desea borrar la investigación {{ investigationId }}?",
     "VERSION_DELETE_MSG": "¿Está seguro que desea borrar la versión {{versionId}} de la investigación {{ investigationId }}?",
-    "FILTER_PLACEHOLDER": "Ingrese el codigo de investigación"
+    "FILTER_PLACEHOLDER": "Ingrese el codigo de investigación",
+    "MY_INVESTIGATIONS": "Mis investigaciones",
+    "ALL_INVESTIGATIONS": "Todas las investigaciones"
   },
   "LOGIN": {
     "EMAIL": "E-mail",
@@ -195,6 +200,6 @@
     "ITEMS_PER_PAGE": "Ítems por página",
     "NEXT_PAGE": "Siguiente",
     "PREVIOUS_PAGE": "Anterior",
-    "RANGE": "Página {{ page }} de {{ amountPages }} - Total de usuarios: {{ length }}"
+    "RANGE": "Página {{ page }} de {{ amountPages }} - Total: {{ length }}"
   }
 }

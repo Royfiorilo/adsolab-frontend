@@ -26,11 +26,13 @@
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
                 <mat-option *ngFor="let option of filteredOptions | async"
                             [value]="option">
-                  <button mat-icon-button color="warn" (click)="deleteSample(dataSample?.sample_id)">
-                    <fa-icon [icon]="faTrash"></fa-icon>
-                  </button>
-                  <span>{{ option }}</span>
-
+                  <div style="display: flex; align-items: center; width: 100%;">
+                    <span style="flex-grow: 1;">{{ option }}</span>
+                    <button mat-icon-button color="warn" type="button"
+                            (click)="$event.stopPropagation(); openDeleteSampleDialog(option)">
+                      <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
@@ -48,6 +50,28 @@
     </div>
   </div>
 </div>
+
+
+<ng-template let-data #deleteSampleDialog>
+  <h2 mat-dialog-title>
+    {{ 'DATA_SELECTOR.DELETE' | translate }}
+  </h2>
+  <mat-dialog-content class="mat-typography">
+    <p>
+      {{ 'DATA_SELECTOR.DELETE_CONFIRMATION' | translate:data }}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button color="primary" mat-dialog-close>
+      {{ 'CANCEL' | translate }}
+    </button>
+    <button mat-flat-button color="warn" class="text-white" [mat-dialog-close]="true"
+            (click)="deleteSample(data.optionValue)">
+      {{ 'CONFIRM' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
 <app-data-visualizer [isTableVisible]="true" *ngIf="investigation?.sample ?? dataSample"
                      [data]="investigation?.sample ?? dataSample!"></app-data-visualizer>
 <ng-container *ngIf="creatingInvestigation || loadingDataSamples">

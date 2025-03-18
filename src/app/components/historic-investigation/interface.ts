@@ -1,5 +1,9 @@
 export interface InvestigationResponse {
   investigations: Investigation[];
+  total: number;
+  pages: number;
+  page: number;
+  per_page: number;
 }
 
 export interface Investigation {
@@ -7,6 +11,7 @@ export interface Investigation {
   sample: Sample;
   sample_id: number;
   versions: Version[];
+  user_id: number;
 }
 
 export interface Sample {

@@ -3,7 +3,7 @@ import {InvestigationService} from "./investigation.service";
 import {Investigation, InvestigationResponse} from "./interface";
 import {faArrowUpRightFromSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Router} from "@angular/router";
-import {catchError, finalize, firstValueFrom} from "rxjs";
+import {catchError, finalize, firstValueFrom, merge, of} from "rxjs";
 import {ModelSelectorServiceService} from "../model-selector/model-selector-service.service";
 import {TranslateService} from "@ngx-translate/core";
 import {Model} from "../model-selector/model";
@@ -11,13 +11,21 @@ import {CommonUtilsService} from "../../common/common.service";
 import {VersionDataService} from "../historic-version/version.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
+import {MatPaginator, MatPaginatorIntl} from "@angular/material/paginator";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {CustomTablePaginator} from "../../common/custom-table-paginator";
+import {map, startWith, switchMap} from "rxjs/operators";
+import {SnackBarComponent} from "../snack-bar/snack-bar.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {AuthService} from "../../common/auth.service";
+import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
   selector: 'app-historic-investigation',
   templateUrl: './historic-investigation.component.html',
   styleUrl: './historic-investigation.component.css',
+  providers: [{provide: MatPaginatorIntl, useClass: CustomTablePaginator}],
+
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
@@ -29,35 +37,35 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   investigations: InvestigationResponse | undefined;
   models: Model[] = [];
+  protected resultsLength: number = 0;
   protected loadingHistoric: boolean = true;
 
   dataSource = new MatTableDataSource<Investigation>([]);
   displayedColumns: string[] = ['investigation_id', 'title', 'description', 'actions'];
   expandedElement: Investigation | null = null;
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild("deleteVersionDialog") deleteVersionDialog!: TemplateRef<any>;
   @ViewChild("deleteInvestigationDialog") deleteInvestigationDialog!: TemplateRef<any>;
 
-  constructor(
-    private investigationService: InvestigationService,
-    private router: Router,
-    private translateService: TranslateService,
-    protected commonUtilsService: CommonUtilsService,
-    private modelService: ModelSelectorServiceService,
-    private versionDataService: VersionDataService,
-    private dialog: MatDialog
+  constructor(private authService: AuthService,
+              private _snackBar: MatSnackBar,
+              private investigationService: InvestigationService,
+              private router: Router,
+              private translateService: TranslateService,
+              protected commonUtilsService: CommonUtilsService,
+              private modelService: ModelSelectorServiceService,
+              private versionDataService: VersionDataService,
+              private dialog: MatDialog
   ) {
   }
 
   ngOnInit(): void {
     this.loadData();
+
   }
 
   ngAfterViewInit() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-    }
+    this.setupPaginator();
   }
 
   loadData(): void {
@@ -73,16 +81,6 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
       )
       .subscribe((response) => {
         this.models = response.models;
-        this.investigationService.getInvestigations().subscribe((data: InvestigationResponse) => {
-          this.investigations = data;
-          this.dataSource.data = data.investigations;
-          setTimeout(() => {
-            if (this.paginator) {
-              this.dataSource.paginator = this.paginator;
-            }
-          });
-          this.loadingHistoric = false;
-        });
       });
   }
 
@@ -139,6 +137,43 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
     if (version) {
       this.versionDataService.setVersionData(version);
       this.router.navigate(['/historic/version', investigationId, versionId]);
+    }
+  }
+
+  setupPaginator() {
+    merge(this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.loadingHistoric = true;
+          return this.investigationService.getInvestigations(this.paginator.pageIndex + 1, this.paginator.pageSize)
+            .pipe(catchError(() => {
+              this._snackBar.openFromComponent(SnackBarComponent, {
+                duration: 3000,
+                verticalPosition: 'top',
+                data: {
+                  message: this.translateService.instant('VERSIONS.ERROR_LOADING_INVESTIGATIONS')
+                }
+              });
+              return of(null);
+            }));
+        }),
+        map(data => {
+          this.loadingHistoric = false;
+
+          if (data === null) {
+            return [];
+          }
+
+          this.resultsLength = data.total;
+          this.investigations = data;
+          return data.investigations;
+        }),
+      )
+      .subscribe(data => (this.dataSource.data = data));
+
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
     }
   }
 
@@ -203,6 +238,18 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
       });
   }
 
+  onTabChange(event: MatTabChangeEvent) {
+    if (event.index === 1) {
+      this.dataSource.data = this.dataSource.data.filter(investigation => {
+        return investigation.user_id === this.authService.user()?.id
+      })
+    } else {
+      this.setupPaginator()
+
+    }
+  }
+
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly faTrash = faTrash;
+
 }

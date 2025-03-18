@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, TemplateRef, ViewChild} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
 import {DataSample, Investigation} from "./data-sample";
 import {catchError, finalize, firstValueFrom, Observable} from 'rxjs';
@@ -17,6 +17,7 @@ import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 })
 export class DataSelectorComponent {
   @Output() onInvestigationStarted: EventEmitter<Investigation> = new EventEmitter();
+  @ViewChild("deleteSampleDialog") deleteSampleDialog!: TemplateRef<any>;
   @Input() investigation!: Investigation | undefined;
   protected dataSample: DataSample | undefined;
   protected availableDataSamples: DataSample[] = [];
@@ -133,25 +134,51 @@ export class DataSelectorComponent {
 
   protected readonly faTrash = faTrash;
 
-  deleteSample(sampleId: number | undefined) {
-    //agregar modal estas seguro
-
+  deleteSample(optionValue: string) {
     this.loadingDataSamples = true;
-    if (sampleId) {
-      this.sampleService.deleteSample(sampleId)
+    let sample = this.getDataSampleByTitle(optionValue);
+    if (sample !== undefined) {
+      this.sampleService.deleteSample(sample.sample_id)
         .pipe(finalize(() => this.loadingDataSamples = false))
         .subscribe({
           next: (response) => {
-            console.log('Version deleted successfully:', response);
+            console.log('Sample deleted successfully:', response);
+
+            this.availableDataSamples = this.availableDataSamples.filter(
+              s => s.sample_id !== sample?.sample_id
+            );
+
+            this.options = this.options.filter(option => option !== optionValue);
+
+            if (this.dataSample?.sample_id === sample?.sample_id) {
+              this.setDataSample(undefined);
+              this.inputControl.setValue('');
+            }
+
+            this.filteredOptions = this.inputControl.valueChanges.pipe(
+              startWith(this.inputControl.value || ''),
+              map(value => this._filter(value))
+            );
           },
-          error: (error) => {
-            console.error('Error deleting version:', error);
+          error: async (error) => {
+            this.dialog.open(ErrorDialogComponent, {
+              data: {
+                main_message: await firstValueFrom(this.translateService.get('DATA_SELECTOR.SAMPLE_ERROR')),
+                error_message: error.message,
+              }
+            })
           }
         });
     } else {
       this.loadingDataSamples = false;
-
     }
+  }
 
+  openDeleteSampleDialog(optionValue: string): void {
+    this.dialog.open(this.deleteSampleDialog, {
+      data: {
+        optionValue: optionValue
+      }
+    })
   }
 }
