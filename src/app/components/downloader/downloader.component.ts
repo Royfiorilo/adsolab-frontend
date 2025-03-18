@@ -44,7 +44,7 @@ export class DownloaderComponent {
     sheetData.push(values);
 
     sheetData.push(['x', 'y']);
-    this.ridgeResult.y_pred.forEach((y, index) => {
+    this.ridgeResult.transformed.y.forEach((y, index) => {
       sheetData.push([this.xForCurvePlot[index], y]);
     });
 
