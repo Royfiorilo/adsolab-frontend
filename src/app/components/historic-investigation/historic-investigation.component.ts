@@ -3,7 +3,7 @@ import {InvestigationService} from "./investigation.service";
 import {Investigation, InvestigationResponse} from "./interface";
 import {faArrowUpRightFromSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Router} from "@angular/router";
-import {catchError, finalize, firstValueFrom} from "rxjs";
+import {catchError, finalize, firstValueFrom, merge, of} from "rxjs";
 import {ModelSelectorServiceService} from "../model-selector/model-selector-service.service";
 import {TranslateService} from "@ngx-translate/core";
 import {Model} from "../model-selector/model";
@@ -11,13 +11,19 @@ import {CommonUtilsService} from "../../common/common.service";
 import {VersionDataService} from "../historic-version/version.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
+import {MatPaginator, MatPaginatorIntl} from "@angular/material/paginator";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {CustomTablePaginator} from "../../common/custom-table-paginator";
+import {map, startWith, switchMap} from "rxjs/operators";
+import {SnackBarComponent} from "../snack-bar/snack-bar.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-historic-investigation',
   templateUrl: './historic-investigation.component.html',
   styleUrl: './historic-investigation.component.css',
+  providers: [{provide: MatPaginatorIntl, useClass: CustomTablePaginator}],
+
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
@@ -29,17 +35,20 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   investigations: InvestigationResponse | undefined;
   models: Model[] = [];
+  protected resultsLength: number = 0;
   protected loadingHistoric: boolean = true;
 
   dataSource = new MatTableDataSource<Investigation>([]);
   displayedColumns: string[] = ['investigation_id', 'title', 'description', 'actions'];
   expandedElement: Investigation | null = null;
+  private DEFAULT_PAGE = 1;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild("deleteVersionDialog") deleteVersionDialog!: TemplateRef<any>;
   @ViewChild("deleteInvestigationDialog") deleteInvestigationDialog!: TemplateRef<any>;
 
   constructor(
+    private _snackBar: MatSnackBar,
     private investigationService: InvestigationService,
     private router: Router,
     private translateService: TranslateService,
@@ -55,6 +64,37 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    merge(this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.loadingHistoric = true;
+          return this.investigationService.getInvestigations(this.paginator.pageIndex + 1, this.paginator.pageSize)
+            .pipe(catchError(() => {
+              this._snackBar.openFromComponent(SnackBarComponent, {
+                duration: 3000,
+                verticalPosition: 'top',
+                data: {
+                  message: "Error al cargar los usuarios"
+                }
+              });
+              return of(null);
+            }));
+        }),
+        map(data => {
+          this.loadingHistoric = false;
+
+          if (data === null) {
+            return [];
+          }
+
+          this.resultsLength = data.total;
+          this.investigations = data;
+          return data.investigations;
+        }),
+      )
+      .subscribe(data => (this.dataSource.data = data));
+
     if (this.dataSource) {
       this.dataSource.paginator = this.paginator;
     }
@@ -73,16 +113,16 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
       )
       .subscribe((response) => {
         this.models = response.models;
-        this.investigationService.getInvestigations().subscribe((data: InvestigationResponse) => {
-          this.investigations = data;
-          this.dataSource.data = data.investigations;
-          setTimeout(() => {
-            if (this.paginator) {
-              this.dataSource.paginator = this.paginator;
-            }
-          });
-          this.loadingHistoric = false;
-        });
+        // this.investigationService.getInvestigations(this.paginator.pageIndex + 1, this.paginator.pageSize).subscribe((data: InvestigationResponse) => {
+        //   this.investigations = data;
+        //   this.dataSource.data = data.investigations;
+        //   setTimeout(() => {
+        //     if (this.paginator) {
+        //       this.dataSource.paginator = this.paginator;
+        //     }
+        //   });
+        //   this.loadingHistoric = false;
+        // });
       });
   }
 

@@ -76,3 +76,11 @@
     padding: 10px;
   }
 }
+
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}

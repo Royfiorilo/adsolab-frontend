@@ -1,5 +1,9 @@
 export interface InvestigationResponse {
   investigations: Investigation[];
+  total: number;
+  pages: number;
+  page: number;
+  per_page: number;
 }
 
 export interface Investigation {

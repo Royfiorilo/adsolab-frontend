@@ -195,6 +195,6 @@
     "ITEMS_PER_PAGE": "Ítems por página",
     "NEXT_PAGE": "Siguiente",
     "PREVIOUS_PAGE": "Anterior",
-    "RANGE": "Página {{ page }} de {{ amountPages }} - Total de usuarios: {{ length }}"
+    "RANGE": "Página {{ page }} de {{ amountPages }} - Total: {{ length }}"
   }
 }

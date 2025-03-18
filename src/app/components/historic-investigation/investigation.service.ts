@@ -15,8 +15,8 @@ export class InvestigationService {
     this.backendBaseUrl = environment.backendBaseUrl;
   }
 
-  getInvestigations(): Observable<InvestigationResponse> {
-    return this.httpClient.get<InvestigationResponse>(`${this.backendBaseUrl}/investigations`);
+  getInvestigations(page: number, perPage: number): Observable<InvestigationResponse> {
+    return this.httpClient.get<InvestigationResponse>(`${this.backendBaseUrl}/investigations?page=${page}&per_page=${perPage}`);
   }
 
   getInvestigationVersions(investigationId: number): Observable<InvestigationVersionsResponse> {
