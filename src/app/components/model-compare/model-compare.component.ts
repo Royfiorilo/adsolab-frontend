@@ -21,12 +21,13 @@ import {MatAccordion} from "@angular/material/expansion";
 import {faCloudArrowUp} from "@fortawesome/free-solid-svg-icons";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
-import {firstValueFrom} from "rxjs";
+import {finalize, firstValueFrom, takeUntil} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {PlotlyComponent} from "angular-plotly.js";
 import {StateService} from "../investigation/state.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
+import {RequestCancellationService} from "../../common/request-cancellation.service";
 
 
 @Component({
@@ -60,6 +61,7 @@ export class ModelCompareComponent {
   protected xForCurvePlot: number[] = [];
   protected noLinearResponse: INoLinearResponse | undefined;
   protected noLinearFailed: boolean = false;
+  private currentRequestId: string | null = null;
   state = this.stateService.state;
 
   private colorByMethod: { [key: string]: string } = {
@@ -75,7 +77,7 @@ export class ModelCompareComponent {
               protected modelCompareService: ModelCompareService,
               private dialog: MatDialog,
               private translateService: TranslateService,
-              private _snackBar: MatSnackBar) {
+              private _snackBar: MatSnackBar, private cancellationService: RequestCancellationService) {
   }
 
   ngOnInit() {
@@ -253,7 +255,19 @@ export class ModelCompareComponent {
       models
     }
 
-    this.modelCompareService.runNoLinearModel(request).subscribe({
+    this.currentRequestId = `request-${Date.now()}`;
+    const cancellationSubject = this.cancellationService.getCancellationSubject(this.currentRequestId);
+
+    this.modelCompareService.runNoLinearModel(request)
+      .pipe(takeUntil(cancellationSubject),
+        finalize(() => {
+          this.runningNoLinearAdjustment = false;
+          if (this.currentRequestId) {
+            this.cancellationService.finishRequest(this.currentRequestId);
+            this.currentRequestId = null;
+          }
+        })
+      ).subscribe({
       error: async (error) => {
 
         this.noLinearFailed = true;
@@ -263,7 +277,6 @@ export class ModelCompareComponent {
             error_message: error.message,
           }
         });
-        this.runningNoLinearAdjustment = false;
       },
       next: async (response) => {
 
@@ -397,7 +410,6 @@ export class ModelCompareComponent {
         }
         this.compareGraph.data.push(baseData);
 
-        this.runningNoLinearAdjustment = false;
         this.noLinearFailed = false;
 
       }
@@ -500,4 +512,12 @@ export class ModelCompareComponent {
 
   protected readonly Object = Object;
   protected readonly faSave = faCloudArrowUp;
+
+  cancelCurrentRequest(): void {
+    this.noLinearFailed = true;
+    if (this.currentRequestId) {
+      this.cancellationService.cancelRequest(this.currentRequestId);
+      this.currentRequestId = null;
+    }
+  }
 }

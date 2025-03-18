@@ -27,7 +27,7 @@ export class DataSelectorService {
     }
 
     if (sample.sample_id === undefined) {
-      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/sample`, sample, {withCredentials: true});
+      return this.httpClient.post<CreateInvestigationResponse>(`${this.backendBaseUrl}/sample`, sample, {withCredentials: true})
     } else {
       return EMPTY;
     }
