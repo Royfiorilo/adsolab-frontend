@@ -218,7 +218,12 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
                       marker: {color: 'blue'}
                     },
                   ],
-                  layout: {title: '', autosize: true, xaxis: {title: 'Ce'}, yaxis: {title: 'Qe'}}
+                  layout: {
+                    title: '',
+                    autosize: true,
+                    xaxis: {title: this.translateService.instant('CE')},
+                    yaxis: {title: this.translateService.instant('QE')}
+                  }
                 }
               }
 

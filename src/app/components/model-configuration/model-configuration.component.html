@@ -18,7 +18,7 @@
     </div>
     <mat-accordion multi class="row justify-content-center">
 
-      <div *ngFor="let modelId of state().selectedModels" class="col-md-12 col-xxl-6">
+      <div *ngFor="let modelId of state().selectedModels" class="col">
         <mat-expansion-panel class="card m-3" [expanded]="true">
           <mat-expansion-panel-header class="card-header fiuba-investigation mb-1">
             <h4
@@ -68,7 +68,7 @@
               *ngIf="!modelConfiguration[modelId].automatedParams ||   (modelConfiguration[modelId] && modelConfiguration[modelId].selectedLinearizations && modelConfiguration[modelId].selectedLinearizations.length === 0);else automatedParams">
               <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="text-center">
 
-                <mat-form-field class="w-100">
+                <mat-form-field class="w-50">
                   <mat-label> {{ param.key }}</mat-label>
                   <input matInput
                          [(ngModel)]="param.value.value"
@@ -125,9 +125,9 @@
                 </div>
               </div>
 
-              <div class="row m-3" *ngFor="let item of linearizationGraphs[modelId]?.graphs">
+              <div class="row mb-3" *ngFor="let item of linearizationGraphs[modelId]?.graphs">
 
-                <div class="col text-center">
+                <div class="col text-center m-0">
                   <h5 class="text-center">
                     {{ item.linearizationName }}
                   </h5>

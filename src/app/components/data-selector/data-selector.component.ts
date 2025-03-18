@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, TemplateRef, ViewChild} from '@angular/core';
 import {DataSelectorService} from "./data-selector.service"
-import {DataSample, Investigation} from "./data-sample";
+import {DataSample, IAdsorbate, IAdsorbent, Investigation} from "./data-sample";
 import {catchError, finalize, firstValueFrom, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {FormControl} from '@angular/forms';
@@ -28,6 +28,8 @@ export class DataSelectorComponent {
   protected inputControl = new FormControl();
   protected options: string[] = [];
   protected filteredOptions!: Observable<string[]>;
+  protected adsorbents: IAdsorbent[] = [];
+  protected adsorbates: IAdsorbate[] = [];
 
   constructor(
     private _snackBar: MatSnackBar,
@@ -76,7 +78,25 @@ export class DataSelectorComponent {
   onOptionSelected(event: any) {
     this.inputControl.setValue(event.option.value);
     let sample = this.getDataSampleByTitle(event.option.value);
-    this.setDataSample(sample);
+
+    if (this.adsorbents.length === 0 || this.adsorbates.length === 0) {
+
+      this.sampleService.getMaterials()
+        .pipe(
+          catchError(async error => {
+            throw await firstValueFrom(this.translateService.get('DATA_SELECTOR.ERROR_LOADING_PREVIOUS_SAMPLES', error));
+          })
+        )
+        .subscribe(response => {
+          this.adsorbates = response.adsorbates;
+          this.adsorbents = response.adsorbents;
+          this.setDataSample(sample);
+        })
+
+    } else {
+      this.setDataSample(sample);
+    }
+
   }
 
   private _filter(value: string): string[] {
@@ -87,8 +107,15 @@ export class DataSelectorComponent {
   createInvestigation() {
     this.creatingInvestigation = true;
     if (this.dataSample && this.dataSample.sample_id === undefined) {
+
+      const request = {
+        ...this.dataSample
+      }
+      delete request.adsorbent;
+      delete request.adsorbate;
+
       this.dataService
-        .createInvestigation(this.dataSample)
+        .createInvestigation(request)
         .subscribe({
           error: async (error) => {
 
@@ -103,6 +130,7 @@ export class DataSelectorComponent {
           },
           next: async (response) => {
             if (this.dataSample) {
+              this.dataSample.title = response.title;
               this.dataSample.sample_id = response.sample_id;
             }
             this.creatingInvestigation = false;
@@ -118,7 +146,7 @@ export class DataSelectorComponent {
   }
 
   validateUploadedDataSample(dataSample: DataSample): boolean {
-    return dataSample.title !== undefined && dataSample.title !== '' && dataSample.description !== undefined && dataSample.description !== '' && dataSample.adsorbent_id !== undefined && true && dataSample.temperature !== undefined;
+    return dataSample.description !== undefined && dataSample.description !== '' && dataSample.adsorbent_id !== undefined && dataSample.temperature !== undefined;
   }
 
   setUploadDataSample(dataSample: DataSample) {
@@ -132,6 +160,10 @@ export class DataSelectorComponent {
   }
 
   setDataSample(dataSample: DataSample | undefined) {
+    if (dataSample && this.adsorbents.length !== 0 && this.adsorbates.length !== 0) {
+      dataSample.adsorbent = this.adsorbents.find(adsorbent => adsorbent.id === dataSample?.adsorbent_id)?.name;
+      dataSample.adsorbate = this.adsorbates.find(adsorbate => adsorbate.id === dataSample?.adsorbate_id)?.iupac_name;
+    }
     this.dataSample = dataSample;
   }
 

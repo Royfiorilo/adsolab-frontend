@@ -4,8 +4,8 @@
   "OR": "o",
   "NAME": "Nombre",
   "CLOSE": "Cerrar",
-  "CE": "Ce",
-  "QE": "Qe",
+  "CE": "Ce (mmol/L)",
+  "QE": "Qe (mmol/g)",
   "QE_PRED": "Qe pred",
   "SAMPLE": "Muestra",
   "UNDEFINED": "Indefinido",
@@ -51,7 +51,7 @@
     },
     "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo",
     "ERROR_LOADING_MATERIALS": "Error al cargar materiales: {{ message }}",
-    "INFO": "(*) Las unidades de la muestra deben estar expresadas en milimoles por litro (CE) y milimoles por gramos (QE)"
+    "INFO": "(*) Las unidades de la muestra deben estar expresadas en milimol por litro (Ce) y milimol por gramo (Qe)"
   },
   "DATA_SELECTOR": {
     "START_INVESTIGATION": "Comenzar investigación",
