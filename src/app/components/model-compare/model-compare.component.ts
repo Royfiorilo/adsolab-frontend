@@ -286,7 +286,7 @@ export class ModelCompareComponent {
         let xPointX = this.state().investigation?.sample?.ce!
         let yPointX = this.state().investigation?.sample?.qe!
 
-        this.xForCurvePlot = response.results[0].adjustment_methods[0].transformed.x;
+        this.xForCurvePlot = response.comparison.ridge.transformed.x;
 
         let axisTitles = {
           xaxis: {
@@ -310,7 +310,7 @@ export class ModelCompareComponent {
 
         let ridgeData = {
           x: this.xForCurvePlot,
-          y: response.comparison.ridge.y_pred,
+          y: response.comparison.ridge.transformed.y,
           type: 'scatter',
           mode: 'lines',
           name: await firstValueFrom(this.translateService.get("MODEL_COMPARE.RIDGE")),
