@@ -15,7 +15,7 @@ export interface Model {
   _id: number;
   name: string;
   description: string;
-  formula: string;
+  latex_formula: string;
   parameters: Parameter;
   linearizations: Linearization[];
   selected: boolean;

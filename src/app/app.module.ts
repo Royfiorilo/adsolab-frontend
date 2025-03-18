@@ -77,6 +77,7 @@ import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {EditUserComponent} from './components/edit-user/edit-user.component';
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {MatPaginator} from "@angular/material/paginator";
+import {LatexParagraphComponent} from './components/latex-paragraph/latex-paragraph.component';
 
 //Plotly.register(locale)
 
@@ -112,7 +113,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     LoginComponent,
     UsersComponent,
     CreateUserComponent,
-    EditUserComponent
+    EditUserComponent,
+    LatexParagraphComponent
   ],
   imports: [
     BrowserModule,
