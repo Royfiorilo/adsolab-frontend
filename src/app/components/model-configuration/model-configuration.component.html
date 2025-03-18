@@ -54,6 +54,10 @@
                 <input [id]="modelId.toString()"
                        [(ngModel)]="modelConfiguration[modelId].steps"
                        matInput type="number"
+                       min="0"
+                       max="1"
+                       step="0.1"
+                       (change)="validateStepsValue(modelId)"
                        placeholder="{{ 'MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}">
               </mat-form-field>
 

@@ -61,7 +61,9 @@
     "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación.",
     "SAMPLE_ERROR": "Error al inicializar las muestras.",
     "DELETE": "Borrar sample",
-    "DELETE_CONFIRMATION": "¿Seguro que desea eliminar la muestra {{ optionValue }}?"
+    "DELETE_CONFIRMATION": "¿Seguro que desea eliminar la muestra {{ optionValue }}?",
+    "DELETED": "Muestra eliminada con éxito",
+    "NOT_AUTHORIZED": "No esta autorizado a eliminar la muestra de otro usuario."
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo",

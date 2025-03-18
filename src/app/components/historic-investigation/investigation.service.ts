@@ -28,11 +28,11 @@ export class InvestigationService {
   }
 
   deleteInvestigationVersion(investigationId: number, versionId: number) {
-    return this.httpClient.delete(`${this.backendBaseUrl}/investigation/${investigationId}/version/${versionId}`);
+    return this.httpClient.delete(`${this.backendBaseUrl}/investigation/${investigationId}/version/${versionId}`, {withCredentials: true});
   }
 
   deleteInvestigation(investigationId: number) {
-    return this.httpClient.delete(`${this.backendBaseUrl}/investigation/${investigationId}`);
+    return this.httpClient.delete(`${this.backendBaseUrl}/investigation/${investigationId}`, {withCredentials: true});
 
   }
 }

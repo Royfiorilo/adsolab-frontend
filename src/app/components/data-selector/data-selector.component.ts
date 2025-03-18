@@ -9,6 +9,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {MatDialog} from "@angular/material/dialog";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {SnackBarComponent} from "../snack-bar/snack-bar.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-data-selector',
@@ -28,6 +30,7 @@ export class DataSelectorComponent {
   protected filteredOptions!: Observable<string[]>;
 
   constructor(
+    private _snackBar: MatSnackBar,
     private dataService: DataSelectorService,
     private sampleService: SampleSelectorService,
     private translateService: TranslateService,
@@ -142,8 +145,13 @@ export class DataSelectorComponent {
         .pipe(finalize(() => this.loadingDataSamples = false))
         .subscribe({
           next: (response) => {
-            console.log('Sample deleted successfully:', response);
-
+            this._snackBar.openFromComponent(SnackBarComponent, {
+              duration: 3000,
+              verticalPosition: 'top',
+              data: {
+                message: this.translateService.instant('DATA_SELECTOR.DELETED')
+              }
+            });
             this.availableDataSamples = this.availableDataSamples.filter(
               s => s.sample_id !== sample?.sample_id
             );
@@ -161,12 +169,23 @@ export class DataSelectorComponent {
             );
           },
           error: async (error) => {
-            this.dialog.open(ErrorDialogComponent, {
-              data: {
-                main_message: await firstValueFrom(this.translateService.get('DATA_SELECTOR.SAMPLE_ERROR')),
-                error_message: error.message,
-              }
-            })
+            if (error.status === 401) {
+              this._snackBar.openFromComponent(SnackBarComponent, {
+                duration: 3000,
+                verticalPosition: 'top',
+                data: {
+                  message: this.translateService.instant('DATA_SELECTOR.NOT_AUTHORIZED')
+                }
+              });
+            } else {
+
+              this.dialog.open(ErrorDialogComponent, {
+                data: {
+                  main_message: await firstValueFrom(this.translateService.get('DATA_SELECTOR.SAMPLE_ERROR')),
+                  error_message: error.message,
+                }
+              })
+            }
           }
         });
     } else {

@@ -306,11 +306,13 @@
 
                         <plotly-plot *ngIf="adjustMethod.graph" [data]="adjustMethod.graph.data"
                                      [layout]="adjustMethod.graph.layout"
+                                     [style]="{width: '100%', height: '450px'}"
                                      [config]="{responsive: true}"
                         ></plotly-plot>
 
                         <plotly-plot *ngIf="adjustMethod.residuals.graph" [data]="adjustMethod.residuals.graph.data"
                                      [layout]="adjustMethod.residuals.graph.layout"
+                                     [style]="{width: '100%', height: '450px'}"
                                      [config]="{responsive: true}"
                         ></plotly-plot>
                         <app-fit-result [parameters]="adjustMethod.params" [statistics]="adjustMethod.statistics"/>

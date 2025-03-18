@@ -257,6 +257,16 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
 
   }
 
+  validateStepsValue(modelId: number) {
+    let value = this.modelConfiguration[modelId].steps;
+    if (value > 1) {
+      this.modelConfiguration[modelId].steps = 1;
+    } else if (value < 0) {
+      this.modelConfiguration[modelId].steps = 0;
+    } else {
+      this.modelConfiguration[modelId].steps = Math.round(value * 10) / 10;
+    }
+  }
 
   protected readonly SeedParamOption = SeedParamOption;
 

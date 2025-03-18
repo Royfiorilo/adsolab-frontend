@@ -19,6 +19,7 @@ export class CreateUserComponent {
   protected passwordErrorMessage: string | null = null;
   protected userRoleErrorMessage: string | null = null;
   protected userCreationErrorMessage: string | null = null;
+  protected showPassword: boolean = false;
   protected creatingUser: boolean = false;
 
 
@@ -117,4 +118,9 @@ export class CreateUserComponent {
     }
 
   }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
 }

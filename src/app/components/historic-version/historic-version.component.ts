@@ -172,20 +172,20 @@ export class HistoricVersionComponent {
           marker: {color: this.colorByMethod[adjustMethod.name]},
         };
 
-        adjustMethod.graph.data.push(graphData);
-        adjustMethod.graph.data.push(baseData);
-        this.summaryGraph[model.model_id].data.push(graphData)
+        adjustMethod.graph.data.push({...graphData});
+        adjustMethod.graph.data.push({...baseData});
+        this.summaryGraph[model.model_id].data.push({...graphData})
 
         if (adjustMethod.name === bestAdjust?.name) {
           let bestGraphData = {...graphData};
           bestGraphData.name = modelName.name + " (" + adjustMethod?.name + ")";
-          this.compareGraph?.data?.push(bestGraphData);
+          this.compareGraph?.data?.push({...bestGraphData});
         }
       }
-      this.summaryGraph[model.model_id].data.push(baseData);
+      this.summaryGraph[model.model_id].data.push({...baseData});
 
     }
-    this.compareGraph?.data?.push(baseData);
+    this.compareGraph?.data?.push({...baseData});
 
   }
 

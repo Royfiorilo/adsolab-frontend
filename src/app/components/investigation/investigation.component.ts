@@ -47,7 +47,7 @@ export class InvestigationComponent implements OnInit {
       duration: 3000,
       verticalPosition: 'top',
       data: {
-        message: "Investigación creada con éxito"
+        message: "Muestra cargada con éxito"
       }
     });
   }
