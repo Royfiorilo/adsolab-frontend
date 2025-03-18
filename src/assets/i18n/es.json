@@ -58,7 +58,10 @@
     "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
     "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
     "ERROR_LOADING_PREVIOUS_SAMPLES": "Error al cargar muestras anteriores: {{ message }}",
-    "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación."
+    "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación.",
+    "SAMPLE_ERROR": "Error al inicializar las muestras.",
+    "DELETE": "Borrar sample",
+    "DELETE_CONFIRMATION": "¿Seguro que desea eliminar la muestra {{ optionValue }}?"
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo",
