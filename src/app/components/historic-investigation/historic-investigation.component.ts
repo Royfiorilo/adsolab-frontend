@@ -132,13 +132,12 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
     const investigation = this.investigations?.investigations.find(inv => inv.investigation_id === investigationId);
     const version = investigation?.versions.find(v => v.version_id === versionId);
     const sample = investigation?.sample;
-    const userId = investigation?.user_id;
     if (sample) {
       this.versionDataService.setSampleData(sample);
     }
     if (version) {
       this.versionDataService.setVersionData(version);
-      this.router.navigate(['/historic/version', investigationId, versionId, userId]);
+      this.router.navigate(['/historic/version', investigationId, versionId]);
     }
   }
 
