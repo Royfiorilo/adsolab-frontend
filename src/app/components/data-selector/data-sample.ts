@@ -7,15 +7,18 @@ export interface DataSample {
   ce: number[];
   qe: number[];
   sample_id?: number | undefined;
-  title: string | undefined;
+  title?: string | undefined;
   description: string | undefined;
   temperature: number | undefined;
   measure_unit: string | undefined;
   adsorbate_id: number | undefined;
+  adsorbate?: string | undefined;
   adsorbent_id: number | undefined;
+  adsorbent?: string | undefined;
 }
 
 export interface CreateInvestigationResponse {
+  title: string;
   investigation_id: number;
   sample_id: number;
   error?: string;
