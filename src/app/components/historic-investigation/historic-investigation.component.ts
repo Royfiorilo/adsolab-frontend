@@ -19,6 +19,7 @@ import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthService} from "../../common/auth.service";
 import {MatTabChangeEvent} from "@angular/material/tabs";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
 
 @Component({
   selector: 'app-historic-investigation',
@@ -210,7 +211,22 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
           }
         },
         error: (error) => {
-          console.error('Error deleting investigation:', error);
+          if (error.status === 403) {
+            this._snackBar.openFromComponent(SnackBarComponent, {
+              duration: 3000,
+              verticalPosition: 'top',
+              data: {
+                message: this.translateService.instant('VERSIONS.NOT_AUTHORIZED')
+              }
+            });
+          } else {
+            this.dialog.open(ErrorDialogComponent, {
+              data: {
+                main_message: this.translateService.instant('ERROR.UNEXPECTED_ERROR'),
+                error_message: error.message,
+              }
+            })
+          }
         }
       });
   }
@@ -233,7 +249,22 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
           }
         },
         error: (error) => {
-          console.error('Error deleting version:', error);
+          if (error.status === 403) {
+            this._snackBar.openFromComponent(SnackBarComponent, {
+              duration: 3000,
+              verticalPosition: 'top',
+              data: {
+                message: this.translateService.instant('VERSIONS.NOT_AUTHORIZED')
+              }
+            });
+          } else {
+            this.dialog.open(ErrorDialogComponent, {
+              data: {
+                main_message: this.translateService.instant('ERROR.UNEXPECTED_ERROR'),
+                error_message: error.message,
+              }
+            })
+          }
         }
       });
   }
