@@ -123,7 +123,6 @@ export class EditUserComponent {
       })
 
     } else {
-      console.log(this.form.errors)
       this.updateEmailErrorMessage()
       this.updatePasswordErrorMessage()
     }
