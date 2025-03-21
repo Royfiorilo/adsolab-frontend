@@ -201,5 +201,22 @@
     "NEXT_PAGE": "Siguiente",
     "PREVIOUS_PAGE": "Anterior",
     "RANGE": "Página {{ page }} de {{ amountPages }} - Total: {{ length }}"
-  }
+  },
+  "COMPARACION": {
+    "Heuristica": "Usamos esta heurística para evaluar modelos equilibrando precisión, simplicidad y cumplimiento de supuestos estadísticos.\nR² ajustado \u200B (30%): Mide que tan bien el modelo explica los datos, penalizando la complejidad.\nRMSE (30%): Evalúa el error en las predicciones (se usa su inverso para favorecer valores bajos).\nAIC (25%): Penaliza modelos complejos, favoreciendo los más simples y precisos.\nChi-cuadrado (10%): Indica qué tan bien el modelo se ajusta a los datos observados.\nSupuestos estadísticos (15%): Se suman 5% si cumple normalidad, homocedasticidad e independencia.",
+    "ML": "El criterio de evaluacion se basa en Ridge Regression, una regresion lineal regularizada que previene el sobreajuste. Se le proporciona una matriz con las predicciones de qe\u200B de los modelos que vamos a comparar y los valores reales de qe\u200B. Ridge ajusta los coeficientes para minimizar el error, determinando así la importancia de cada modelo y permitiendo identificar el más preciso."
+  },
+  "ESTADISTICOS": {
+    "R² ajustado": "Es una versión corregida de R² que penaliza el uso de variables innecesarias en el modelo. Mide que tan bien el modelo explica la variabilidad de los datos, pero corrigiendo por la cantidad de variables utilizadas. Un mayor R² ajustado indica un mejor modelo",
+    "RMSE (Root Mean Squared Error)": "Mide que tan lejos estan las predicciones de un modelo respecto a los valores reales. Un RMSE ",
+    "AIC(Akaike Information Criterion)":  "Penaliza modelos complejos con muchos parámetros, favoreciendo los modelos más simples que mejor se ajustan a los datos.Solo tiene sentido mirarlo con otro modelo, el que tenga el menor es mejor (puede ser negativo)",
+    "Chi-cuadrado": "Mide que tan bien el modelo se ajusta a los datos, donde evalua si las variables explicativas tienen un efecto significativo sobre la variable objeto. Se usa principalmente para evaluar la bondad de ajuste. Un valor alto indica que el modelo tiene un mejor ajuste o que ciertas variables son significativas.",
+    "Durbin-Watson": "Evalua la autocorrelacion en los residuos del modelo, es decir, si los errores estan correlacionados entre si en funcion del orden de las orservaciones. Cercano a 2 no hay autocorrelacion, valores alejados de 2 (por debajo de 1.5 o por encima de 2.5) indican problemas de autocorrelación." ,
+    "Homoscedasticidad": "Evalua si la varianza de los residuos es constante a lo largo de las observaciones. Si la prueba es exitosa (valor p alto), significa que no hay heterocedasticidad.",
+    "Normalidad de los residuos" : "La prueba de normalidad evalúa si los residuos siguen una distribución normal. Un valor p alto sugiere que los residuos son normales.",
+    "SSE":"Mide la cantidad total de error en un modelo de regresión, es decir, cuánto se desvían las predicciones de los valores reales. Un SSE bajo indica un buen ajuste del modelo, uno alto indica que el modelo no predice bin los datos",
+    "BIC": "Evalúa la calidad de un modelo penalizando la cantidad de parámetros, evitando el sobreajuste. Un BIC bajo indica el mejor modelo"
+  },
+
+
 }
