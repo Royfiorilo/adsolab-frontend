@@ -18,3 +18,48 @@
   display: inline-block;
   margin-top: 10px;
 }
+
+.stepper-container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.stepper-navigation-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.stepper-button-container {
+  margin: 12px 0;
+}
+
+@media (max-width: 767px) {
+  .stepper-button {
+    transform: scale(0.85);
+  }
+
+  :host ::ng-deep .mat-vertical-stepper-header-container {
+    margin-bottom: 12px;
+  }
+
+  :host ::ng-deep .mat-vertical-content-container {
+    margin-left: 12px;
+  }
+}
+
+:host ::ng-deep .mat-stepper-horizontal-line {
+  min-width: 10px;
+}
+
+:host ::ng-deep .mat-step-label {
+  white-space: normal;
+  text-align: center;
+}
+
+@media (max-width: 400px) {
+  :host ::ng-deep .mat-step-label {
+    font-size: 14px;
+  }
+}

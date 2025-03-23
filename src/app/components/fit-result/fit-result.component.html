@@ -3,15 +3,15 @@
     <div class="col">
       <div class="row">
         <div class="col">
-          <h5 class="text-muted">{{'MODEL_COMPARE.PARAMS' | translate}}</h5>
+          <h5 class="text-muted">{{ 'MODEL_COMPARE.PARAMS' | translate }}</h5>
         </div>
       </div>
-      <div class="row">
+      <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3">
         <div class="col" *ngFor="let param of parameters">
           <div>
-            <span class="fiuba-institutional-text">{{param.name}}</span>
+            <span class="fiuba-institutional-text">{{ param.name }}</span>
             <span class="text-muted text-body-emphasis">
-              <h5>{{param.value}} <small class="text-muted">± {{param.std_err}}</small></h5>
+              <h5>{{ param.value }} <small class="text-muted">± {{ param.std_err }}</small></h5>
             </span>
           </div>
         </div>
@@ -19,27 +19,20 @@
     </div>
   </div>
 
-  <mat-divider></mat-divider>
+  <mat-divider class="my-3"></mat-divider>
 
   <div class="row">
-    <div class="row">
-      <div class="col mt-2">
-        <h5 class="text-muted">{{'MODEL_COMPARE.STATISTICS' | translate}}</h5>
-      </div>
+    <div class="col-12 mb-2">
+      <h5 class="text-muted">{{ 'MODEL_COMPARE.STATISTICS' | translate }}</h5>
     </div>
-    <div class="col-3" *ngFor="let statistic of getStatisticsInOrder()">
-      <div class="row">
-        <div class="col mt-0">
-          <span class="card-title text-muted">{{ 'STATISTICS.' + statistic[0] | translate }}</span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col mt-0">
-          <h5>{{statistic[1]}}</h5>
-        </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+    <div class="col" *ngFor="let statistic of getStatisticsInOrder()">
+      <div>
+        <span class="card-title text-muted">{{ 'STATISTICS.' + statistic[0] | translate }}</span>
+        <h5 class="mt-1">{{ statistic[1] }}</h5>
       </div>
     </div>
   </div>
 </div>
-
-
