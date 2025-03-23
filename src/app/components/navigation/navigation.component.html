@@ -1,16 +1,23 @@
 <div class="navigation-container">
 
-  <div class="main-header d-flex align-items-center">
+  <div class="main-header">
     <div class="container-fluid">
-      <div class="row align-items-center">
-        <div class="col-md-6 col-sm-6 mb-2 mb-sm-0 text-center text-sm-start">
+      <div class="row">
+        <div class="col-md-6 col-sm-6 mb-2 mb-sm-0 ms-0 text-center text-sm-start d-flex align-items-center">
+
+          <button mat-icon-button (click)="snav.toggle()" class="text-white me-3" disableRipple [autofocus]="false">
+            <mat-icon>menu</mat-icon>
+          </button>
+
           <div class="text-white adsolab" style="cursor: pointer" routerLink="/">
             {{ 'ADSOLAB_TITLE' | translate }}
           </div>
         </div>
 
-        <div class="col-md-6 col-sm-6 text-center text-md-end">
-          <img class="image-adsolab" src="assets/logo_front.png" alt="Fiuba Logo">
+        <div class="col-md-6 col-sm-6 text-center text-md-end" *ngIf="!(isMobile$ | async)">
+          <a href="https://www.fi.uba.ar/" target="_blank">
+            <img class="image-adsolab" src="assets/logo_front.png" alt="Fiuba Logo">
+          </a>
         </div>
       </div>
     </div>

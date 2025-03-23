@@ -4,6 +4,9 @@ import {EditUserComponent} from "../edit-user/edit-user.component";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {map} from "rxjs/operators";
+import {Observable, shareReplay} from "rxjs";
 
 @Component({
   selector: 'app-navigation',
@@ -12,7 +15,14 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 })
 export class NavigationComponent {
 
-  constructor(protected authService: AuthService, private dialog: MatDialog, private _snackBar: MatSnackBar) {
+  isMobile$: Observable<boolean>;
+
+  constructor(protected authService: AuthService, private dialog: MatDialog, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver) {
+    this.isMobile$ = breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small])
+      .pipe(
+        map(result => result.matches),
+        shareReplay()
+      );
   }
 
   logout() {
