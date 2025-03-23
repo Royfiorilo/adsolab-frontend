@@ -66,33 +66,36 @@
 
             <ng-container
               *ngIf="!modelConfiguration[modelId].automatedParams ||   (modelConfiguration[modelId] && modelConfiguration[modelId].selectedLinearizations && modelConfiguration[modelId].selectedLinearizations.length === 0);else automatedParams">
-              <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="text-center">
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="col">
+                  <div class="text-center">
+                    <mat-form-field class="w-100">
+                      <mat-label> {{ param.key }}</mat-label>
+                      <input matInput
+                             [(ngModel)]="param.value.value"
+                             (change)="onChange($event,modelId, param.key)"
+                             id="{{param.key}}"
+                             type="number"/>
+                      <mat-icon matSuffix (click)="open(content); $event.stopPropagation()">info</mat-icon>
+                    </mat-form-field>
 
-                <mat-form-field class="w-50">
-                  <mat-label> {{ param.key }}</mat-label>
-                  <input matInput
-                         [(ngModel)]="param.value.value"
-                         (change)="onChange($event,modelId, param.key)"
-                         id="{{param.key}}"
-                         type="number"/>
-                  <mat-icon matSuffix (click)="open(content); $event.stopPropagation()">info</mat-icon>
-                </mat-form-field>
-
-                <ng-template #content let-modal>
-                  <div class="modal-header">
-                    <h4 class="modal-title"
-                        id="modal-basic-title">{{ 'MODEL_CONFIGURATION.PARAM' | translate:param }}</h4>
-                    <button (click)="modal.dismiss('Cross click')" class="btn-close"
-                            type="button"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <div class="input-group">
-                        {{ modelConfiguration[modelId].paramInfo[param.key] }}
+                    <ng-template #content let-modal>
+                      <div class="modal-header">
+                        <h4 class="modal-title"
+                            id="modal-basic-title">{{ 'MODEL_CONFIGURATION.PARAM' | translate:param }}</h4>
+                        <button (click)="modal.dismiss('Cross click')" class="btn-close"
+                                type="button"></button>
                       </div>
-                    </div>
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <div class="input-group">
+                            {{ modelConfiguration[modelId].paramInfo[param.key] }}
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
                   </div>
-                </ng-template>
+                </div>
               </div>
             </ng-container>
             <div class="row"

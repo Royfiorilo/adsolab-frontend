@@ -1,27 +1,7 @@
-.container {
-  max-width: 600px;
-}
-
-.nav-pills .nav-link.active {
-  background-color: #007bff;
-}
-
-.card {
-  border: 1px solid #007bff;
-}
-
-.card-body {
-  text-align: center;
-}
-
-.form-control-file {
-  display: inline-block;
-  margin-top: 10px;
-}
-
 .stepper-container {
   width: 100%;
   overflow-x: hidden;
+  position: relative;
 }
 
 .stepper-navigation-container {
@@ -34,6 +14,31 @@
 .stepper-button-container {
   margin: 12px 0;
 }
+
+
+@media (min-width: 768px) {
+  .stepper-navigation-container {
+
+    justify-content: center;
+  }
+
+  .stepper-button-container {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+  }
+
+
+  .stepper-button-container:first-child {
+    left: 40px;
+  }
+
+  .stepper-button-container:last-child {
+    right: 40px;
+  }
+}
+
 
 @media (max-width: 767px) {
   .stepper-button {
@@ -62,4 +67,25 @@
   :host ::ng-deep .mat-step-label {
     font-size: 14px;
   }
+}
+
+.container {
+  max-width: 600px;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #007bff;
+}
+
+.card {
+  border: 1px solid #007bff;
+}
+
+.card-body {
+  text-align: center;
+}
+
+.form-control-file {
+  display: inline-block;
+  margin-top: 10px;
 }
