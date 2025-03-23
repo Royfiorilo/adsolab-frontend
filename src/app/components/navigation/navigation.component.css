@@ -1,5 +1,5 @@
 .adsolab {
-  font-size: 1.75rem;
+  font-size: 40px;
   font-weight: bold;
 }
 
@@ -13,16 +13,4 @@
   max-height: 10vh;
   width: auto;
   max-width: 100%;
-}
-
-@media (max-width: 767.98px) {
-  .adsolab {
-    font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 575.98px) {
-  .adsolab {
-    font-size: 1.25rem;
-  }
 }
