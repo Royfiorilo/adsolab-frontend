@@ -34,7 +34,7 @@
   </ng-container>
   <mat-tab-group (selectedTabChange)="onTabChange($event)" mat-stretch-tabs="false" mat-align-tabs="center">
     <mat-tab selected label="{{'VERSIONS.ALL_INVESTIGATIONS' | translate}}">
-      <div class="mat-elevation-z8">
+      <div class="mat-elevation-z8 table-responsive">
         <table mat-table *ngIf="dataSource.data.length > 0 && !loadingHistoric" [dataSource]="dataSource"
                multiTemplateDataRows>
 
