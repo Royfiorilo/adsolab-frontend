@@ -1,22 +1,22 @@
-<div class="container-fluid">
-
-  <div class="row w-75 mx-auto m-2">
-    <h3 class="mt-3">
-      {{ 'USERS.TITLE' | translate }}
-    </h3>
-    <div class="col">
-      <div class="text-end">
-        <button mat-button color="primary" (click)="openCreateUserDialog()">
-          <mat-icon matPrefix>add</mat-icon>
-          {{ 'USERS.CREATE_NEW' | translate }}
-        </button>
-      </div>
+<div class="container-fluid p-5 overflow-hidden">
+  <div class="row justify-content-between align-items-center mx-auto px-3 mb-4">
+    <div class="col-md-6">
+      <h3 class="my-3">
+        {{ 'USERS.TITLE' | translate }}
+      </h3>
+    </div>
+    <div class="col-md-6 text-md-end text-center mb-3 mb-md-0">
+      <button mat-button color="primary" (click)="openCreateUserDialog()">
+        <mat-icon matPrefix>add</mat-icon>
+        {{ 'USERS.CREATE_NEW' | translate }}
+      </button>
     </div>
   </div>
-  <div class="row w-75 mx-auto">
-    <div class="col">
-      <div class="text-center">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <div class="row mx-auto px-3">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef class="table-header">{{ 'USERS.ID' | translate }}</th>
             <td mat-cell *matCellDef="let user"> {{ user.id }}</td>
@@ -56,7 +56,8 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
       </div>
-      <mat-paginator [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      <mat-paginator class="mt-2" [length]="resultsLength" [pageSize]="10"
+                     [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
   </div>
 </div>
@@ -82,4 +83,3 @@
 </ng-template>
 
 <app-loading *ngIf="loadingUsers"></app-loading>
-
