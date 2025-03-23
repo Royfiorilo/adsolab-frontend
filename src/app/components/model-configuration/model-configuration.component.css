@@ -2,3 +2,13 @@
   color: white !important;
   fill: white !important;
 }
+
+@media (min-width: 768px) {
+  .flex-basis-60-md {
+    flex: 0 0 60% !important;
+  }
+
+  .flex-basis-20-md {
+    flex: 0 0 20% !important;
+  }
+}

@@ -55,8 +55,7 @@
       <textarea id="description" matInput [value]=[dataSample.description] (change)="onChange($event)"></textarea>
     </mat-form-field>
 
-
-    <div class="d-flex gap-3">
+    <div class="d-flex gap-3 flex-md-row flex-column">
       <mat-form-field class="flex-grow-1">
         <mat-label>{{ 'FILE_UPLOAD.ADSORBATE' | translate }}</mat-label>
         <mat-select
@@ -94,6 +93,5 @@
         >
       </mat-form-field>
     </div>
-
   </form>
 </div>

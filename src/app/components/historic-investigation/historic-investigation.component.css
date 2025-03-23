@@ -66,7 +66,6 @@
   color: white;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .container-fluid {
     padding: 10px !important;

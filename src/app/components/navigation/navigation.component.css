@@ -1,11 +1,12 @@
 .adsolab {
-  font-size: 2.5vw;
+  font-size: 40px;
   font-weight: bold;
 }
 
 .main-header {
   background-color: #008bce;
-  height: 15%;
+  min-height: 15%;
+  padding: 1rem 3rem;
 }
 
 .image-adsolab {

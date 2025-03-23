@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
+import {Component, inject, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {IModelsConfigurations} from "../../common/common.interface";
@@ -9,6 +9,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {InvestigationModalComponent} from "./investigation-modal.component";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {Investigation} from "../data-selector/data-sample";
+import {Observable, shareReplay} from "rxjs";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-investigation',
@@ -16,11 +19,18 @@ import {Investigation} from "../data-selector/data-sample";
   styleUrl: './investigation.component.css',
 })
 export class InvestigationComponent implements OnInit {
+  private breakpointObserver = inject(BreakpointObserver);
+  isMobile$: Observable<boolean>;
   state = this.stateService.state;
   @ViewChildren(MatStep) steps!: QueryList<MatStep>;
   @ViewChild("loadOnGoingInvestigationModal") loadOnGoingInvestigationModal!: TemplateRef<any>;
 
   constructor(private _snackBar: MatSnackBar, protected stateService: StateService, private dialog: MatDialog) {
+    this.isMobile$ = this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small])
+      .pipe(
+        map(result => result.matches),
+        shareReplay()
+      );
   }
 
   ngOnInit() {
@@ -36,6 +46,7 @@ export class InvestigationComponent implements OnInit {
         }
       });
     }
+
   }
 
   investigationStarted(inboundInvestigation: Investigation) {
