@@ -65,7 +65,7 @@ import {ErrorDialogComponent} from './components/error-dialog/error-dialog.compo
 import {InvestigationModalComponent} from "./components/investigation/investigation-modal.component";
 import {DownloaderComponent} from "./components/downloader/downloader.component";
 import {HistoricInvestigationComponent} from './components/historic-investigation/historic-investigation.component';
-import {MatList, MatListItem} from "@angular/material/list";
+import {MatList, MatListItem, MatNavList} from "@angular/material/list";
 import {SnackBarComponent} from "./components/snack-bar/snack-bar.component";
 import {HistoricVersionComponent} from './components/historic-version/historic-version.component';
 import {LoginComponent} from './components/login/login.component';
@@ -78,6 +78,8 @@ import {EditUserComponent} from './components/edit-user/edit-user.component';
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {MatPaginator} from "@angular/material/paginator";
 import {LatexParagraphComponent} from './components/latex-paragraph/latex-paragraph.component';
+import {MatSidenavContainer, MatSidenavModule} from "@angular/material/sidenav";
+import {MatToolbar} from "@angular/material/toolbar";
 
 //Plotly.register(locale)
 
@@ -165,7 +167,11 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MatRadioGroup,
     MatRadioButton,
     MatSlideToggle,
-    MatPaginator
+    MatPaginator,
+    MatSidenavContainer,
+    MatNavList,
+    MatToolbar,
+    MatSidenavModule
   ],
   providers: [
     provideAnimationsAsync(),

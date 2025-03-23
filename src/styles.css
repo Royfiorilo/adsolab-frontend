@@ -109,3 +109,8 @@ html, body {
 .full-width {
   width: 100%;
 }
+
+.user-content {
+  width: 400px;
+}
+

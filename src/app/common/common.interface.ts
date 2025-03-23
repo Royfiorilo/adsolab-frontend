@@ -91,8 +91,8 @@ export interface IUserCreationRequest {
 export interface IUserEditRequest {
   email: string;
   password: string;
-  role: string;
-  active: boolean;
+  role?: string;
+  active?: boolean;
 }
 
 export interface IUserPageResponse {
