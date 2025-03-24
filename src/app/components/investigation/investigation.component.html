@@ -1,6 +1,6 @@
 <div class="stepper-container">
   <mat-stepper [orientation]="(isMobile$ | async) ? 'vertical' : 'horizontal'" [linear]="true" [animationDuration]="'0'"
-               (selectedIndexChange)="onStepChange($event)">
+               (selectedIndexChange)="onStepChange($event)" >
     <mat-step label="Datos" [completed]="state().investigation" class="d-flex">
       <div class="stepper-navigation-container">
         <div class="stepper-button-container">

@@ -1,17 +1,60 @@
-<ng-container>
-  <div class="main-header d-flex align-items-center">
+<div class="navigation-container">
+
+  <div class="main-header">
     <div class="container-fluid">
-      <div class="row align-items-center">
-        <div class="col-md-6 col-sm-6 mb-2 mb-sm-0 text-center text-sm-start">
+      <div class="row">
+        <div class="col-md-6 col-sm-6 mb-2 mb-sm-0 ms-0 text-center text-sm-start d-flex align-items-center">
+
+          <button mat-icon-button (click)="snav.toggle()" class="text-white me-3" disableRipple [autofocus]="false">
+            <mat-icon>menu</mat-icon>
+          </button>
+
           <div class="text-white adsolab" style="cursor: pointer" routerLink="/">
             {{ 'ADSOLAB_TITLE' | translate }}
           </div>
         </div>
 
-        <div class="col-md-6 col-sm-6 text-center text-md-end">
-          <img class="image-adsolab" src="assets/logo_front.png" alt="Fiuba Logo">
+        <div class="col-md-6 col-sm-6 text-center text-md-end" *ngIf="!(isMobile$ | async)">
+          <a href="https://www.fi.uba.ar/" target="_blank">
+            <img class="image-adsolab" src="assets/logo_front.png" alt="Fiuba Logo">
+          </a>
         </div>
       </div>
     </div>
   </div>
-</ng-container>
+
+  <mat-sidenav-container class="sidenav-container">
+
+    <mat-sidenav #snav [mode]="'over'" [autoFocus]="false">
+      <div class="sidenav-content">
+        <mat-nav-list>
+          <a mat-list-item routerLink="/investigation"
+             (click)="snav.toggle()">{{ 'MAIN_PAGE.NEW_INVESTIGATION' | translate }}</a>
+          <a mat-list-item routerLink="/historic" (click)="snav.toggle()">{{ 'MAIN_PAGE.HIST' | translate }}</a>
+          <a *ngIf="isAdmin()" mat-list-item routerLink="/users"
+             (click)="snav.toggle()">{{ 'MAIN_PAGE.USERS' | translate }}</a>
+        </mat-nav-list>
+        <div class="sidenav-footer" *ngIf="authService.isAuth()">
+          <div>
+            <mat-icon>person</mat-icon>
+            {{ authService.getAuthUserInfo()?.email }}
+          </div>
+          <button mat-button (click)="openEditUserDialog()">
+            <mat-icon>edit</mat-icon>
+            {{ 'EDIT' | translate }}
+          </button>
+          <button mat-button color="accent" (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            {{ 'LOGIN.LOGOUT' | translate }}
+          </button>
+        </div>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+
+</div>

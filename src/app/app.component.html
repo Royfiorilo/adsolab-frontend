@@ -1,7 +1,5 @@
 <ng-container class="min-vh-100">
   <app-navigation *ngIf="!router.url.includes('login')"></app-navigation>
-  <ng-container>
-    <router-outlet></router-outlet>
-  </ng-container>
+  <app-login *ngIf="router.url.includes('login')"></app-login>
 </ng-container>
 

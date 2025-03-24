@@ -149,7 +149,7 @@ export class UsersComponent implements AfterViewInit {
   openEditUserDialog(user: IUser) {
 
     const editUserDialogRef = this.dialog.open(EditUserComponent, {
-      data: user
+      data: {user: user, ownUserEditing: false}
     });
 
     editUserDialogRef.afterClosed().subscribe(result => {

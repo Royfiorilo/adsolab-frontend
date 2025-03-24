@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>
   {{ 'USERS.CREATE_USER' | translate }}
 </h2>
-<mat-dialog-content>
+<mat-dialog-content class="user-content">
   <form [formGroup]="form" (ngSubmit)="createUser()">
     <mat-form-field appearance="outline" class="full-width mt-2 mb-2">
       <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
@@ -24,7 +24,9 @@
       }
     </mat-form-field>
 
-    <mat-label>{{ 'USERS.ROLE' | translate }}</mat-label>
+    <div>
+      <mat-label>{{ 'USERS.ROLE' | translate }}</mat-label>
+    </div>
     <mat-radio-group formControlName="userRole">
       <mat-radio-button color="primary" value="RESEARCHER">{{ 'USERS.RESEARCHER' | translate }}</mat-radio-button>
       <mat-radio-button color="primary" value="ADMIN">{{ 'USERS.ADMIN' | translate }}</mat-radio-button>
