@@ -73,7 +73,7 @@ export class HistoricVersionComponent {
         this.route.paramMap.subscribe((params) => {
           this.versionId = params.get('verId') || '0';
           this.investigationId = params.get('invId') || '0';
-          
+
           this.fetchData();
         });
       });
@@ -207,10 +207,10 @@ export class HistoricVersionComponent {
     return model?.seeds || [];
   }
 
-  bestStatisticValue(modelId: number, statName: string): number {
+  bestStatisticValue(modelId: number, statName: string): number | undefined {
 
     const bestFit = this.findBestAdjustMethod(modelId)
-    return bestFit ? (bestFit.statistics as any)[statName] : 0
+    return bestFit ? (bestFit.statistics as any)[statName] : undefined
   }
 
   getRidgeStatistic(statName: string) {

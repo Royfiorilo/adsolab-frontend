@@ -106,7 +106,7 @@
                   <th scope="row">{{ i + 1 }}</th>
                   <td>{{ ceValue }}</td>
                   <td *ngFor="let model of versionData?.fitted_models">
-                    {{ findMatchedTransformedValues(model.model_id, ceValue) || 'N/A' }}
+                    {{ findMatchedTransformedValues(model.model_id, ceValue) ?? 'N/A' }}
                   </td>
                 </tr>
                 </tbody>
@@ -138,7 +138,7 @@
                   <tr *ngFor="let statName of Object.keys(data.comparison.ml.statistics)">
                     <td>{{ 'STATISTICS.' + statName | translate }}</td>
                     <td *ngFor="let model of versionData?.fitted_models">
-                      {{ bestStatisticValue(+model.model_id, statName) || 'N/A' }}
+                      {{ bestStatisticValue(+model.model_id, statName) ?? 'N/A' }}
                     </td>
                     <td>{{ getRidgeStatistic(statName) }}</td>
                   </tr>
