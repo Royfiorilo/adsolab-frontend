@@ -15,6 +15,7 @@ import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {StateService} from "../investigation/state.service";
 import {DataSample} from "../data-selector/data-sample";
+import {AuthService} from "../../common/auth.service";
 
 
 @Component({
@@ -50,7 +51,10 @@ export class HistoricVersionComponent {
     private investigationService: InvestigationService,
     private modelService: ModelSelectorServiceService,
     protected commonUtilsService: CommonUtilsService,
-    private translateService: TranslateService, private versionDataService: VersionDataService, protected stateService: StateService
+    private translateService: TranslateService,
+    private versionDataService: VersionDataService,
+    protected stateService: StateService,
+    private authService: AuthService,
   ) {
   }
 
@@ -73,7 +77,7 @@ export class HistoricVersionComponent {
         this.route.paramMap.subscribe((params) => {
           this.versionId = params.get('verId') || '0';
           this.investigationId = params.get('invId') || '0';
-          
+
           this.fetchData();
         });
       });
@@ -296,4 +300,16 @@ export class HistoricVersionComponent {
 
   protected readonly Object = Object;
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
+
+  isLoggedUserInvestigation() {
+
+    const userInfo = this.authService.getAuthUserInfo();
+
+    if (userInfo && this.data) {
+      return this.data.user.id === userInfo.id
+    } else {
+      return false
+    }
+
+  }
 }

@@ -1,4 +1,4 @@
-import {IGraph, IStatistics} from "../../common/common.interface";
+import {IGraph, IStatistics, IUser} from "../../common/common.interface";
 import {IResiduals} from "../model-compare/interface";
 
 export interface FittedModels {
@@ -52,4 +52,5 @@ export interface InvestigationData {
   iterations: number | null;
   steps: number | null;
   version_id: number;
+  user: IUser;
 }

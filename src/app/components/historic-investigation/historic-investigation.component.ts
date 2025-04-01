@@ -283,4 +283,13 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly faTrash = faTrash;
 
+  isLoggedUserInvestigation(user_id: number) {
+
+    if (this.authService.user()) {
+      return user_id === this.authService.user()?.id
+    } else {
+      return false
+    }
+
+  }
 }
