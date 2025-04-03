@@ -2,7 +2,7 @@
   <app-loading></app-loading>
 </ng-container>
 
-<div class="d-flex justify-content-center">
+<div *ngIf="isLoggedUserInvestigation()" class="d-flex justify-content-center">
   <button mat-button color="primary" class="m-2"
           (click)="navigateToInvestigation()">
     <fa-icon [icon]=" faArrowUpRightFromSquare

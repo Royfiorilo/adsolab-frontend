@@ -132,7 +132,7 @@
                                 <fa-icon [icon]="faArrowUpRightFromSquare" class="me-2"></fa-icon>
                                 {{ 'VERSIONS.RESTORE' | translate }}
                               </button>
-                              <button mat-button color="warn"
+                              <button *ngIf="isLoggedUserInvestigation(element.user_id)" mat-button color="warn"
                                       (click)="openDeleteVersionDialog(element.investigation_id, version.version_id, $event)">
                                 <fa-icon [icon]="faTrash" class="me-2"></fa-icon>
                                 {{ 'VERSIONS.DELETE_VER' | translate }}
