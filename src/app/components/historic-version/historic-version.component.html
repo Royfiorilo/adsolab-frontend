@@ -1,7 +1,8 @@
 <ng-container *ngIf="loadingHistoric">
   <app-loading></app-loading>
 </ng-container>
-
+<app-data-visualizer *ngIf="sample"
+                     [data]="sample"></app-data-visualizer>
 <div *ngIf="isLoggedUserInvestigation()" class="d-flex justify-content-center">
   <button mat-button color="primary" class="m-2"
           (click)="navigateToInvestigation()">
