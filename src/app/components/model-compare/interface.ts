@@ -107,7 +107,7 @@ export interface Heuristic {
 
 export interface Ridge {
   best_model: number;
-  y_pred: number[];
+  transformed: ITransformedData;
   statistics: IStatistics;
   residuals: IResiduals;
   results: ModelRidgeResult[];

@@ -1,70 +1,73 @@
-<div class="container-fluid">
-  <div class="d-flex justify-content-center">
-    <div class="col-10">
-      <ng-container *ngIf="state().shouldRender">
-        <mat-stepper [orientation]="'horizontal'" [linear]="true" [animationDuration]="'0'"
-                     (selectedIndexChange)="onStepChange($event)">
-          <mat-step label="Datos" [completed]="state().investigation" class="d-flex">
-            <div *ngIf="state().investigation" class="stepper-button-right">
-              <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
-            </div>
-            <app-data-selector [investigation]="state().investigation"
-                               (onInvestigationStarted)="investigationStarted($event)"></app-data-selector>
-          </mat-step>
+<div class="stepper-container">
+  <mat-stepper [orientation]="(isMobile$ | async) ? 'vertical' : 'horizontal'" [linear]="true" [animationDuration]="'0'"
+               (selectedIndexChange)="onStepChange($event)" >
+    <mat-step label="Datos" [completed]="state().investigation" class="d-flex">
+      <div class="stepper-navigation-container">
+        <div class="stepper-button-container">
 
-          <mat-step label="Selección de Modelos" [completed]="state().selectedModels.length !== 0">
-            <ng-template matStepContent>
-              <div class="stepper-button-left" *ngIf="state().models.length !== 0">
-                <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
-                  <mat-icon>arrow_back</mat-icon>
-                </button>
-              </div>
-              <div class="stepper-button-right" *ngIf="state().selectedModels.length !== 0">
-                <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
-                  <mat-icon>arrow_forward</mat-icon>
-                </button>
-              </div>
-              <app-model-selector (onLoadedModels)="onLoadedModels($event)"
-                                  (onSelectedModels)="onModelSelected($event)">
-              </app-model-selector>
-            </ng-template>
-          </mat-step>
+        </div>
 
-          <mat-step label="Configuración de Modelos" [completed]="state().modelConfigurationDone">
-            <ng-template matStepContent>
-              <div class="stepper-button-left">
-                <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
-                  <mat-icon>arrow_back</mat-icon>
-                </button>
-              </div>
-              <div class="stepper-button-right" *ngIf="state().modelConfigurationDone">
-                <button mat-fab matStepperNext class="fiuba-institutional-bg text-white">
-                  <mat-icon>arrow_forward</mat-icon>
-                </button>
-              </div>
-              <app-model-configuration [modelConfiguration]="state().modelConfiguration"
-                                       (onSelectedParams)="onSelectedParams($event)">
-              </app-model-configuration>
-            </ng-template>
-          </mat-step>
+        <div *ngIf="state().investigation" class="stepper-button-container">
+          <button mat-fab matStepperNext class="fiuba-institutional-bg text-white stepper-button">
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
+      <app-data-selector [investigation]="state().investigation"
+                         (onInvestigationStarted)="investigationStarted($event)"></app-data-selector>
+    </mat-step>
 
-          <mat-step label="Resultados">
-            <ng-template matStepContent>
-              <div class="stepper-button-left">
-                <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white">
-                  <mat-icon>arrow_back</mat-icon>
-                </button>
-              </div>
-              <app-model-compare
-                [modelConfiguration]="state().modelConfiguration">
-              </app-model-compare>
-            </ng-template>
-          </mat-step>
-        </mat-stepper>
-      </ng-container>
+    <mat-step label="Selección de Modelos" [completed]="state().selectedModels.length !== 0">
+      <ng-template matStepContent>
+        <div class="stepper-navigation-container">
+          <div class="stepper-button-container" *ngIf="state().models.length !== 0">
+            <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white stepper-button">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+          </div>
+          <div class="stepper-button-container" *ngIf="state().selectedModels.length !== 0">
+            <button mat-fab matStepperNext class="fiuba-institutional-bg text-white stepper-button">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+        <app-model-selector (onLoadedModels)="onLoadedModels($event)"
+                            (onSelectedModels)="onModelSelected($event)">
+        </app-model-selector>
+      </ng-template>
+    </mat-step>
 
-    </div>
-  </div>
+    <mat-step label="Configuración de Modelos" [completed]="state().modelConfigurationDone">
+      <ng-template matStepContent>
+        <div class="stepper-navigation-container">
+          <div class="stepper-button-container">
+            <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white stepper-button">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+          </div>
+          <div class="stepper-button-container" *ngIf="state().modelConfigurationDone">
+            <button mat-fab matStepperNext class="fiuba-institutional-bg text-white stepper-button">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+        <app-model-configuration [modelConfiguration]="state().modelConfiguration"
+                                 (onSelectedParams)="onSelectedParams($event)">
+        </app-model-configuration>
+      </ng-template>
+    </mat-step>
+
+    <mat-step label="Resultados">
+      <ng-template matStepContent>
+        <div class="stepper-button-container">
+          <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white stepper-button">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+        </div>
+        <app-model-compare
+          [modelConfiguration]="state().modelConfiguration">
+        </app-model-compare>
+      </ng-template>
+    </mat-step>
+  </mat-stepper>
 </div>

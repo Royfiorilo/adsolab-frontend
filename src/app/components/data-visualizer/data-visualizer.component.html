@@ -8,13 +8,34 @@
   <div *ngIf="this.isTableVisible && data">
     <div class="card">
       <div class="card-body">
-        <h6 class="card-title text-center">{{ data.title }}</h6>
+        <p class="text-center">{{ data.title }}</p>
+        <p class="text-muted">{{ data.description }}</p>
+        <div class="row">
+          <div class="col">
+            <span class="fiuba-institutional-text">Adsorbato:</span>
+            <span class="text-muted text-body-emphasis">
+              <h5>{{ data.adsorbate }}</h5>
+            </span>
+          </div>
+          <div class="col">
+            <span class="fiuba-institutional-text">Adsorbente:</span>
+            <span class="text-muted text-body-emphasis">
+              <h5>{{ data.adsorbent }}</h5>
+            </span>
+          </div>
+          <div class="col">
+            <span class="fiuba-institutional-text">Temperatura:</span>
+            <span class="text-muted text-body-emphasis">
+              <h5>{{ data.temperature }}K</h5>
+            </span>
+          </div>
+        </div>
         <table class="table table-striped">
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Ce</th>
-            <th scope="col">Qe</th>
+            <th scope="col">{{ 'CE' | translate }}</th>
+            <th scope="col">{{ 'QE' | translate }}</th>
           </tr>
           </thead>
           <tbody>

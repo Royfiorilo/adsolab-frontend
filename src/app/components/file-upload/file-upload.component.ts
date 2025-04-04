@@ -24,7 +24,7 @@ export class FileUploadComponent {
   protected dataSample: DataSample = {
     adsorbate_id: undefined, adsorbent_id: undefined,
     temperature: undefined, measure_unit: undefined,
-    description: undefined, sample_id: undefined, title: undefined,
+    description: undefined, sample_id: undefined,
     ce: [],
     qe: []
   }
@@ -173,8 +173,11 @@ export class FileUploadComponent {
     const selectedValue = event.value;
     if (type === 'adsorbate') {
       this.dataSample.adsorbate_id = selectedValue;
+      this.dataSample.adsorbate = this.adsorbates.find(adsorbate => adsorbate.id === selectedValue)?.iupac_name;
     } else if (type === 'adsorbent') {
       this.dataSample.adsorbent_id = selectedValue;
+      this.dataSample.adsorbent = this.adsorbents.find(adsorbent => adsorbent.id === selectedValue)?.name;
+
     }
     this.onDataSampleUploaded.emit(this.dataSample);
 

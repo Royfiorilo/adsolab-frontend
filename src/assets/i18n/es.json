@@ -4,8 +4,8 @@
   "OR": "o",
   "NAME": "Nombre",
   "CLOSE": "Cerrar",
-  "CE": "Ce",
-  "QE": "Qe",
+  "CE": "Ce (mmol/L)",
+  "QE": "Qe (mmol/g)",
   "QE_PRED": "Qe pred",
   "SAMPLE": "Muestra",
   "UNDEFINED": "Indefinido",
@@ -51,7 +51,7 @@
     },
     "DOWNLOAD_EXAMPLE_FILE": "Descargar archivo de ejemplo",
     "ERROR_LOADING_MATERIALS": "Error al cargar materiales: {{ message }}",
-    "INFO": "(*) Las unidades de la muestra deben estar expresadas en milimoles por litro (CE) y milimoles por gramos (QE)"
+    "INFO": "(*) Las unidades de la muestra deben estar expresadas en milimol por litro (Ce) y milimol por gramo (Qe)"
   },
   "DATA_SELECTOR": {
     "START_INVESTIGATION": "Comenzar investigación",
@@ -61,7 +61,9 @@
     "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación.",
     "SAMPLE_ERROR": "Error al inicializar las muestras.",
     "DELETE": "Borrar sample",
-    "DELETE_CONFIRMATION": "¿Seguro que desea eliminar la muestra {{ optionValue }}?"
+    "DELETE_CONFIRMATION": "¿Seguro que desea eliminar la muestra {{ optionValue }}?",
+    "DELETED": "Muestra eliminada con éxito",
+    "NOT_AUTHORIZED": "No esta autorizado a eliminar la muestra de otro usuario."
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo",
@@ -89,6 +91,7 @@
     "BEST_MODEL": "Mejor modelo",
     "HEURISTIC": "Heurística",
     "RIDGE": "Ridge",
+    "NOT_AUTHORIZED": "No puede crear una nueva version de una investigacion que no es suya.",
     "SCORE": "Puntaje",
     "COEFFICIENT": "Coeficiente",
     "RERUN_COMPARISON": "Volver a ejecutar comparación",
@@ -162,7 +165,8 @@
     "VERSION_DELETE_MSG": "¿Está seguro que desea borrar la versión {{versionId}} de la investigación {{ investigationId }}?",
     "FILTER_PLACEHOLDER": "Ingrese el codigo de investigación",
     "MY_INVESTIGATIONS": "Mis investigaciones",
-    "ALL_INVESTIGATIONS": "Todas las investigaciones"
+    "ALL_INVESTIGATIONS": "Todas las investigaciones",
+    "NOT_AUTHORIZED": "No esta autorizado a eliminar la investigación de otro usuario."
   },
   "LOGIN": {
     "EMAIL": "E-mail",

@@ -6,6 +6,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {firstValueFrom, merge} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {IUser, IUserEditRequest} from "../../common/common.interface";
+import {AuthService} from "../../common/auth.service";
 
 function validatePassword(form: FormGroup): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -38,16 +39,17 @@ export class EditUserComponent {
   protected showPassword: boolean = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) protected user: IUser,
+    @Inject(MAT_DIALOG_DATA) protected data: { user: IUser, ownUserEditing: boolean },
     private fb: FormBuilder,
     private userService: UserService,
     private translateService: TranslateService,
-    private dialogRef: MatDialogRef<EditUserComponent>
+    private dialogRef: MatDialogRef<EditUserComponent>,
+    private authService: AuthService
   ) {
     this.form = this.fb.group({
-      email: [user.email, [Validators.required, Validators.email]],
-      userRole: [user.roles[0]],
-      active: [user.active],
+      email: [data.user.email, [Validators.required, Validators.email]],
+      userRole: [data.user.roles[0]],
+      active: [data.user.active],
       changePassword: [false],
       password: [''],
     });
@@ -111,10 +113,18 @@ export class EditUserComponent {
         active: this.form.controls['active'].value
       }
 
-      this.userService.editUser(this.user.id, userEditRequest).subscribe({
+      if (this.data.ownUserEditing) {
+        delete userEditRequest.active;
+        delete userEditRequest.role;
+      }
+
+      this.userService.editUser(this.data.user.id, userEditRequest).subscribe({
         next: () => {
           this.dialogRef.close(true);
           this.editingUser = false;
+          if (this.data.ownUserEditing) {
+            this.authService.logout();
+          }
         },
         error: error => {
           this.userEditErrorMessage = error.message;
@@ -123,7 +133,6 @@ export class EditUserComponent {
       })
 
     } else {
-      console.log(this.form.errors)
       this.updateEmailErrorMessage()
       this.updatePasswordErrorMessage()
     }
