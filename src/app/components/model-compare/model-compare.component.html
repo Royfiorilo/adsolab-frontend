@@ -325,7 +325,7 @@
                       </td>
 
                       <td *ngFor="let modelId of getNoLinearResultsModelIds()">
-                        {{ parseResiduals(bestResidualValue(+modelId, residualName)) || 'N/A' }}
+                        {{ parseResiduals(bestResidualValue(+modelId, residualName)) ?? 'N/A' }}
                       </td>
                     </tr>
                     </tbody>

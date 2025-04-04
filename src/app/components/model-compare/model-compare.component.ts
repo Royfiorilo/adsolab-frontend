@@ -131,14 +131,8 @@ export class ModelCompareComponent {
     return bestFit && index ? bestFit?.graph.data[0]?.y[index] : 0;
   }
 
-  parseResiduals(residualValue: number): string | number {
-    if (residualValue === 0) {
-      return "False"
-    } else if (residualValue === 1) {
-      return "True"
-    } else {
+  parseResiduals(residualValue: number| string): string | number {
       return residualValue
-    }
   }
 
   openResidualModal(name: string) {
