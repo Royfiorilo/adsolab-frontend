@@ -275,22 +275,31 @@
               </ng-template>
               <ng-template #statModal let-modal>
                 <div class="modal-header">
-                  <h4 class="modal-title">{{ 'STATISTICS.' + selectedStatName | translate }}</h4>
-                  <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
+                  <h4 class="modal-title" id="modal-basic-title2">
+                    {{ 'STATISTICS.' + selectedStatName | translate }}
+                  </h4>
+                  <button type="button" class="btn-close" aria-label="Close"
+                          (click)="modal.dismiss('Close click')"></button>
                 </div>
-                <div class="modal-body">
-                  <p [innerHTML]="'ESTADISTICOS.' + selectedStatName | translate"></p>
 
-                  <div class="row mt-2" *ngIf="'LATEX.' + selectedStatName | translate as formula">
-                    <div class="col text-center" *ngIf="!formula.includes('Sin fórmula')">
-                      <app-latex-paragraph
-                        [size]="'md'"
-                        [inputString]="'LATEX.' + selectedStatName | translate">
-                      </app-latex-paragraph>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <div class="input-group">
+                      <p [innerHTML]="'ESTADISTICOS.' + selectedStatName | translate"></p>
+                    </div>
+
+                    <div class="row mt-2" *ngIf="'LATEX.' + selectedStatName | translate as formula">
+                      <div class="col text-center" *ngIf="!formula.includes('Sin fórmula')">
+                        <app-latex-paragraph
+                          [size]="'md'"
+                          [inputString]="'LATEX.' + selectedStatName | translate">
+                        </app-latex-paragraph>
+                      </div>
                     </div>
                   </div>
                 </div>
               </ng-template>
+
 
 
 
@@ -334,22 +343,31 @@
               </ng-template>
               <ng-template #residualModal let-modal>
                 <div class="modal-header">
-                  <h4 class="modal-title">{{ 'RESIDUALS.' + selectedResidualName | translate }}</h4>
-                  <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
+                  <h4 class="modal-title" id="modal-basic-title3">
+                    {{ 'RESIDUALS.' + selectedResidualName | translate }}
+                  </h4>
+                  <button type="button" class="btn-close" aria-label="Close"
+                          (click)="modal.dismiss('Close click')"></button>
                 </div>
-                <div class="modal-body">
-                  <p [innerHTML]="'RESIDUOS.' + selectedResidualName | translate"></p>
 
-                  <div class="row mt-2" *ngIf="'LATEX.' + selectedResidualName | translate as formula">
-                    <div class="col text-center" *ngIf="!formula.includes('Sin fórmula')">
-                      <app-latex-paragraph
-                        [size]="'md'"
-                        [inputString]="'LATEX.' + selectedResidualName | translate">
-                      </app-latex-paragraph>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <div class="input-group">
+                      <p [innerHTML]="'RESIDUOS.' + selectedResidualName | translate"></p>
+                    </div>
+
+                    <div class="row mt-2" *ngIf="'LATEX.' + selectedResidualName | translate as formula">
+                      <div class="col text-center" *ngIf="!formula.includes('Sin fórmula')">
+                        <app-latex-paragraph
+                          [size]="'md'"
+                          [inputString]="'LATEX.' + selectedResidualName | translate">
+                        </app-latex-paragraph>
+                      </div>
                     </div>
                   </div>
                 </div>
               </ng-template>
+
 
 
             </mat-expansion-panel>
