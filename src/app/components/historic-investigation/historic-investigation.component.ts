@@ -42,7 +42,7 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   protected loadingHistoric: boolean = true;
 
   dataSource = new MatTableDataSource<Investigation>([]);
-  displayedColumns: string[] = ['investigation_id', 'title', 'description', 'actions'];
+  displayedColumns: string[] = ['investigation_id', 'user', 'title', 'description', 'actions'];
   expandedElement: Investigation | null = null;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild("deleteVersionDialog") deleteVersionDialog!: TemplateRef<any>;
@@ -272,7 +272,7 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   onTabChange(event: MatTabChangeEvent) {
     if (event.index === 1) {
       this.dataSource.data = this.dataSource.data.filter(investigation => {
-        return investigation.user_id === this.authService.user()?.id
+        return investigation.user.id === this.authService.user()?.id
       })
     } else {
       this.setupPaginator()
@@ -283,4 +283,13 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly faTrash = faTrash;
 
+  isLoggedUserInvestigation(user_id: number) {
+
+    if (this.authService.user()) {
+      return user_id === this.authService.user()?.id
+    } else {
+      return false
+    }
+
+  }
 }
