@@ -119,7 +119,7 @@ export class ModelCompareComponent {
   }
 
 
-  bestTransformedValue(modelId: number, value: number): number {
+  bestTransformedValue(modelId: number, value: number): number | undefined {
     const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
@@ -127,8 +127,7 @@ export class ModelCompareComponent {
     );
 
     let index = bestFit?.graph.data[0]?.x.indexOf(value);
-
-    return bestFit && index ? bestFit?.graph.data[0]?.y[index] : 0;
+    return bestFit && (index !== undefined && index >= 0) ? bestFit?.graph.data[0]?.y[index] : undefined;
   }
 
   parseResiduals(residualValue: number| string): string | number {
@@ -166,13 +165,13 @@ export class ModelCompareComponent {
   }
 
 
-  bestStatisticValue(modelId: number, statName: string): number {
+  bestStatisticValue(modelId: number, statName: string): number | undefined {
     const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
     const bestFit = adjustments.find(
       (adjustment) => adjustment.adjustment_name === bestAdjustment
     );
-    return bestFit ? (bestFit.statistics as any)[statName] : 0
+    return bestFit ? (bestFit.statistics as any)[statName] : undefined
   }
 
   toggleChange(value: string) {
@@ -556,6 +555,4 @@ export class ModelCompareComponent {
       this.currentRequestId = null;
     }
   }
-
-  protected readonly open = open;
 }

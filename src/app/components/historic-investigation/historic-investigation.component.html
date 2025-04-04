@@ -44,6 +44,11 @@
             <td mat-cell class="text-center" *matCellDef="let element">{{ element.investigation_id }}</td>
           </ng-container>
 
+          <ng-container matColumnDef="user">
+            <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.USER' | translate }}</th>
+            <td class="text-center" mat-cell *matCellDef="let element">{{ element.user.email }}</td>
+          </ng-container>
+
           <ng-container matColumnDef="title">
             <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.TITLE' | translate }}</th>
             <td class="text-center" mat-cell *matCellDef="let element">{{ element.sample.title }}</td>
@@ -132,7 +137,7 @@
                                 <fa-icon [icon]="faArrowUpRightFromSquare" class="me-2"></fa-icon>
                                 {{ 'VERSIONS.RESTORE' | translate }}
                               </button>
-                              <button mat-button color="warn"
+                              <button *ngIf="isLoggedUserInvestigation(element.user_id)" mat-button color="warn"
                                       (click)="openDeleteVersionDialog(element.investigation_id, version.version_id, $event)">
                                 <fa-icon [icon]="faTrash" class="me-2"></fa-icon>
                                 {{ 'VERSIONS.DELETE_VER' | translate }}
@@ -184,6 +189,11 @@
           <ng-container matColumnDef="investigation_id">
             <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.ID' | translate }}</th>
             <td mat-cell class="text-center" *matCellDef="let element">{{ element.investigation_id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="user">
+            <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.USER' | translate }}</th>
+            <td class="text-center" mat-cell *matCellDef="let element">{{ element.user.email }}</td>
           </ng-container>
 
           <ng-container matColumnDef="title">
