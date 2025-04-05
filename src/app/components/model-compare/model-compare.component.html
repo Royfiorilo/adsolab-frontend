@@ -50,10 +50,19 @@
 
             <!--          Resumen del por que de la eleccion del mejor-->
 
-            <div class="card m-3">
+
+            <mat-card-content class="card-content">
+              <div class="col">
+                <small class="float-start text-muted" style="font-size: 10px">
+                  <mat-icon matTooltip="{{ 'MODEL_COMPARE.DETAIL'| translate }}"
+                            (click)="openContent(content); $event.stopPropagation()">info
+                  </mat-icon>
+                </small>
+              </div>
               <div
                 class="card-body p-3 shadow-sm  align-items-center text-center">
                 <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.HEURISTIC' | translate }}</h5>
+
 
                 <div class="row justify-content-center">
 
@@ -76,9 +85,30 @@
 
               </div>
 
-            </div>
+            </mat-card-content>
+            <ng-template #content let-modal>
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">{{ 'MODEL_COMPARE.HEURISTIC' | translate }}</h4>
+                <button type="button" class="btn-close" aria-label="Close"
+                        (click)="modal.dismiss('Cross click')"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <div class="input-group">
+                    <p [innerHTML]="'COMPARACION.HEURISTICA@@html' | translate"></p>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
 
-            <div class="card m-3">
+            <mat-card-content class="card-content">
+              <div class="col">
+                <small class="float-start text-muted" style="font-size: 10px">
+                  <mat-icon matTooltip="{{ 'MODEL_COMPARE.DETAIL'| translate }}"
+                            (click)="openContent(contentRidge); $event.stopPropagation()">info
+                  </mat-icon>
+                </small>
+              </div>
               <div
                 class="card-body p-3 shadow-sm  align-items-center text-center">
                 <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h5>
@@ -104,8 +134,28 @@
 
               </div>
 
-            </div>
-
+            </mat-card-content>
+            <ng-template #contentRidge let-modal>
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title1">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h4>
+                <button type="button" class="btn-close" aria-label="Close"
+                        (click)="modal.dismiss('Cross click')"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <div class="input-group">
+                    <p [innerHTML]="'COMPARACION.ML@@html' | translate"></p>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col text-center">
+                      <app-latex-paragraph [size]="'md'"
+                                           [inputString]="'COMPARACION.LATEX_RIDGE' | translate"
+                      ></app-latex-paragraph>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>
@@ -205,7 +255,16 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let statName of getStatisticsRows()">
-                      <td>{{ 'STATISTICS.' + statName | translate }}</td>
+                      <td>
+                        <small class="float-end text-muted" style="font-size: 10px">
+                          <mat-icon
+                            matTooltip="{{ 'MODEL_COMPARE.DETAIL' | translate }}"
+                            (click)="openModal(statName); $event.stopPropagation()">info
+                          </mat-icon>
+                        </small>
+                        {{ 'STATISTICS.' + statName | translate }}
+                      </td>
+
                       <td *ngFor="let modelId of getNoLinearResultsModelIds()">
                         {{ bestStatisticValue(+modelId, statName) ?? 'N/A' }}
                       </td>
@@ -215,6 +274,33 @@
                   </table>
                 </div>
               </ng-template>
+              <ng-template #statModal let-modal>
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title2">
+                    {{ 'STATISTICS.' + selectedStatName | translate }}
+                  </h4>
+                  <button type="button" class="btn-close" aria-label="Close"
+                          (click)="modal.dismiss('Close click')"></button>
+                </div>
+
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <div class="input-group">
+                      <p [innerHTML]="'ESTADISTICOS.' + selectedStatName | translate"></p>
+                    </div>
+
+                    <div class="row mt-2" *ngIf="'LATEX.' + selectedStatName | translate as formula">
+                      <div class="col text-center" *ngIf="!formula.includes('Sin fórmula')">
+                        <app-latex-paragraph
+                          [size]="'md'"
+                          [inputString]="'LATEX.' + selectedStatName | translate">
+                        </app-latex-paragraph>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+
 
             </mat-expansion-panel>
 
@@ -238,15 +324,52 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let residualName of getResidualsRows()">
-                      <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                      <td>
+                        {{ 'RESIDUALS.' + residualName | translate }}
+                        <small *ngIf="hasResidualDescription(residualName)" class="float-end text-muted"
+                               style="font-size: 10px">
+                          <mat-icon
+                            matTooltip="{{ 'MODEL_COMPARE.DETAIL' | translate }}"
+                            (click)="openResidualModal(residualName); $event.stopPropagation()">info
+                          </mat-icon>
+                        </small>
+                      </td>
+
                       <td *ngFor="let modelId of getNoLinearResultsModelIds()">
-                        {{ parseResiduals(bestResidualValue(+modelId, residualName)) || 'N/A' }}
+                        {{ bestResidualValue(+modelId, residualName) }}
                       </td>
                     </tr>
                     </tbody>
                   </table>
                 </div>
               </ng-template>
+              <ng-template #residualModal let-modal>
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title3">
+                    {{ 'RESIDUALS.' + selectedResidualName | translate }}
+                  </h4>
+                  <button type="button" class="btn-close" aria-label="Close"
+                          (click)="modal.dismiss('Close click')"></button>
+                </div>
+
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <div class="input-group">
+                      <p [innerHTML]="'RESIDUOS.' + selectedResidualName | translate"></p>
+                    </div>
+
+                    <div class="row mt-2" *ngIf="'LATEX.' + selectedResidualName | translate as formula">
+                      <div class="col text-center" *ngIf="!formula.includes('Sin fórmula')">
+                        <app-latex-paragraph
+                          [size]="'md'"
+                          [inputString]="'LATEX.' + selectedResidualName | translate">
+                        </app-latex-paragraph>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+
 
             </mat-expansion-panel>
 

@@ -1,4 +1,4 @@
-import {Component, Input, QueryList, SimpleChanges, ViewChild, ViewChildren} from '@angular/core';
+import {Component, inject, Input, QueryList, SimpleChanges, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {CommonUtilsService} from "../../common/common.service";
 import {
   AllResultsViewOption,
@@ -28,6 +28,7 @@ import {StateService} from "../investigation/state.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {RequestCancellationService} from "../../common/request-cancellation.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
@@ -38,7 +39,10 @@ import {RequestCancellationService} from "../../common/request-cancellation.serv
 export class ModelCompareComponent {
   @ViewChildren(MatAccordion) accordions!: QueryList<MatAccordion>;
   @ViewChild('comparisonPlot') comparisonPlot!: PlotlyComponent;
+  @ViewChild('statModal') statModalRef!: TemplateRef<any>;
+  @ViewChild('residualModal') residualModalRef!: TemplateRef<any>;
   @Input() modelConfiguration!: IModelsConfigurations;
+  private modalService = inject(NgbModal);
   protected noLinearResults: {
     [key: number]: {
       bestAdjustment: string,
@@ -63,6 +67,8 @@ export class ModelCompareComponent {
   protected noLinearFailed: boolean = false;
   private currentRequestId: string | null = null;
   state = this.stateService.state;
+  selectedStatName: string = '';
+  selectedResidualName: string = '';
 
   private colorByMethod: { [key: string]: string } = {
     cg: "blue",
@@ -76,7 +82,7 @@ export class ModelCompareComponent {
               protected commonUtilsService: CommonUtilsService,
               protected modelCompareService: ModelCompareService,
               private dialog: MatDialog,
-              private translateService: TranslateService,
+              protected translateService: TranslateService,
               private _snackBar: MatSnackBar, private cancellationService: RequestCancellationService) {
   }
 
@@ -100,6 +106,17 @@ export class ModelCompareComponent {
 
   }
 
+  openContent(content: TemplateRef<any>) {
+    this.modalService.open(content)
+  }
+
+
+  openModal(statName: string) {
+    this.selectedStatName = statName;
+    this.modalService.open(this.statModalRef, {size: 'lg'});
+  }
+
+
   bestTransformedValue(modelId: number, value: number): number | undefined {
     const adjustments = this.noLinearResults[modelId].successful_fits;
     const bestAdjustment = this.noLinearResults[modelId]?.bestAdjustment;
@@ -111,15 +128,16 @@ export class ModelCompareComponent {
     return bestFit && (index !== undefined && index >= 0) ? bestFit?.graph.data[0]?.y[index] : undefined;
   }
 
-  parseResiduals(residualValue: number): string | number {
-    if (residualValue === 0) {
-      return "False"
-    } else if (residualValue === 1) {
-      return "True"
-    } else {
-      return residualValue
-    }
+  openResidualModal(name: string) {
+    this.selectedResidualName = name;
+    this.modalService.open(this.residualModalRef, {size: 'lg'});
   }
+
+
+  hasResidualDescription(name: string): boolean {
+    return this.translateService.instant('RESIDUOS.' + name) !== ('RESIDUOS.' + name);
+  }
+
 
   getStatisticsRows(): string[] {
     const sampleStats = this.noLinearResults[this.state().selectedModels[0]]?.successful_fits[0]?.statistics || {};
@@ -148,10 +166,6 @@ export class ModelCompareComponent {
       (adjustment) => adjustment.adjustment_name === bestAdjustment
     );
     return bestFit ? (bestFit.statistics as any)[statName] : undefined
-  }
-
-  toggleChange(value: string) {
-    this.toggleValue = value;
   }
 
   saveInvestigation() {
