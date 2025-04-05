@@ -12,10 +12,11 @@ import {InvestigationData} from "./interface";
 import {Sample, Version} from "../historic-investigation/interface";
 import {VersionDataService} from "./version.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
-import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {StateService} from "../investigation/state.service";
 import {DataSample} from "../data-selector/data-sample";
 import {AuthService} from "../../common/auth.service";
+import {Location} from "@angular/common";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class HistoricVersionComponent {
   protected loadingHistoric: boolean = true;
   sample: DataSample | undefined;
   versionId: string = '0';
+
   investigationId: string = '0';
   userId: string = '0';
   protected models: Model[] = [];
@@ -55,7 +57,12 @@ export class HistoricVersionComponent {
     private versionDataService: VersionDataService,
     protected stateService: StateService,
     private authService: AuthService,
+    private location: Location
   ) {
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   ngOnInit() {
@@ -312,4 +319,6 @@ export class HistoricVersionComponent {
     }
 
   }
+
+  protected readonly faArrowLeft = faArrowLeft;
 }

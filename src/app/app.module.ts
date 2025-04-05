@@ -24,7 +24,6 @@ import {DataSelectorComponent} from "./components/data-selector/data-selector.co
 import {ModelSelectorComponent} from './components/model-selector/model-selector.component';
 import {ModelConfigurationComponent} from './components/model-configuration/model-configuration.component';
 import {ModelCompareComponent} from './components/model-compare/model-compare.component';
-import {ProgressBarComponent} from './components/progress-bar/progress-bar.component';
 import {FileUploadComponent} from './components/file-upload/file-upload.component';
 import {MainPageComponent} from './components/main-page/main-page.component';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
@@ -99,7 +98,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ModelSelectorComponent,
     ModelConfigurationComponent,
     ModelCompareComponent,
-    ProgressBarComponent,
     FileUploadComponent,
     MainPageComponent,
     LoadingComponent,

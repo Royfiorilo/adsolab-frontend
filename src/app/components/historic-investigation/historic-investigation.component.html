@@ -317,13 +317,14 @@
 
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
               class="detail-row"></tr>
-        </table>
 
+        </table>
         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
                        [pageSize]="10"
                        [length]="resultsLength"
                        [ngClass]="{'visible': dataSource.data.length > 0, 'hidden': !dataSource.data.length}">
         </mat-paginator>
+
       </div>
     </mat-tab>
 
