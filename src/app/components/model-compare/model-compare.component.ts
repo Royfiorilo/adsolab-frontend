@@ -31,7 +31,6 @@ import {RequestCancellationService} from "../../common/request-cancellation.serv
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 
-
 @Component({
   selector: 'app-model-compare',
   templateUrl: './model-compare.component.html',
@@ -112,10 +111,9 @@ export class ModelCompareComponent {
   }
 
 
-
   openModal(statName: string) {
     this.selectedStatName = statName;
-    this.modalService.open(this.statModalRef, { size: 'lg' });
+    this.modalService.open(this.statModalRef, {size: 'lg'});
   }
 
 
@@ -130,13 +128,9 @@ export class ModelCompareComponent {
     return bestFit && (index !== undefined && index >= 0) ? bestFit?.graph.data[0]?.y[index] : undefined;
   }
 
-  parseResiduals(residualValue: number| string): string | number {
-      return residualValue
-  }
-
   openResidualModal(name: string) {
     this.selectedResidualName = name;
-    this.modalService.open(this.residualModalRef, { size: 'lg' });
+    this.modalService.open(this.residualModalRef, {size: 'lg'});
   }
 
 
@@ -172,10 +166,6 @@ export class ModelCompareComponent {
       (adjustment) => adjustment.adjustment_name === bestAdjustment
     );
     return bestFit ? (bestFit.statistics as any)[statName] : undefined
-  }
-
-  toggleChange(value: string) {
-    this.toggleValue = value;
   }
 
   saveInvestigation() {

@@ -136,26 +136,26 @@
 
             </mat-card-content>
             <ng-template #contentRidge let-modal>
-            <div class="modal-header">
-              <h4 class="modal-title" id="modal-basic-title1">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h4>
-              <button type="button" class="btn-close" aria-label="Close"
-                      (click)="modal.dismiss('Cross click')"></button>
-            </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <div class="input-group">
-                  <p [innerHTML]="'COMPARACION.ML@@html' | translate"></p>
-                </div>
-                <div class="row mt-2">
-                  <div class="col text-center">
-                    <app-latex-paragraph [size]="'md'"
-                                         [inputString]="'COMPARACION.LATEX_RIDGE' | translate"
-                    ></app-latex-paragraph>
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title1">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h4>
+                <button type="button" class="btn-close" aria-label="Close"
+                        (click)="modal.dismiss('Cross click')"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <div class="input-group">
+                    <p [innerHTML]="'COMPARACION.ML@@html' | translate"></p>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col text-center">
+                      <app-latex-paragraph [size]="'md'"
+                                           [inputString]="'COMPARACION.LATEX_RIDGE' | translate"
+                      ></app-latex-paragraph>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </ng-template>
+            </ng-template>
           </div>
         </div>
       </div>
@@ -259,7 +259,8 @@
                         <small class="float-end text-muted" style="font-size: 10px">
                           <mat-icon
                             matTooltip="{{ 'MODEL_COMPARE.DETAIL' | translate }}"
-                            (click)="openModal(statName); $event.stopPropagation()">info</mat-icon>
+                            (click)="openModal(statName); $event.stopPropagation()">info
+                          </mat-icon>
                         </small>
                         {{ 'STATISTICS.' + statName | translate }}
                       </td>
@@ -301,8 +302,6 @@
               </ng-template>
 
 
-
-
             </mat-expansion-panel>
 
             <mat-expansion-panel [expanded]="true">
@@ -323,18 +322,21 @@
                       </th>
                     </tr>
                     </thead>
-                    <tbody><tr *ngFor="let residualName of getResidualsRows()">
+                    <tbody>
+                    <tr *ngFor="let residualName of getResidualsRows()">
                       <td>
                         {{ 'RESIDUALS.' + residualName | translate }}
-                        <small *ngIf="hasResidualDescription(residualName)" class="float-end text-muted" style="font-size: 10px">
+                        <small *ngIf="hasResidualDescription(residualName)" class="float-end text-muted"
+                               style="font-size: 10px">
                           <mat-icon
                             matTooltip="{{ 'MODEL_COMPARE.DETAIL' | translate }}"
-                            (click)="openResidualModal(residualName); $event.stopPropagation()">info</mat-icon>
+                            (click)="openResidualModal(residualName); $event.stopPropagation()">info
+                          </mat-icon>
                         </small>
                       </td>
 
                       <td *ngFor="let modelId of getNoLinearResultsModelIds()">
-                        {{ parseResiduals(bestResidualValue(+modelId, residualName)) ?? 'N/A' }}
+                        {{ bestResidualValue(+modelId, residualName) }}
                       </td>
                     </tr>
                     </tbody>
@@ -367,7 +369,6 @@
                   </div>
                 </div>
               </ng-template>
-
 
 
             </mat-expansion-panel>
