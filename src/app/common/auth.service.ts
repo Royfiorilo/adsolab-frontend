@@ -59,6 +59,7 @@ export class AuthService {
     return this.httpClient.post<void>(`${this.backendBaseUrl}/logout`, null, {withCredentials: true}).subscribe(() => {
       this.user.set(undefined);
       sessionStorage.removeItem('XSRF-TOKEN');
+      sessionStorage.removeItem('investigation');
       this.router.navigateByUrl('/login')
     });
   }

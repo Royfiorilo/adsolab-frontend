@@ -26,7 +26,7 @@ export class StateService {
 
   private loadState(): IInvestigationState {
     try {
-      const storedState = localStorage.getItem(this.INVESTIGATION);
+      const storedState = sessionStorage.getItem(this.INVESTIGATION);
       return storedState ? JSON.parse(storedState) as IInvestigationState : this.initialState;
     } catch (error) {
       return this.initialState;
@@ -35,7 +35,7 @@ export class StateService {
 
   private syncStorage() {
     effect(() => {
-      localStorage.setItem(this.INVESTIGATION, JSON.stringify(this.state()));
+      sessionStorage.setItem(this.INVESTIGATION, JSON.stringify(this.state()));
     });
   }
 
