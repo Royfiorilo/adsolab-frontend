@@ -21,7 +21,7 @@
   "SEARCH": "Buscar",
   "MAIN_PAGE": {
     "NEW_INVESTIGATION": "Nueva investigación",
-    "HIST": "Investigaciones Historicas",
+    "HIST": "Investigaciones Históricas",
     "USERS": "Usuarios"
   },
   "INVESTIGATION": {
@@ -37,7 +37,7 @@
     "DRAG_FILE": "Arrastrar un archivo Excel o CSV",
     "VALID_FILE": "El archivo es válido",
     "SAMPLE_TITLE": "Ingrese un nombre para identificar la muestra",
-    "SAMPLE_DESCRIPTION": "Ingrese una descripcion de la muestra",
+    "SAMPLE_DESCRIPTION": "Ingrese una descripción de la muestra",
     "SAMPLE_TEMPERATURE": "Temperatura (K)",
     "SAMPLE_UNIT": "Unidad de medida",
     "SAMPLE_SPEC": "Especificaciones sobre la muestra",
@@ -60,7 +60,7 @@
     "ERROR_LOADING_PREVIOUS_SAMPLES": "Error al cargar muestras anteriores: {{ message }}",
     "CREATE_INVESTIGATION_ERROR": "No se pudo comenzar la investigación.",
     "SAMPLE_ERROR": "Error al inicializar las muestras.",
-    "DELETE": "Borrar sample",
+    "DELETE": "Borrar muestra",
     "DELETE_CONFIRMATION": "¿Seguro que desea eliminar la muestra {{ optionValue }}?",
     "DELETED": "Muestra eliminada con éxito",
     "NOT_AUTHORIZED": "No esta autorizado a eliminar la muestra de otro usuario."
@@ -83,7 +83,7 @@
     "ITERATIONS_EXAMPLE": "Ej. 5000",
     "STEPS": "Steps",
     "PREDICTED": "Estimar valores",
-    "PREDICTION_ERROR": "No se pudo realizar la estimacion. Por favor, ingrese los parámetros manualmente para poder avanzar."
+    "PREDICTION_ERROR": "No se pudo realizar la estimación. Por favor, ingrese los parámetros manualmente para poder avanzar."
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",
@@ -91,7 +91,7 @@
     "BEST_MODEL": "Mejor modelo",
     "HEURISTIC": "Heurística",
     "RIDGE": "Ridge",
-    "NOT_AUTHORIZED": "No puede crear una nueva version de una investigacion que no es suya.",
+    "NOT_AUTHORIZED": "No puede crear una nueva versión de una investigación que no es suya.",
     "SCORE": "Puntaje",
     "COEFFICIENT": "Coeficiente",
     "RERUN_COMPARISON": "Volver a ejecutar comparación",
@@ -158,17 +158,18 @@
     "DELETE_VER": "Eliminar Versión",
     "DELETE_INV": "Eliminar",
     "BEST_ADJUST": "Mejor Ajuste: ",
-    "EDIT": "Continuar investigacion",
-    "HISTORIC_TITLE": "Investigaciones Historicas",
-    "INVESTIGATION_DELETE": "Borrar Investigacion",
+    "EDIT": "Continuar investigación",
+    "HISTORIC_TITLE": "Investigaciones Históricas",
+    "INVESTIGATION_DELETE": "Borrar Investigación",
     "VERSION_DELETE": "Borrar Versión",
     "INVESTIGATION_DELETE_MSG": "¿Está seguro que desea borrar la investigación {{ investigationId }}?",
     "VERSION_DELETE_MSG": "¿Está seguro que desea borrar la versión {{versionId}} de la investigación {{ investigationId }}?",
-    "FILTER_PLACEHOLDER": "Ingrese el codigo de investigación",
+    "FILTER_PLACEHOLDER": "Ingrese el código de investigación",
     "MY_INVESTIGATIONS": "Mis investigaciones",
     "ALL_INVESTIGATIONS": "Todas las investigaciones",
-    "NOT_AUTHORIZED": "No esta autorizado a eliminar la investigación de otro usuario.",
-    "USER": "Usuario"
+    "NOT_AUTHORIZED": "No está autorizado a eliminar la investigación de otro usuario.",
+    "USER": "Usuario",
+    "NO_VERSIONS": "La investigación no cuenta con versiones guardadas"
   },
   "LOGIN": {
     "EMAIL": "E-mail",
@@ -181,8 +182,8 @@
   },
   "NO_DATA": {
     "TITLE": "No se han encontrado investigaciones",
-    "MESSAGE": "No se han encontrado versiones de investigaciones guardadas. Intente refrescar la pagina, o dirigase al inicio para crear una nueva.",
-    "CREATE": "Crear una investigacion"
+    "MESSAGE": "No se han encontrado versiones de investigaciones guardadas. Intente refrescar la página, o dirijase al inicio para crear una nueva.",
+    "CREATE": "Crear una investigación"
   },
   "USERS": {
     "TITLE": "Usuarios",
@@ -209,26 +210,24 @@
     "RANGE": "Página {{ page }} de {{ amountPages }} - Total: {{ length }}"
   },
   "COMPARACION": {
-    "HEURISTICA@@html":  "Usamos esta heurística para evaluar modelos equilibrando precisión, simplicidad y cumplimiento de supuestos estadísticos.<br><br><ul><li><b>R² ajustado (30%)</b>: Mide qué tan bien el modelo explica los datos, penalizando la complejidad.</li><li><b>RMSE (30%)</b>: Evalúa el error en las predicciones (se usa su inverso para favorecer valores bajos).</li><li><b>AIC (25%)</b>: Penaliza modelos complejos, favoreciendo los más simples y precisos.</li><li><b>Chi-cuadrado (10%)</b>: Indica qué tan bien el modelo se ajusta a los datos observados.</li><li><b>Supuestos estadísticos (15%)</b>: Se suman 5% si cumple normalidad, homocedasticidad e independencia.</li></ul>",
-    "ML@@html": "El criterio de evaluacion se basa en Ridge Regression, una regresion lineal regularizada que previene el sobreajuste.\n Se le proporciona una matriz con las predicciones de qe(ŷ) obtenidas \u200B de los modelos que vamos a comparar y los valores reales de qe(y)\u200B. Ridge ajusta los coeficientes para minimizar el error, determinando así la importancia de cada modelo y permitiendo identificar el más preciso.",
+    "HEURISTICA@@html": "Usamos esta heurística para evaluar modelos equilibrando precisión, simplicidad y cumplimiento de supuestos estadísticos.<br><br><ul><li><b>R² ajustado (30%)</b>: Mide qué tan bien el modelo explica los datos, penalizando la complejidad.</li><li><b>RMSE (30%)</b>: Evalúa el error en las predicciones (se usa su inverso para favorecer valores bajos).</li><li><b>AIC (25%)</b>: Penaliza modelos complejos, favoreciendo los más simples y precisos.</li><li><b>Chi-cuadrado (10%)</b>: Indica qué tan bien el modelo se ajusta a los datos observados.</li><li><b>Supuestos estadísticos (15%)</b>: Se suman 5% si cumple normalidad, homocedasticidad e independencia.</li></ul>",
+    "ML@@html": "El criterio de evaluación se basa en Ridge Regression, una regresión lineal regularizada que previene el sobreajuste.\n Se le proporciona una matriz con las predicciones de qe(ŷ) obtenidas \u200B de los modelos que vamos a comparar y los valores reales de qe(y)\u200B. Ridge ajusta los coeficientes para minimizar el error, determinando así la importancia de cada modelo y permitiendo identificar el más preciso.",
     "LATEX_RIDGE": "$$\\\\min \\left( \\sum_{i=1}^{m} (y_i - \\hat{y}_i)^2 + \\lambda \\sum_{j=1}^{n} \\beta_j^2 \\right)$$"
-
-
   },
   "ESTADISTICOS": {
     "adjust_r_squared": "Es una versión corregida de R² que penaliza el uso de variables innecesarias en el modelo. Mide que tan bien el modelo explica la variabilidad de los datos, pero corrigiendo por la cantidad de variables utilizadas. Un mayor R² ajustado indica un mejor modelo",
     "RMSE": "RMSE (Root Mean Squared Error) mide la distancia promedio entre los valores predichos por el modelo y los valores reales, penalizando más fuertemente los errores grandes. Un RMSE más bajo indica un mejor ajuste. ",
-    "AIC":  "AIC(Akaike Information Criterion), penaliza modelos complejos con muchos parámetros, favoreciendo los modelos más simples que mejor se ajustan a los datos.Solo tiene sentido mirarlo con otro modelo, el que tenga el menor es mejor (puede ser negativo)",
-    "chi_squared": "Mide que tan bien el modelo se ajusta a los datos, donde evalua si las variables explicativas tienen un efecto significativo sobre la variable objeto. Se usa principalmente para evaluar la bondad de ajuste. Un valor alto indica que el modelo tiene un mejor ajuste o que ciertas variables son significativas.",
-    "SSE":"Mide la cantidad total de error en un modelo de regresión, es decir, cuánto se desvían las predicciones de los valores reales. Un SSE bajo indica un buen ajuste del modelo, uno alto indica que el modelo no predice bin los datos",
+    "AIC": "AIC(Akaike Information Criterion), penaliza modelos complejos con muchos parámetros, favoreciendo los modelos más simples que mejor se ajustan a los datos.Solo tiene sentido mirarlo con otro modelo, el que tenga el menor es mejor (puede ser negativo)",
+    "chi_squared": "Mide que tan bien el modelo se ajusta a los datos, donde evalúa si las variables explicativas tienen un efecto significativo sobre la variable objeto. Se usa principalmente para evaluar la bondad de ajuste. Un valor alto indica que el modelo tiene un mejor ajuste o que ciertas variables son significativas.",
+    "SSE": "Mide la cantidad total de error en un modelo de regresión, es decir, cuánto se desvían las predicciones de los valores reales. Un SSE bajo indica un buen ajuste del modelo, uno alto indica que el modelo no predice bien los datos",
     "HYBRID": "Combina la suma de los errores cuadrados con una penalización basada en la cantidad de parámetros del modelo. Penaliza modelos más complejos que no aportan mejoras significativas en la predicción. Un valor más bajo indica un mejor equilibrio entre ajuste y simplicidad.",
     "BIC": "Evalúa la calidad de un modelo penalizando la cantidad de parámetros, evitando el sobreajuste. Un BIC bajo indica el mejor modelo",
-    "adjust_chi_squeared":"Evalúa el buen ajuste del modelo considerando el número de parámetros. Se usa para comparar modelos, el de menor valor es preferido",
+    "adjust_chi_squeared": "Evalúa el buen ajuste del modelo considerando el número de parámetros. Se usa para comparar modelos, el de menor valor es preferido",
     "r_squared": "El R² indica la proporción de la varianza de la variable dependiente que es explicada por el modelo.\nVa de 0 a 1. Un R² más alto indica que el modelo explica mejor los datos."
   },
   "RESIDUOS": {
-    "durbin_watson": "Evalua la autocorrelacion en los residuos del modelo, es decir, si los errores estan correlacionados entre si en funcion del orden de las orservaciones. Cercano a 2 no hay autocorrelacion, valores alejados de 2 (por debajo de 1.5 o por encima de 2.5) indican problemas de autocorrelación." ,
-    "homoscedasticity_pvalue": "Evalua si la varianza de los residuos es constante a lo largo de las observaciones. Si la prueba es exitosa (p valor > 0.05), significa que no hay heterocedasticidad.",
+    "durbin_watson": "Evalúa la autocorrelación en los residuos del modelo, es decir, si los errores están correlacionados entre si en función del orden de las observaciones. Cercano a 2 no hay autocorrelación, valores alejados de 2 (por debajo de 1.5 o por encima de 2.5) indican problemas de autocorrelación.",
+    "homoscedasticity_pvalue": "Evalúa si la varianza de los residuos es constante a lo largo de las observaciones. Si la prueba es exitosa (p valor > 0.05), significa que no hay heterocedasticidad.",
     "normality_pvalue": "La prueba de normalidad evalúa si los residuos siguen una distribución normal. Si la prueba es exitosa (p valor > 0.05) sugiere que los residuos son normales."
   },
   "LATEX": {
@@ -245,6 +244,4 @@
     "homoscedasticity_pvalue": "Sin fórmula específica. Se refiere al valor p obtenido de una prueba como Breusch-Pagan o White.",
     "normality_pvalue": "Sin fórmula específica. Se refiere al valor p de pruebas como Shapiro-Wilk o Jarque-Bera."
   }
-
-
 }
