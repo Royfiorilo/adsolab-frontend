@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, inject, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Model} from "../model-selector/model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {IModelsConfigurations} from "../../common/common.interface";
@@ -12,20 +12,21 @@ import {Investigation} from "../data-selector/data-sample";
 import {Observable, shareReplay} from "rxjs";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {map} from "rxjs/operators";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-investigation',
   templateUrl: './investigation.component.html',
   styleUrl: './investigation.component.css',
 })
-export class InvestigationComponent implements OnInit {
+export class InvestigationComponent implements AfterViewInit {
   private breakpointObserver = inject(BreakpointObserver);
   isMobile$: Observable<boolean>;
   state = this.stateService.state;
   @ViewChildren(MatStep) steps!: QueryList<MatStep>;
   @ViewChild("loadOnGoingInvestigationModal") loadOnGoingInvestigationModal!: TemplateRef<any>;
 
-  constructor(private _snackBar: MatSnackBar, protected stateService: StateService, private dialog: MatDialog) {
+  constructor(private _snackBar: MatSnackBar, protected stateService: StateService, private dialog: MatDialog, private route: ActivatedRoute) {
     this.isMobile$ = this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small])
       .pipe(
         map(result => result.matches),
@@ -33,18 +34,27 @@ export class InvestigationComponent implements OnInit {
       );
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     if (this.state().investigation) {
 
-      const dialogRef = this.dialog.open(InvestigationModalComponent);
+      let params = this.route.snapshot.queryParams;
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.resetInvestigation();
-        } else {
-          this.steps.get(this.state().stepId)?.select();
-        }
-      });
+      if (params['fromHistoric']) {
+
+        this.steps.get(this.state().stepId)?.select();
+
+      } else {
+
+        const dialogRef = this.dialog.open(InvestigationModalComponent);
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.resetInvestigation();
+          } else {
+            this.steps.get(this.state().stepId)?.select();
+          }
+        });
+      }
     }
 
   }
@@ -91,7 +101,7 @@ export class InvestigationComponent implements OnInit {
         selectedLinearizations: linearizations,
         paramSaved: undefined,
         iterations: DEFAULT_ITERATIONS,
-        steps: DEFAULT_STEPS
+        step: DEFAULT_STEPS
       }
     };
 

@@ -28,4 +28,4 @@ export class CommonUtilsService {
 }
 
 export const DEFAULT_ITERATIONS = 10000;
-export const DEFAULT_STEPS = 1;
+export const DEFAULT_STEPS = 0.1;

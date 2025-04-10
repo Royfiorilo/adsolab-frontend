@@ -267,7 +267,8 @@ export class ModelCompareComponent {
       const modelRequest: INoLinearRequestModel = {
         model: +modelId,
         iteration: this.modelConfiguration[+modelId].iterations,
-        seeds
+        seeds,
+        step: this.modelConfiguration[+modelId].step
       }
 
       models.push(modelRequest)

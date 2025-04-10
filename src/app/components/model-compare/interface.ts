@@ -26,6 +26,7 @@ export interface INoLinearRequestModel {
   model: number;
   iteration: number | undefined;
   seeds: INoLinearRequestSeed[];
+  step: number;
 }
 
 export interface INoLinearRequest {
