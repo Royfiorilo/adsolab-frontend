@@ -17,6 +17,7 @@
 
 .sidenav-container {
   flex: 1;
+  background: #ffffff;
 }
 
 .sidenav-content {

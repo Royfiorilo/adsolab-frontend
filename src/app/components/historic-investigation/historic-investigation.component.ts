@@ -42,7 +42,8 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
   protected loadingHistoric: boolean = true;
 
   dataSource = new MatTableDataSource<Investigation>([]);
-  displayedColumns: string[] = ['investigation_id', 'user', 'title', 'description', 'actions'];
+  allInvestigationsDisplayedColumns: string[] = ['investigation_id', 'user', 'title', 'description'];
+  myInvestigationsDisplayedColumns: string[] = ['investigation_id', 'user', 'title', 'description', 'actions'];
   expandedElement: Investigation | null = null;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild("deleteVersionDialog") deleteVersionDialog!: TemplateRef<any>;

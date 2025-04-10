@@ -29,7 +29,7 @@ export class SampleSelectorService {
   }
 
   deleteSample(sampleId: number | undefined) {
-    return this.httpClient.delete(`${this.backendBaseUrl}/sample/${sampleId}`);
+    return this.httpClient.delete(`${this.backendBaseUrl}/sample/${sampleId}`, {withCredentials: true});
 
   }
 }
