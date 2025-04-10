@@ -179,7 +179,7 @@
                   <tr *ngFor="let residualName of getResidualsRows()">
                     <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
                     <td *ngFor="let model of versionData?.fitted_models">
-                      {{ parseResiduals(bestResidualValue(+model.model_id, residualName)) || 'N/A' }}
+                      {{ bestResidualValue(+model.model_id, residualName) }}
                     </td>
                   </tr>
                   </tbody>
@@ -195,7 +195,7 @@
   </mat-tab>
   <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
     <div class="row justify-content-center m-3">
-      <div *ngFor="let model of versionData?.fitted_models" class="col-6">
+      <div *ngFor="let model of data?.fitted_models" class="col-6">
         <div class="mt-4 m-2 card">
           <div class="card-header fiuba-institutional mb-1">
             <h4
@@ -212,11 +212,11 @@
                 </div>
                 <div class="row">
                   <div class="col mt-0">
-                    <div *ngFor="let param of model.seeds"
+                    <div *ngFor="let param of findBestAdjustMethod(model.model_id)?.params!"
                          class="mb-0">
                       <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
                       <span class="text-muted text-body-emphasis">
-                                <h5>{{ param.value }} <small class="text-muted">± {{ param.stderr }}</small></h5>
+                                <h5>{{ param.value }} <small class="text-muted">± {{ param.std_err }}</small></h5>
                               </span>
                     </div>
                   </div>
