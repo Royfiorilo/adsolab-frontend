@@ -83,7 +83,8 @@
     "ITERATIONS_EXAMPLE": "Ej. 5000",
     "STEPS": "Steps",
     "PREDICTED": "Estimar valores",
-    "PREDICTION_ERROR": "No se pudo realizar la estimación. Por favor, ingrese los parámetros manualmente para poder avanzar."
+    "PREDICTION_ERROR": "No se pudo realizar la estimación. Por favor, ingrese los parámetros manualmente para poder avanzar.",
+    "PREDICTION_NOTE": "Estimación basada en los datos de la muestra."
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",

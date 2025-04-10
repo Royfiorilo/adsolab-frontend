@@ -101,7 +101,7 @@
             <div class="row"
                  *ngIf="modelConfiguration[modelId] && modelConfiguration[modelId].selectedLinearizations && modelConfiguration[modelId].selectedLinearizations.length === 0">
               <div class="col">
-                <small class="text-muted">Estimacion basada en los datos de la muestra.</small>
+                <small class="text-muted">{{ 'MODEL_CONFIGURATION.PREDICTION_NOTE' | translate }}</small>
                 <div class="mt-auto d-flex align-content-center justify-content-center">
                   <button *ngIf="modelConfiguration[modelId].automatedParams" (click)="predictSeeds(modelId)"
                           class="btn fiuba-investigation mt-3"> {{ 'MODEL_CONFIGURATION.PREDICTED' | translate }}

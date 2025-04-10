@@ -8,7 +8,7 @@ import {ModelSelectorServiceService} from '../model-selector/model-selector-serv
 import {TranslateService} from '@ngx-translate/core';
 import {Model} from '../model-selector/model';
 import {CommonUtilsService, DEFAULT_ITERATIONS, DEFAULT_STEPS} from '../../common/common.service';
-import {InvestigationData} from "./interface";
+import {FittedModels, InvestigationData} from "./interface";
 import {Sample, Version} from "../historic-investigation/interface";
 import {VersionDataService} from "./version.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
@@ -274,7 +274,7 @@ export class HistoricVersionComponent {
         (investigation.selectedModels as number[]).push(fittedModel.model_id);
         investigation.modelConfiguration[fittedModel.model_id] = {
           automatedParams: false,
-          selectedLinearizations: [],
+          selectedLinearizations: this.getLinearizations(fittedModel),
           paramValues: {},
           paramInfo: {},
           paramSaved: undefined,
@@ -293,7 +293,11 @@ export class HistoricVersionComponent {
 
     this.state.set({...investigation});
 
-    this.router.navigate(['/investigation']);
+    this.router.navigate(['/investigation'], {queryParams: {fromHistoric: true}});
+  }
+
+  private getLinearizations(fittedModel: FittedModels | any) {
+    return this.models?.find(model => model._id === fittedModel.model_id)?.linearizations || [];
   }
 
   findMatchedTransformedValues(modelId: number, value: number) {
