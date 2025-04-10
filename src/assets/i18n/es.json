@@ -215,15 +215,15 @@
     "LATEX_RIDGE": "$$\\\\min \\left( \\sum_{i=1}^{m} (y_i - \\hat{y}_i)^2 + \\lambda \\sum_{j=1}^{n} \\beta_j^2 \\right)$$"
   },
   "ESTADISTICOS": {
-    "adjust_r_squared": "Es una versión corregida de R² que penaliza el uso de variables innecesarias en el modelo. Mide que tan bien el modelo explica la variabilidad de los datos, pero corrigiendo por la cantidad de variables utilizadas. Un mayor R² ajustado indica un mejor modelo",
-    "RMSE": "RMSE (Root Mean Squared Error) mide la distancia promedio entre los valores predichos por el modelo y los valores reales, penalizando más fuertemente los errores grandes. Un RMSE más bajo indica un mejor ajuste. ",
-    "AIC": "AIC(Akaike Information Criterion), penaliza modelos complejos con muchos parámetros, favoreciendo los modelos más simples que mejor se ajustan a los datos.Solo tiene sentido mirarlo con otro modelo, el que tenga el menor es mejor (puede ser negativo)",
-    "chi_squared": "Mide que tan bien el modelo se ajusta a los datos, donde evalúa si las variables explicativas tienen un efecto significativo sobre la variable objeto. Se usa principalmente para evaluar la bondad de ajuste. Un valor bajo indica que el modelo tiene un mejor ajuste o que ciertas variables son significativas.",
-    "SSE": "Mide la cantidad total de error en un modelo de regresión, es decir, cuánto se desvían las predicciones de los valores reales. Un SSE bajo indica un buen ajuste del modelo, uno alto indica que el modelo no predice bien los datos",
+    "adjust_r_squared": "Es una versión ajustada de R² que penaliza el uso de variables innecesarias en el modelo. Mide qué tan bien el modelo explica la variabilidad de los datos, pero corrigiendo por la cantidad de variables utilizadas, esto evita el sobreajuste. Un mayor R² ajustado indica un mejor modelo",
+    "RMSE": "RMSE (Root Mean Squared Error) mide la distancia promedio entre los valores predichos por el modelo y los valores reales, penalizando más fuertemente los errores grandes. Un RMSE más bajo indica un mejor ajuste.",
+    "AIC": "AIC (Akaike Information Criterion), penaliza modelos complejos con muchos parámetros, favoreciendo los modelos más simples que mejor se ajustan a los datos. Solo tiene sentido al comparar modelos: el que tenga el AIC más bajo es preferible (puede tomar valores negativos).",
+    "chi_squared": "Mide qué tan bien el modelo se ajusta a los datos, donde evalúa si las variables explicativas tienen un efecto significativo sobre la variable objeto. Se usa principalmente para evaluar la bondad de ajuste. Un valor bajo indica que el modelo tiene un mejor ajuste o que ciertas variables son significativas.",
+    "SSE": "Mide la cantidad total de error en un modelo de regresión, es decir, cuánto se desvían las predicciones de los valores reales. Un SSE bajo indica un buen ajuste del modelo, uno alto indica que el modelo no predice bien los datos.",
     "HYBRID": "Combina la suma de los errores cuadrados con una penalización basada en la cantidad de parámetros del modelo. Penaliza modelos más complejos que no aportan mejoras significativas en la predicción. Un valor más bajo indica un mejor equilibrio entre ajuste y simplicidad.",
-    "BIC": "Evalúa la calidad de un modelo penalizando la cantidad de parámetros, evitando el sobreajuste. Un BIC bajo indica el mejor modelo",
-    "adjust_chi_squeared": "Evalúa el buen ajuste del modelo considerando el número de parámetros. Se usa para comparar modelos, el de menor valor es preferido",
-    "r_squared": "El R² indica la proporción de la varianza de la variable dependiente que es explicada por el modelo.\nVa de 0 a 1. Un R² más alto indica que el modelo explica mejor los datos."
+    "BIC": "Evalúa la calidad de un modelo penalizando la cantidad de parámetros, evitando el sobreajuste. Un BIC bajo indica un modelo preferido.",
+    "adjust_chi_squared": "Es una versión del estadístico chi-cuadrado, ajustada por el número de parámetros del modelo. Se usa para comparar modelos: el de menor valor indica mejor ajuste.",
+    "r_squared": "El R² indica la proporción de la varianza de la variable dependiente que es explicada por el modelo. Va de 0 a 1. Un R² más alto indica que el modelo explica mejor los datos."
   },
   "RESIDUOS": {
     "durbin_watson": "Evalúa la autocorrelación en los residuos del modelo, es decir, si los errores están correlacionados entre si en función del orden de las observaciones. Cercano a 2 no hay autocorrelación, valores alejados de 2 (por debajo de 1.5 o por encima de 2.5) indican problemas de autocorrelación.",
