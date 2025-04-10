@@ -120,11 +120,11 @@
                               </div>
 
                               <div class="mt-2">
-                                <div *ngFor="let seed of model.seeds" class="mb-1">
-                                  <span class="fiuba-institutional-text me-2">{{ seed.name }}</span>
+                                <div *ngFor="let param of model.params" class="mb-1">
+                                  <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
                                   <span class="text-muted text-body-emphasis">
                                 <h5 class="d-inline">
-                                  {{ seed.value }} <small class="text-muted">± {{ seed.stderr }}</small>
+                                  {{ param.value }} <small class="text-muted">± {{ param.std_err }}</small>
                                 </h5>
                               </span>
                                 </div>

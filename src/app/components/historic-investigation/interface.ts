@@ -26,16 +26,16 @@ export interface Sample {
   title: string;
 }
 
-export interface Seed {
+export interface Param {
   name: string;
-  stderr: number;
+  std_err: number;
   value: number;
 }
 
 export interface FittedModel {
   best_adjust: string;
   model_id: number;
-  seeds: Seed[];
+  params: Param[];
 }
 
 export interface Version {
