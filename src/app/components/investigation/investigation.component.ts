@@ -101,7 +101,7 @@ export class InvestigationComponent implements AfterViewInit {
         selectedLinearizations: linearizations,
         paramSaved: undefined,
         iterations: DEFAULT_ITERATIONS,
-        steps: DEFAULT_STEPS
+        step: DEFAULT_STEPS
       }
     };
 

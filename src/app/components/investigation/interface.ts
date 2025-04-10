@@ -12,5 +12,5 @@ export interface IModelConfiguration {
   paramInfo: { [key: string]: string };
   paramSaved: { name: string, value: number, stderr: number } | undefined;
   iterations: number;
-  steps: number;
+  step: number;
 }

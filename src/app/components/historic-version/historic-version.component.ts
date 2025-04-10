@@ -279,7 +279,7 @@ export class HistoricVersionComponent {
           paramInfo: {},
           paramSaved: undefined,
           iterations: DEFAULT_ITERATIONS,
-          steps: DEFAULT_STEPS
+          step: DEFAULT_STEPS
 
         };
         for (const paramValues of fittedModel.seeds) {

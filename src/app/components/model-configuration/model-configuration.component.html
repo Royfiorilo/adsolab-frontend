@@ -52,7 +52,7 @@
               <mat-form-field class="flex-basis-20-md w-100">
                 <mat-label>{{ 'MODEL_CONFIGURATION.STEPS' | translate }}</mat-label>
                 <input [id]="modelId.toString()"
-                       [(ngModel)]="modelConfiguration[modelId].steps"
+                       [(ngModel)]="modelConfiguration[modelId].step"
                        matInput type="number"
                        min="0"
                        max="1"
