@@ -268,15 +268,17 @@ export class HistoricVersionComponent {
       modelConfiguration: {} as IModelsConfigurations,
       modelConfigurationDone: true
     };
-
+    
     if (this.data?.fitted_models) {
       for (const fittedModel of this.data?.fitted_models) {
+
         (investigation.selectedModels as number[]).push(fittedModel.model_id);
+
         investigation.modelConfiguration[fittedModel.model_id] = {
           automatedParams: false,
           selectedLinearizations: this.getLinearizations(fittedModel),
           paramValues: {},
-          paramInfo: {},
+          paramInfo: this.models?.find(model => model._id === fittedModel.model_id)?.parameters || {},
           paramSaved: undefined,
           iterations: DEFAULT_ITERATIONS,
           step: DEFAULT_STEPS
