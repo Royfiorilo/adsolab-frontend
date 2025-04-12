@@ -30,13 +30,13 @@ export class DownloaderComponent {
     const sheetData: (string | number)[][] = [];
     const headers = [
       ...Object.keys(this.ridgeResult.statistics),
-      ...Object.keys(this.ridgeResult.residuals),
+      ...Object.keys(this.ridgeResult.residuals.analysis),
       ...this.ridgeResult.results.map((result) => this.getModelName(result.model))
     ];
 
     const values = [
       ...Object.values(this.ridgeResult.statistics),
-      ...Object.values(this.ridgeResult.residuals),
+      ...Object.values(this.ridgeResult.residuals.analysis),
       ...this.ridgeResult.results.map((result) => result.coef)
     ];
 
@@ -75,13 +75,13 @@ export class DownloaderComponent {
     const headers = [
       ...bestAdjust.parameters.map((param: { name: any; }) => param.name),
       ...Object.keys(bestAdjust.statistics),
-      ...Object.keys(bestAdjust.residuals)
+      ...Object.keys(bestAdjust.residuals.analysis)
     ];
 
     const values = [
       ...bestAdjust.parameters.map((param: { value: any; }) => param.value),
       ...Object.values(bestAdjust.statistics),
-      ...Object.values(bestAdjust.residuals)
+      ...Object.values(bestAdjust.residuals.analysis)
     ];
 
     const sheetData: (string | number)[][] = [
@@ -102,7 +102,7 @@ export class DownloaderComponent {
   }
 
   private getHeaders(...additionalHeaders: string[]): string[] {
-    return [...additionalHeaders, ...this.state().selectedModels.map((modelId) => this.getModelName(modelId))];
+    return [...additionalHeaders, ...this.state().selectedModels.map((modelId) => this.getModelName(modelId)), 'Ridge'];
   }
 
   private getGraphDataRows(graphData: { x: number[]; y: number[] }[]): (string | number)[][] {
@@ -113,8 +113,15 @@ export class DownloaderComponent {
     return this.commonUtilsService.getModelById(modelId, this.state().models).name;
   }
 
+  private bestTransformedValueRidge(ce: number): number {
+    let index = this.ridgeResult?.transformed?.x.indexOf(ce);
+    return (this.ridgeResult && index !== undefined && index >= 0) ? this.ridgeResult.transformed.y[index] : 0;
+
+  }
+
+
   private getRowForCe(ceValue: number, index: number): (string | number)[] {
-    return [ceValue, ...this.state().selectedModels.map((modelId) => this.bestTransformedValue(modelId, index))];
+    return [ceValue, ...this.state().selectedModels.map((modelId) => this.bestTransformedValue(modelId, ceValue)), this.bestTransformedValueRidge(ceValue)];
   }
 
   private getRowForStatistics(statName: string): (string | number)[] {
@@ -125,7 +132,14 @@ export class DownloaderComponent {
     return [name, ...this.state().selectedModels.map((modelId) => this.parseResiduals(this.bestResidualValue(modelId, name))), this.getRidgeResiduals(name)];
   }
 
-  private bestTransformedValue(modelId: number, index: number): number {
+  private bestTransformedValue(modelId: number, ce: number): number {
+    let result = this.noLinearResults[modelId]?.successful_fits.find(
+      (adjustment) => adjustment.adjustment_name === this.noLinearResults[modelId].bestAdjustment
+    )?.graph;
+    let index = result.data[0]?.x.indexOf(ce);
+    return (index !== undefined && index >= 0) ? result.data[0]?.y[index] : 0;
+
+
     return this.noLinearResults[modelId]?.successful_fits.find(
       (adjustment) => adjustment.adjustment_name === this.noLinearResults[modelId].bestAdjustment
     )?.graph.data[1].y[index] ?? 0;
@@ -140,7 +154,7 @@ export class DownloaderComponent {
   private bestResidualValue(modelId: number, residualName: string): number {
     return this.noLinearResults[modelId]?.successful_fits.find(
       (adjustment) => adjustment.adjustment_name === this.noLinearResults[modelId].bestAdjustment
-    )?.residuals[residualName] ?? 0;
+    )?.residuals.analysis[residualName] ?? 0;
   }
 
   private parseResiduals(residualValue: number): string | number {
@@ -154,7 +168,7 @@ export class DownloaderComponent {
 
   private getRidgeResiduals(name: string): number {
     // @ts-ignore
-    return this.ridgeResult?.residuals[name] ?? 0;
+    return this.ridgeResult?.residuals.analysis[name] ?? 0;
   }
 
   downloadExcel(): void {
@@ -175,7 +189,7 @@ export class DownloaderComponent {
   }
 
   getResidualsRows(): string[] {
-    const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.successful_fits[0]?.residuals || {};
+    const sampleResiduals = this.noLinearResults[this.state().selectedModels[0]]?.successful_fits[0]?.residuals.analysis || {};
     return Object.keys(sampleResiduals);
   }
 
@@ -187,12 +201,12 @@ export class DownloaderComponent {
       worksheetData.push(this.getRowForCe(ceValue, index));
     });
 
-    worksheetData.push([...this.getHeaders('Statistics'), 'Ridge']);
+    worksheetData.push([...this.getHeaders('Statistics')]);
     this.getStatisticsRows().forEach((statName: string) => {
       worksheetData.push(this.getRowForStatistics(statName));
     });
 
-    worksheetData.push([...this.getHeaders('Residuals'), 'Ridge']);
+    worksheetData.push([...this.getHeaders('Residuals')]);
     this.getResidualsRows().forEach((name) => {
       worksheetData.push(this.getRowForResiduals(name));
     });
