@@ -111,6 +111,15 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
       this.investigationService.getInvestigationVersions(investigationId).subscribe({
         next: (response) => {
           investigation.versions = response.versions.sort((a, b) => b.version_id - a.version_id);
+          this.dataSource.data.forEach(item => {
+            if (item.versions && Array.isArray(item.versions)) {
+              item.versions.forEach(version => {
+                if (version.created_at) {
+                  version.created_at = new Date(version.created_at).toLocaleString('es-AR');
+                }
+              });
+            }
+          });
           this.dataSource.data = [...this.dataSource.data];
           this.loadingHistoric = false;
           setTimeout(() => {
