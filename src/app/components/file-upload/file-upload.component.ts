@@ -148,17 +148,60 @@ export class FileUploadComponent {
     this.dataSample.qe = [];
 
     for (const line of lines) {
-      const columns = line.split(',');
-      if (columns.length !== 2) {
-        this.setInvalidUploadedFile(InvalidFileReason.INVALID_FILE_STRUCTURE)
-        return undefined;
-      } else if (columns[0] === "" || columns[1] === "" || isNaN(Number(columns[0])) || isNaN(Number(columns[1]))) {
-        this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA)
-        return undefined;
+      if (!line.trim() || line.trim() === ',') {
+        continue;
       }
-      this.dataSample.ce.push(Number(columns[0]))
-      this.dataSample.qe.push(Number(columns[1]))
+
+      const quotedPattern = /^"([\d,]+)","([\d,]+)"$/;
+      const match = line.match(quotedPattern);
+
+      if (match) {
+        const value1 = match[1].replace(',', '.');
+        const value2 = match[2].replace(',', '.');
+
+        const num1 = Number(value1);
+        const num2 = Number(value2);
+
+        if (isNaN(num1) || isNaN(num2)) {
+          this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
+          return undefined;
+        }
+
+        this.dataSample.ce.push(num1);
+        this.dataSample.qe.push(num2);
+      } else {
+        const columns = line.split(',');
+        if (columns.length !== 2) {
+          this.setInvalidUploadedFile(InvalidFileReason.INVALID_FILE_STRUCTURE);
+          return undefined;
+        }
+
+        const value1 = columns[0].trim();
+        const value2 = columns[1].trim();
+
+        if (value1 === "" || value2 === "") {
+          this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
+          return undefined;
+        }
+
+        const num1 = Number(value1);
+        const num2 = Number(value2);
+
+        if (isNaN(num1) || isNaN(num2)) {
+          this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
+          return undefined;
+        }
+
+        this.dataSample.ce.push(num1);
+        this.dataSample.qe.push(num2);
+      }
     }
+
+    if (this.dataSample.ce.length === 0 || this.dataSample.qe.length === 0) {
+      this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
+      return undefined;
+    }
+
     this.uploadedFile.valid = true;
     //this.loadMaterials();
   }
