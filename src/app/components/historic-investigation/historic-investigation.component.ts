@@ -115,7 +115,11 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
             if (item.versions && Array.isArray(item.versions)) {
               item.versions.forEach(version => {
                 if (version.created_at) {
-                  version.created_at = new Date(version.created_at).toLocaleString('es-AR');
+                  version.created_at = new Date(version.created_at).toLocaleString(
+                    this.getDateFormatLang(),
+                    {
+                      hour12: false
+                    });
                 }
               });
             }
@@ -136,6 +140,16 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
     } else {
       this.loadingHistoric = false;
     }
+  }
+
+  private getDateFormatLang() {
+
+    const langMap: { [key: string]: string } = {
+      'es': 'es-ES',
+      'en': 'en-US'
+    }
+
+    return langMap[this.translateService.currentLang];
   }
 
   navigateToVersion(investigationId: number, versionId: number): void {
