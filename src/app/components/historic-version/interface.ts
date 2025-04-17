@@ -1,5 +1,6 @@
 import {IGraph, IStatistics, IUser} from "../../common/common.interface";
 import {IResiduals} from "../model-compare/interface";
+import {DataSample} from "../data-selector/data-sample";
 
 export interface FittedModels {
   best_adjust: string;
@@ -53,4 +54,5 @@ export interface InvestigationData {
   steps: number | null;
   version_id: number;
   user: IUser;
+  sample?: DataSample;
 }

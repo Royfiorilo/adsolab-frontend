@@ -149,7 +149,7 @@
     "GO_TO_HOME": "Ir al inicio"
   },
   "VERSIONS": {
-    "TITLE": "Título",
+    "SAMPLE_NAME": "Nombre de la muestra",
     "VERSION": "Versión",
     "ID": "ID",
     "MODEL": "Modelo: ",
@@ -165,7 +165,7 @@
     "VERSION_DELETE": "Borrar Versión",
     "INVESTIGATION_DELETE_MSG": "¿Está seguro que desea borrar la investigación {{ investigationId }}?",
     "VERSION_DELETE_MSG": "¿Está seguro que desea borrar la versión {{versionId}} de la investigación {{ investigationId }}?",
-    "FILTER_PLACEHOLDER": "Ingrese el código de investigación",
+    "FILTER_PLACEHOLDER": "Ingrese ID de investigación o palabra clave",
     "MY_INVESTIGATIONS": "Mis investigaciones",
     "ALL_INVESTIGATIONS": "Todas las investigaciones",
     "NOT_AUTHORIZED": "No está autorizado a eliminar la investigación de otro usuario.",

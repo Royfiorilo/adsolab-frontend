@@ -14,9 +14,10 @@ import {VersionDataService} from "./version.service";
 import {IGraph, IModelsConfigurations} from "../../common/common.interface";
 import {faArrowLeft, faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {StateService} from "../investigation/state.service";
-import {DataSample} from "../data-selector/data-sample";
+import {DataSample, IAdsorbate, IAdsorbent} from "../data-selector/data-sample";
 import {AuthService} from "../../common/auth.service";
 import {Location} from "@angular/common";
+import {SampleSelectorService} from "../data-selector/sample-selector.service";
 
 
 @Component({
@@ -46,6 +47,8 @@ export class HistoricVersionComponent {
     freundlich: "orange",
     langmuir: "green"
   }
+  protected adsorbents: IAdsorbent[] = [];
+  protected adsorbates: IAdsorbate[] = [];
 
   constructor(
     private router: Router,
@@ -57,7 +60,8 @@ export class HistoricVersionComponent {
     private versionDataService: VersionDataService,
     protected stateService: StateService,
     private authService: AuthService,
-    private location: Location
+    private location: Location,
+    private sampleService: SampleSelectorService
   ) {
   }
 
@@ -68,7 +72,6 @@ export class HistoricVersionComponent {
   ngOnInit() {
 
     this.versionData = this.versionDataService.getVersionData();
-    this.sample = this.versionDataService.getSample();
     this.modelService
       .getModels()
       .pipe(
@@ -88,6 +91,22 @@ export class HistoricVersionComponent {
           this.fetchData();
         });
       });
+
+    this.sampleService.getMaterials()
+      .pipe(
+        catchError(async error => {
+          throw await firstValueFrom(this.translateService.get('DATA_SELECTOR.ERROR_LOADING_PREVIOUS_SAMPLES', error));
+        })
+      )
+      .subscribe(response => {
+        this.adsorbates = response.adsorbates;
+        this.adsorbents = response.adsorbents;
+        this.sample = this.versionDataService.getSample();
+        if (this.sample) {
+          this.sample.adsorbent = this.adsorbents.find(adsorbent => adsorbent.id === this.sample?.adsorbent_id)?.name;
+          this.sample.adsorbate = this.adsorbates.find(adsorbate => adsorbate.id === this.sample?.adsorbate_id)?.iupac_name;
+        }
+      })
 
   }
 
@@ -268,7 +287,7 @@ export class HistoricVersionComponent {
       modelConfiguration: {} as IModelsConfigurations,
       modelConfigurationDone: true
     };
-    
+
     if (this.data?.fitted_models) {
       for (const fittedModel of this.data?.fitted_models) {
 
@@ -327,4 +346,8 @@ export class HistoricVersionComponent {
   }
 
   protected readonly faArrowLeft = faArrowLeft;
+
+  sampleIsActive() {
+    return !this.data?.sample?.deleted_at;
+  }
 }
