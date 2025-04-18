@@ -59,6 +59,16 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
               private versionDataService: VersionDataService,
               private dialog: MatDialog
   ) {
+    this.dataSource.filterPredicate = (data: Investigation, filter: string) => {
+      let filterValue = filter.toString().toLowerCase();
+
+      if (this.commonUtilsService.isInteger(filterValue)) {
+        return data.investigation_id.toString() === filterValue;
+      }
+
+      return data.sample.title.toString().toLowerCase().includes(filterValue) || data.sample.description.toString().toLowerCase().includes(filterValue)
+        || data.user.email.includes(filterValue);
+    };
   }
 
   ngOnInit(): void {
@@ -112,10 +122,19 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
         next: (response) => {
           investigation.versions = response.versions.sort((a, b) => b.version_id - a.version_id);
           this.dataSource.data.forEach(item => {
-            if (item.versions && Array.isArray(item.versions)) {
+            if (item.investigation_id === investigationId && item.versions && Array.isArray(item.versions)) {
               item.versions.forEach(version => {
                 if (version.created_at) {
-                  version.created_at = new Date(version.created_at).toLocaleString('es-AR');
+                  version.created_at = new Date(version.created_at).toLocaleString(
+                    this.getDateFormatLang(),
+                    {
+                      hour12: false,
+                      year: "2-digit",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    });
                 }
               });
             }
@@ -136,6 +155,16 @@ export class HistoricInvestigationComponent implements OnInit, AfterViewInit {
     } else {
       this.loadingHistoric = false;
     }
+  }
+
+  private getDateFormatLang() {
+
+    const langMap: { [key: string]: string } = {
+      'es': 'es-ES',
+      'en': 'en-US'
+    }
+
+    return langMap[this.translateService.currentLang];
   }
 
   navigateToVersion(investigationId: number, versionId: number): void {

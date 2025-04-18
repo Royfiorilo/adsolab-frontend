@@ -49,15 +49,20 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
   protected seedParamOptions: ISeedParamOption[] = []
   private currentRequestId: string | null = null;
   accordion = viewChild.required(MatAccordion);
+  currentLang: string;
 
   constructor(private modelConfigurationService: ModelConfigurationService,
               protected commonUtilsService: CommonUtilsService,
               private dialog: MatDialog, private translateService: TranslateService,
               protected stateService: StateService, private cancellationService: RequestCancellationService) {
-
+    this.currentLang = this.translateService.currentLang || this.translateService.getDefaultLang() || 'es';
+    this.translateService.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+    });
   }
 
   async ngAfterViewInit() {
+    console.log(this.modelConfiguration)
 
     this.seedParamOptions.push({
       name: SeedParamOption.AUTOMATED,
@@ -281,4 +286,18 @@ export class ModelConfigurationComponent implements OnChanges, AfterViewInit {
       this.currentRequestId = null;
     }
   }
+
+  parseParamInfo(paramInfo: any): string {
+    try {
+      return paramInfo[this.currentLang] ? paramInfo[this.currentLang] : paramInfo;
+    } catch (e: any) {
+      this.dialog.open(ErrorDialogComponent, {
+        data: {
+          main_message: this.translateService.instant('MODEL_CONFIGURATION.ERROR')
+        }
+      });
+      return paramInfo;
+    }
+  }
+
 }

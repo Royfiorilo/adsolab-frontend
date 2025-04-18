@@ -9,335 +9,339 @@
   </div>
 </div>
 
-<app-data-visualizer *ngIf="sample"
-                     [data]="sample"></app-data-visualizer>
-<div *ngIf="isLoggedUserInvestigation()" class="d-flex justify-content-center">
-  <button mat-button color="primary" class="m-2"
-          (click)="navigateToInvestigation()">
-    <fa-icon [icon]="faArrowUpRightFromSquare" class="m-2"></fa-icon>
-    {{ 'VERSIONS.EDIT' | translate }}
-  </button>
-</div>
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" *ngIf="models && data">
-  <mat-tab selected label="{{'MODEL_COMPARE.COMPARISON' | translate}}">
-    <div class=" d-flex justify-content-center m-3">
-      <div class="card col-lg-8 col-md-10">
-        <div class="card-header fiuba-institutional text-center">
-          {{ 'VERSIONS.VERSION' | translate }} {{ versionData?.version_id }} -
-          {{ 'VERSIONS.CREATION' | translate }} {{ versionData?.created_at }}
-        </div>
-        <div class="card-body d-flex flex-column">
-          <div class="d-flex justify-content-between align-items-center">
-            <h5
-              class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
-          </div>
-          <h2 class="text-center">
+<div class="row d-flex justify-content-center">
+  <div class="col-lg-10 col-md-12">
+    <app-data-visualizer *ngIf="sample"
+                         [data]="sample"></app-data-visualizer>
+    <div *ngIf="isLoggedUserInvestigation() && sampleIsActive()" class="d-flex justify-content-center">
+      <button mat-button color="primary" class="m-2"
+              (click)="navigateToInvestigation()">
+        <fa-icon [icon]="faArrowUpRightFromSquare" class="m-2"></fa-icon>
+        {{ 'VERSIONS.EDIT' | translate }}
+      </button>
+    </div>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" *ngIf="models && data">
+      <mat-tab selected label="{{'MODEL_COMPARE.COMPARISON' | translate}}">
+        <div class="d-flex justify-content-center m-3">
+          <div class="card col-lg-8 col-md-10">
+            <div class="card-header fiuba-institutional text-center">
+              {{ 'VERSIONS.VERSION' | translate }} {{ versionData?.version_id }} -
+              {{ 'VERSIONS.CREATION' | translate }} {{ versionData?.created_at }}
+            </div>
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5
+                  class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
+              </div>
+              <h2 class="text-center">
               <span
                 [ngClass]="this.commonUtilsService.getBestComparisonModelOverall(data.comparison.ml.best_model, data.comparison.heuristic.best_model, this.models) ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
 {{ this.commonUtilsService.getBestComparisonModelOverall(data.comparison.ml.best_model, data.comparison.heuristic.best_model, this.models) ?? ('UNDEFINED' | translate) }}
               </span>
-          </h2>
-          <div class="card m-3">
-            <div
-              class="card-body p-3 shadow-sm  align-items-center text-center">
-              <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.HEURISTIC' | translate }}</h5>
-              <div class="row justify-content-center">
-                <div *ngFor="let result of data!.comparison.heuristic.results!" class="col-md-6 col-lg-3">
-                  <div
-                    [ngClass]="result.model === data.comparison.heuristic.best_model ? 'fw-bold fiuba-institutional-text' : ''">
-                    {{ commonUtilsService.getModelById(result.model, this.models).name }}
-                  </div>
-                  <div
-                    [ngClass]="result.model === data.comparison.heuristic.best_model ? 'fw-bold fiuba-institutional-text' : ''">
-                    <div>{{ result.score }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card m-3">
-            <div
-              class="card-body p-3 shadow-sm  align-items-center text-center">
-              <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h5>
-
-              <div class="row justify-content-center">
-                <div *ngFor="let result of data!.comparison.ml.results!; let index = index"
-                     class="col-md-6 col-lg-3">
-                  <div
-                    [ngClass]="result.model ===  versionData?.best_model_ml  ? 'fw-bold fiuba-institutional-text' : ''">
-                    {{ commonUtilsService.getModelById(result.model, this.models).name }}
-                  </div>
-                  <div
-                    [ngClass]="result.model ===  versionData?.best_model_ml ? 'fw-bold fiuba-institutional-text' : ''">
-                    <div>{{ result.coef }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row justify-content-center m-3">
-      <div class="col-md-8">
-        <plotly-plot #comparisonPlot [data]="compareGraph?.data" [layout]="compareGraph?.layout"
-                     [style]="{width: '100%', height: '450px'}" [config]="{responsive: true}"></plotly-plot>
-      </div>
-    </div>
-
-
-    <div class="row justify-content-center m-3">
-
-      <div class="col-md-8">
-        <mat-accordion multi>
-          <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <h4 class="text-center">{{ 'MODEL_COMPARE.CALCULATED_POINTS' | translate }}</h4>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <ng-template matExpansionPanelContent>
-              <table class="table table-striped">
-                <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">{{ 'CE' | translate }}</th>
-                  <th *ngFor="let model of versionData?.fitted_models">
-                    {{ commonUtilsService.getModelById(model.model_id, this.models).name }}
-                  </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let ceValue of this.sample?.ce; let i = index">
-                  <th scope="row">{{ i + 1 }}</th>
-                  <td>{{ ceValue }}</td>
-                  <td *ngFor="let model of versionData?.fitted_models">
-                    {{ findMatchedTransformedValues(model.model_id, ceValue) ?? 'N/A' }}
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </ng-template>
-
-          </mat-expansion-panel>
-
-          <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <h4 class="text-center">{{ 'MODEL_COMPARE.STATISTICS' | translate }}</h4>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <ng-template matExpansionPanelContent>
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                  <tr>
-                    <th>{{ 'NAME' | translate }}</th>
-                    <th *ngFor="let fittedModel of versionData?.fitted_models">
-                      {{ commonUtilsService.getModelById(fittedModel.model_id, this.models).name }}
-                    </th>
-                    <th>{{ 'MODEL_COMPARE.RIDGE' | translate }}</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let statName of Object.keys(data.comparison.ml.statistics)">
-                    <td>{{ 'STATISTICS.' + statName | translate }}</td>
-                    <td *ngFor="let model of versionData?.fitted_models">
-                      {{ bestStatisticValue(+model.model_id, statName) ?? 'N/A' }}
-                    </td>
-                    <td>{{ getRidgeStatistic(statName) }}</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </ng-template>
-
-          </mat-expansion-panel>
-
-          <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <h4 class="text-center">{{ 'MODEL_COMPARE.RESIDUALS_ANALYSIS' | translate }}</h4>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <ng-template matExpansionPanelContent>
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                  <tr>
-                    <th>{{ 'NAME' | translate }}</th>
-                    <th *ngFor="let model of versionData?.fitted_models">
-                      {{ commonUtilsService.getModelById(+model.model_id, this.models).name }}
-                    </th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let residualName of getResidualsRows()">
-                    <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
-                    <td *ngFor="let model of versionData?.fitted_models">
-                      {{ bestResidualValue(+model.model_id, residualName) }}
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </ng-template>
-
-          </mat-expansion-panel>
-
-        </mat-accordion>
-      </div>
-    </div>
-  </mat-tab>
-  <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
-    <div class="row justify-content-center m-3">
-      <div *ngFor="let model of data?.fitted_models" class="col-12 col-lg-6">
-        <div class="mt-4 m-2 card">
-          <div class="card-header fiuba-institutional mb-1">
-            <h4
-              class="card-title text-center">{{ commonUtilsService.getModelById(model.model_id, this.models).name }}</h4>
-          </div>
-          <div class="card-body d-flex flex-column">
-
-            <div class="row me-lg-4 ms-lg-4 me-md-2 ms-md-2 me-sm-1 ms-sm-1">
-              <div class="col-6">
-                <div class="row">
-                  <div class="col mt-0">
-                    <span class="text-muted">{{ 'MODEL_COMPARE.PARAMS' | translate }}</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col mt-0">
-                    <div *ngFor="let param of findBestAdjustMethod(model.model_id)?.params!"
-                         class="mb-0">
-                      <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
-                      <span class="text-muted text-body-emphasis">
-                                <h5>{{ param.value }} <small class="text-muted">± {{ param.std_err }}</small></h5>
-                              </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="row">
-                  <div class="col mt-0">
-                          <span
-                            class="card-title text-muted float-end">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col mt-0">
-                    <h5 class="float-end">{{ model.best_adjust }}</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="row justify-content-center m-3">
-
-      <mat-accordion>
-        <div *ngFor="let model of versionData?.fitted_models" class="col-12">
-
-
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <h4 class="text-center">{{ commonUtilsService.getModelById(model.model_id, this.models).name }}</h4>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <ng-template matExpansionPanelContent>
-              <div class="card">
-                <div class="card-body d-flex flex-column">
-                  <p class="card-text mt-2"></p>
-                  <div class="table-responsive">
-
-                    <table class="table">
-                      <thead>
-                      <tr>
-                        <th scope="col">{{ 'MODEL_COMPARE.FIT' | translate }}</th>
-                        <th *ngFor="let param of findFittedModel(model.model_id)"
-                            scope="col">{{ param.name }}
-                        </th>
-                        <th scope="col"> {{ 'STATISTICS.chi_squared' | translate }}</th>
-                        <th scope="col"> {{ 'STATISTICS.r_squared' | translate }}</th>
-                        <th scope="col"> {{ 'STATISTICS.adjust_r_squared' | translate }}</th>
-                        <th scope="col"> {{ 'STATISTICS.adjust_chi_squeared' | translate }}</th>
-                        <th scope="col"> {{ 'STATISTICS.RMSE' | translate }}</th>
-                        <th scope="col"> {{ 'STATISTICS.SSE' | translate }}</th>
-                        <th scope="col"> {{ 'STATISTICS.HYBRID' | translate }}</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr *ngFor="let item of findAdjustMethods(model.model_id)"
-                          [ngClass]="{'table-active fw-bold': model.best_adjust === item.name}">
-                        <th scope="row"> {{ item.name }}</th>
-                        <td *ngFor="let seed of item.params">{{ seed.value }}</td>
-                        <td> {{ item.statistics.chi_squared }}</td>
-                        <td> {{ item.statistics.r_squared }}</td>
-                        <td> {{ item.statistics.adjust_r_squared }}</td>
-                        <td> {{ item.statistics.adjust_chi_squeared }}</td>
-                        <td> {{ item.statistics.RMSE }}</td>
-                        <td> {{ item.statistics.SSE }}</td>
-                        <td> {{ item.statistics.HYBRID }}</td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div *ngIf="summaryGraph">
-                    <plotly-plot [data]="summaryGraph[+model.model_id].data"
-                                 [layout]="summaryGraph[+model.model_id].layout"
-                                 [style]="{width: '100%', height: '450px'}"
-                                 [config]="{responsive: true}"
-                    ></plotly-plot>
-                  </div>
-
-                  <div class="m-3" *ngFor="let adjustMethod of findAdjustMethods(model.model_id)">
-                    <div class="card">
-                      <div class="card-body">
-                        <h5 class="text-center">
-                          {{ adjustMethod.name }}
-                          <span *ngIf="model.best_adjust === adjustMethod.name"
-                                class="badge fiuba-institutional-bg text-white">
-                                                                {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
-                          </span>
-                        </h5>
-
-                        <plotly-plot *ngIf="adjustMethod.graph" [data]="adjustMethod.graph.data"
-                                     [layout]="adjustMethod.graph.layout"
-                                     [style]="{width: '100%', height: '450px'}"
-                                     [config]="{responsive: true}"
-                        ></plotly-plot>
-
-                        <plotly-plot *ngIf="adjustMethod.residuals.graph" [data]="adjustMethod.residuals.graph.data"
-                                     [layout]="adjustMethod.residuals.graph.layout"
-                                     [style]="{width: '100%', height: '450px'}"
-                                     [config]="{responsive: true}"
-                        ></plotly-plot>
-                        <app-fit-result [parameters]="adjustMethod.params" [statistics]="adjustMethod.statistics"/>
+              </h2>
+              <div class="card m-3">
+                <div
+                  class="card-body p-3 shadow-sm  align-items-center text-center">
+                  <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.HEURISTIC' | translate }}</h5>
+                  <div class="row justify-content-center">
+                    <div *ngFor="let result of data!.comparison.heuristic.results!" class="col-md-6 col-lg-3">
+                      <div
+                        [ngClass]="result.model === data.comparison.heuristic.best_model ? 'fw-bold fiuba-institutional-text' : ''">
+                        {{ commonUtilsService.getModelById(result.model, this.models).name }}
+                      </div>
+                      <div
+                        [ngClass]="result.model === data.comparison.heuristic.best_model ? 'fw-bold fiuba-institutional-text' : ''">
+                        <div>{{ result.score }}</div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </ng-template>
+              <div class="card m-3">
+                <div
+                  class="card-body p-3 shadow-sm  align-items-center text-center">
+                  <h5 class="card-title mb-2">{{ 'MODEL_COMPARE.RIDGE' | translate }}</h5>
 
-          </mat-expansion-panel>
+                  <div class="row justify-content-center">
+                    <div *ngFor="let result of data!.comparison.ml.results!; let index = index"
+                         class="col-md-6 col-lg-3">
+                      <div
+                        [ngClass]="result.model ===  versionData?.best_model_ml  ? 'fw-bold fiuba-institutional-text' : ''">
+                        {{ commonUtilsService.getModelById(result.model, this.models).name }}
+                      </div>
+                      <div
+                        [ngClass]="result.model ===  versionData?.best_model_ml ? 'fw-bold fiuba-institutional-text' : ''">
+                        <div>{{ result.coef }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-center m-3">
+          <div class="col">
+            <plotly-plot #comparisonPlot [data]="compareGraph?.data" [layout]="compareGraph?.layout"
+                         [style]="{width: '100%', height: '450px'}" [config]="{responsive: true}"></plotly-plot>
+          </div>
+        </div>
+
+
+        <div class="row justify-content-center m-3">
+
+          <div class="col-md-8">
+            <mat-accordion multi>
+              <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h4 class="text-center">{{ 'MODEL_COMPARE.CALCULATED_POINTS' | translate }}</h4>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <ng-template matExpansionPanelContent>
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">{{ 'CE' | translate }}</th>
+                      <th *ngFor="let model of versionData?.fitted_models">
+                        {{ commonUtilsService.getModelById(model.model_id, this.models).name }}
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let ceValue of this.sample?.ce; let i = index">
+                      <th scope="row">{{ i + 1 }}</th>
+                      <td>{{ ceValue }}</td>
+                      <td *ngFor="let model of versionData?.fitted_models">
+                        {{ findMatchedTransformedValues(model.model_id, ceValue) ?? 'N/A' }}
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </ng-template>
+
+              </mat-expansion-panel>
+
+              <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h4 class="text-center">{{ 'MODEL_COMPARE.STATISTICS' | translate }}</h4>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <ng-template matExpansionPanelContent>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th>{{ 'NAME' | translate }}</th>
+                        <th *ngFor="let fittedModel of versionData?.fitted_models">
+                          {{ commonUtilsService.getModelById(fittedModel.model_id, this.models).name }}
+                        </th>
+                        <th>{{ 'MODEL_COMPARE.RIDGE' | translate }}</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let statName of Object.keys(data.comparison.ml.statistics)">
+                        <td>{{ 'STATISTICS.' + statName | translate }}</td>
+                        <td *ngFor="let model of versionData?.fitted_models">
+                          {{ bestStatisticValue(+model.model_id, statName) ?? 'N/A' }}
+                        </td>
+                        <td>{{ getRidgeStatistic(statName) }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </ng-template>
+
+              </mat-expansion-panel>
+
+              <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h4 class="text-center">{{ 'MODEL_COMPARE.RESIDUALS_ANALYSIS' | translate }}</h4>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <ng-template matExpansionPanelContent>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th>{{ 'NAME' | translate }}</th>
+                        <th *ngFor="let model of versionData?.fitted_models">
+                          {{ commonUtilsService.getModelById(+model.model_id, this.models).name }}
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let residualName of getResidualsRows()">
+                        <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                        <td *ngFor="let model of versionData?.fitted_models">
+                          {{ bestResidualValue(+model.model_id, residualName) }}
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </ng-template>
+
+              </mat-expansion-panel>
+
+            </mat-accordion>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
+        <div class="row justify-content-center m-3">
+          <div *ngFor="let model of data?.fitted_models" class="col-12 col-lg-6">
+            <div class="mt-4 m-2 card">
+              <div class="card-header fiuba-institutional mb-1">
+                <h4
+                  class="card-title text-center">{{ commonUtilsService.getModelById(model.model_id, this.models).name }}</h4>
+              </div>
+              <div class="card-body d-flex flex-column">
+
+                <div class="row me-lg-4 ms-lg-4 me-md-2 ms-md-2 me-sm-1 ms-sm-1">
+                  <div class="col-6">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <span class="text-muted">{{ 'MODEL_COMPARE.PARAMS' | translate }}</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col mt-0">
+                        <div *ngFor="let param of findBestAdjustMethod(model.model_id)?.params!"
+                             class="mb-0">
+                          <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
+                          <span class="text-muted text-body-emphasis">
+                                <h5>{{ param.value }} <small class="text-muted">± {{ param.std_err }}</small></h5>
+                              </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="row">
+                      <div class="col mt-0">
+                          <span
+                            class="card-title text-muted float-end">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="float-end">{{ model.best_adjust }}</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row justify-content-center m-3">
+
+          <mat-accordion>
+            <div *ngFor="let model of versionData?.fitted_models" class="col-12">
+
+
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h4 class="text-center">{{ commonUtilsService.getModelById(model.model_id, this.models).name }}</h4>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <ng-template matExpansionPanelContent>
+                  <div class="card">
+                    <div class="card-body d-flex flex-column">
+                      <p class="card-text mt-2"></p>
+                      <div class="table-responsive">
+
+                        <table class="table">
+                          <thead>
+                          <tr>
+                            <th scope="col">{{ 'MODEL_COMPARE.FIT' | translate }}</th>
+                            <th *ngFor="let param of findFittedModel(model.model_id)"
+                                scope="col">{{ param.name }}
+                            </th>
+                            <th scope="col"> {{ 'STATISTICS.chi_squared' | translate }}</th>
+                            <th scope="col"> {{ 'STATISTICS.r_squared' | translate }}</th>
+                            <th scope="col"> {{ 'STATISTICS.adjust_r_squared' | translate }}</th>
+                            <th scope="col"> {{ 'STATISTICS.adjust_chi_squeared' | translate }}</th>
+                            <th scope="col"> {{ 'STATISTICS.RMSE' | translate }}</th>
+                            <th scope="col"> {{ 'STATISTICS.SSE' | translate }}</th>
+                            <th scope="col"> {{ 'STATISTICS.HYBRID' | translate }}</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of findAdjustMethods(model.model_id)"
+                              [ngClass]="{'table-active fw-bold': model.best_adjust === item.name}">
+                            <th scope="row"> {{ item.name }}</th>
+                            <td *ngFor="let seed of item.params">{{ seed.value }}</td>
+                            <td> {{ item.statistics.chi_squared }}</td>
+                            <td> {{ item.statistics.r_squared }}</td>
+                            <td> {{ item.statistics.adjust_r_squared }}</td>
+                            <td> {{ item.statistics.adjust_chi_squeared }}</td>
+                            <td> {{ item.statistics.RMSE }}</td>
+                            <td> {{ item.statistics.SSE }}</td>
+                            <td> {{ item.statistics.HYBRID }}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div *ngIf="summaryGraph">
+                        <plotly-plot [data]="summaryGraph[+model.model_id].data"
+                                     [layout]="summaryGraph[+model.model_id].layout"
+                                     [style]="{width: '100%', height: '450px'}"
+                                     [config]="{responsive: true}"
+                        ></plotly-plot>
+                      </div>
+
+                      <div class="m-3" *ngFor="let adjustMethod of findAdjustMethods(model.model_id)">
+                        <div class="card">
+                          <div class="card-body">
+                            <h5 class="text-center">
+                              {{ adjustMethod.name }}
+                              <span *ngIf="model.best_adjust === adjustMethod.name"
+                                    class="badge fiuba-institutional-bg text-white">
+                                                                {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
+                          </span>
+                            </h5>
+
+                            <plotly-plot *ngIf="adjustMethod.graph" [data]="adjustMethod.graph.data"
+                                         [layout]="adjustMethod.graph.layout"
+                                         [style]="{width: '100%', height: '450px'}"
+                                         [config]="{responsive: true}"
+                            ></plotly-plot>
+
+                            <plotly-plot *ngIf="adjustMethod.residuals.graph" [data]="adjustMethod.residuals.graph.data"
+                                         [layout]="adjustMethod.residuals.graph.layout"
+                                         [style]="{width: '100%', height: '450px'}"
+                                         [config]="{responsive: true}"
+                            ></plotly-plot>
+                            <app-fit-result [parameters]="adjustMethod.params" [statistics]="adjustMethod.statistics"/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+
+              </mat-expansion-panel>
+
+            </div>
+
+          </mat-accordion>
 
         </div>
 
-      </mat-accordion>
-
-    </div>
-
-  </mat-tab>
-</mat-tab-group>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

@@ -15,6 +15,7 @@ export interface DataSample {
   adsorbate?: string | undefined;
   adsorbent_id: number | undefined;
   adsorbent?: string | undefined;
+  deleted_at?: string | undefined;
 }
 
 export interface CreateInvestigationResponse {
