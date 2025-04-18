@@ -209,6 +209,7 @@ export class ModelCompareComponent {
 
     this.modelCompareService.saveInvestigation(request).subscribe({
       error: (error) => {
+        this.savingInvestigation = false
         if (error.status === 403) {
           this._snackBar.openFromComponent(SnackBarComponent, {
             duration: 3000,
