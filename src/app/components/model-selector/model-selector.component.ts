@@ -5,6 +5,8 @@ import {Model} from "./model";
 import {catchError, firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {StateService} from "../investigation/state.service";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-model-selector',
@@ -17,8 +19,13 @@ export class ModelSelectorComponent {
   private modalService = inject(NgbModal);
   protected loadingModels: boolean = false;
   state = this.stateService.state;
+  currentLang: string;
 
-  constructor(private modelService: ModelSelectorServiceService, private translateService: TranslateService, protected stateService: StateService) {
+  constructor(private dialog: MatDialog, private modelService: ModelSelectorServiceService, private translateService: TranslateService, protected stateService: StateService) {
+    this.currentLang = this.translateService.currentLang || this.translateService.getDefaultLang() || 'es';
+    this.translateService.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+    });
   }
 
   ngOnInit() {
@@ -54,4 +61,17 @@ export class ModelSelectorComponent {
     this.onSelectedModels.emit(modelId);
   }
 
+  parseDescription(description: string): string {
+    try {
+      const parsedDesc = JSON.parse(description);
+      return parsedDesc[this.currentLang] ? parsedDesc[this.currentLang] : description;
+    } catch (e: any) {
+      this.dialog.open(ErrorDialogComponent, {
+        data: {
+          main_message: this.translateService.instant('MODEL_SELECTOR.ERROR')
+        }
+      });
+      return description;
+    }
+  }
 }

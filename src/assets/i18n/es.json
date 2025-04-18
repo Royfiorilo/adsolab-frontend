@@ -67,7 +67,8 @@
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo",
-    "ERROR_LOADING_MODELS": "Error al cargar modelos: {{ message }}"
+    "ERROR_LOADING_MODELS": "Error al cargar modelos: {{ message }}",
+    "ERROR": "Error al traducir la descripcion de los modelos"
   },
   "MODEL_CONFIGURATION": {
     "NOT_SELECTED_MODELS": "No se han seleccionado modelos",
@@ -84,7 +85,8 @@
     "STEPS": "Steps",
     "PREDICTED": "Estimar valores",
     "PREDICTION_ERROR": "No se pudo realizar la estimación. Por favor, ingrese los parámetros manualmente para poder avanzar.",
-    "PREDICTION_NOTE": "Estimación basada en los datos de la muestra."
+    "PREDICTION_NOTE": "Estimación basada en los datos de la muestra.",
+    "ERROR": "Error al traducir los parametros"
   },
   "MODEL_COMPARE": {
     "COMPARISON": "Comparación",

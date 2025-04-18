@@ -89,11 +89,12 @@
                       <div class="modal-body">
                         <div class="mb-3">
                           <div class="input-group">
-                            {{ modelConfiguration[modelId].paramInfo[param.key] }}
+                            {{ parseParamInfo(modelConfiguration[modelId].paramInfo[param.key]) }}
                           </div>
                         </div>
                       </div>
                     </ng-template>
+                    MODEL_SELECTOR
                   </div>
                 </div>
               </div>
