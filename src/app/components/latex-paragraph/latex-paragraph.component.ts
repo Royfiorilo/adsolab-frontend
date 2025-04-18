@@ -36,7 +36,7 @@ export class LatexParagraphComponent {
         this._html.push(this.latexService.renderToString(segments[i]['value'], {
           output: "mathml",
           throwOnError: false,
-          displayMode: false
+          displayMode: true
         }))
       } else if (segments[i]['type'] == 'display') {
         this._html.push(this.latexService.renderToString(segments[i]['value'], {
