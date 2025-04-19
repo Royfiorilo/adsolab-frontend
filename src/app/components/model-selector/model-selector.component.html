@@ -1,5 +1,12 @@
 <div class="container-fluid">
   <div class="row d-flex justify-content-center m-3">
+    <div class="col-12 text-start mb-2">
+      <mat-checkbox color="accent"
+                    [checked]="areAllSelected()"
+                    (change)="toggleSelectAll($event.checked)">
+        {{ 'MODEL_SELECTOR.SELECT_ALL' | translate }}
+      </mat-checkbox>
+    </div>
     <div *ngFor="let model of state().models" class="p-3 col-lg-4 col-md-6 col-sm-8">
 
       <mat-card

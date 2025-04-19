@@ -67,6 +67,7 @@
   },
   "MODEL_SELECTOR": {
     "MODEL_DETAILS": "Detalles del modelo",
+    "SELECT_ALL": "Seleccionar todos",
     "ERROR_LOADING_MODELS": "Error al cargar modelos: {{ message }}",
     "ERROR": "Error al traducir la descripcion de los modelos"
   },
