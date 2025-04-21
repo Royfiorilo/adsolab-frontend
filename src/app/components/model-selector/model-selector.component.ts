@@ -74,4 +74,26 @@ export class ModelSelectorComponent {
       return description;
     }
   }
+
+  areAllSelected(): boolean {
+    return this.state().models.length > 0 &&
+      this.state().models.every(model => this.state().selectedModels.includes(model._id));
+  }
+
+  toggleSelectAll(checked: boolean): void {
+    const allModelIds = this.state().models.map(model => model._id);
+    for (const id of allModelIds) {
+      if (checked) {
+        if (this.state().selectedModels.includes(id)) {
+          continue;
+        }
+      } else {
+        if (!this.state().selectedModels.includes(id)) {
+          continue;
+        }
+      }
+      this.selectModel(id);
+    }
+  }
+
 }
