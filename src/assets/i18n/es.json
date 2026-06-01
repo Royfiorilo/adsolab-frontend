@@ -24,6 +24,14 @@
     "HIST": "Investigaciones Históricas",
     "USERS": "Usuarios"
   },
+  "NAV": {
+    "DASHBOARD": "Dashboard",
+    "EQUILIBRIUM": "Equilibrio",
+    "KINETICS": "Cinéticas",
+    "HISTORIC": "Histórico",
+    "USERS": "Usuarios",
+    "COMING_SOON": "Próximamente"
+  },
   "INVESTIGATION": {
     "CONTINUE": "Continuar",
     "BACK": "Volver",
