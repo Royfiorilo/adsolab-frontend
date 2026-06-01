@@ -1,21 +1,283 @@
-.card {
-  min-width: 100%;
-  min-height: 60%;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ===== Dashboard layout ===== */
+.dashboard-wrapper {
+  background-color: #f7f9fb;
 }
 
-.card-body {
+.dashboard-content {
+  padding: 2rem;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: 1.75rem;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #191c1e;
+  margin: 0;
+}
+
+.dashboard-subtitle {
+  font-size: 1rem;
+  color: #404851;
+  margin: 0.5rem 0 0;
+  max-width: 640px;
+}
+
+/* ===== Module cards ===== */
+.module-card {
+  position: relative;
+  height: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e0e3e5;
+  border-radius: 0.75rem;
+  padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.module-card--active {
+  cursor: pointer;
+}
+
+.module-card--active:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+}
+
+.module-card--disabled {
+  opacity: 0.7;
+}
+
+/* Left accent bar */
+.module-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.module-accent--primary {
+  background-color: #008bce;
+}
+
+.module-accent--muted {
+  background-color: #9aa3ad;
+}
+
+.module-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.module-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #008bce;
+}
+
+.module-card--disabled .module-card__title {
+  color: #6c757d;
+}
+
+.module-card__title h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #191c1e;
+  margin: 0;
+}
+
+.module-card__desc {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #404851;
+  margin: 0;
+}
+
+.module-card__foot {
+  margin-top: 1.25rem;
+}
+
+.module-card__action {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #008bce;
+}
+
+.module-card--active:hover .module-card__action {
+  text-decoration: underline;
+}
+
+/* ===== Status badges ===== */
+.status-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.status-badge--operational {
+  background-color: #cee5ff;
+  color: #004a76;
+}
+
+.status-badge--soon {
+  background-color: #e0e3e5;
+  color: #404851;
+}
+
+/* ===== Stats card ===== */
+.stats-card {
+  height: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e0e3e5;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
+.stats-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #008bce;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.stats-card__number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #191c1e;
+  line-height: 1;
+}
+
+.stats-card__label {
+  font-size: 0.875rem;
+  color: #404851;
+  margin-top: 0.35rem;
+}
+
+/* ===== Activity card ===== */
+.activity-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e3e5;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.activity-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e0e3e5;
+  background-color: #f2f4f6;
+}
+
+.activity-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #404851;
+}
+
+.activity-card__title h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #191c1e;
+  margin: 0;
+}
+
+.activity-card__link {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #008bce;
+  text-decoration: none;
+}
+
+.activity-card__link:hover {
+  text-decoration: underline;
+}
+
+/* ===== Activity table ===== */
+.activity-table th {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #404851;
+  border-bottom: 1px solid #e0e3e5;
+  padding: 0.85rem 1.25rem;
+}
+
+.activity-table td {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.875rem;
+  color: #191c1e;
+  vertical-align: middle;
+  border-bottom: 1px solid #eef1f3;
+}
+
+.activity-table tbody tr:hover {
+  background-color: #f7f9fb;
+}
+
+.activity-table__main {
+  font-weight: 600;
+}
+
+.activity-table__muted {
+  color: #707882 !important;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+}
+
+.status-dot--ok {
+  background-color: #2e7d32;
+}
+
+.activity-state {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  color: #707882;
+  font-size: 0.9rem;
+}
+
+/* ===== Footer (unchanged from original) ===== */
 .footer {
   background-color: #373A36;
   padding: 1rem 3rem;
@@ -34,59 +296,16 @@
   height: auto;
 }
 
-.card-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-}
-
-.dashboard-card {
-  width: 100%;
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.icon-container {
-  margin-bottom: 15px;
-  color: #008bce;
-}
-
-@media (min-width: 576px) {
-  .dashboard-card {
-    min-height: 180px;
-  }
-}
-
-@media (min-width: 768px) {
-  .dashboard-card {
-    min-height: 200px;
-  }
-}
-
-@media (min-width: 992px) {
-  .dashboard-card {
-    min-height: 220px;
-  }
-}
-
-
 .image-pair {
   display: flex;
   gap: 1rem;
 }
 
-
 @media (max-width: 576px) {
+  .dashboard-content {
+    padding: 1.25rem;
+  }
+
   .image-pair {
     flex-direction: column;
   }

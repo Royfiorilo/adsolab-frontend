@@ -1,47 +1,115 @@
-<div class="d-flex flex-column main-body h-100">
+<div class="dashboard-wrapper d-flex flex-column h-100">
 
-  <div class="container-fluid p-4 h-100">
-    <div class="row h-100 d-flex justify-content-center align-items-center">
-      <div class="col-12 col-sm-6 col-md-4 mb-4">
-        <div class="card-container">
-          <mat-card class="dashboard-card" routerLink="/investigation">
-            <mat-card-content class="text-center">
-              <div class="icon-container">
-                <fa-icon [icon]="faFlaskVial" size="6x"></fa-icon>
+  <div class="dashboard-content flex-grow-1">
+
+    <!-- Page header -->
+    <header class="dashboard-header">
+      <h1 class="dashboard-title">{{ 'DASHBOARD.TITLE' | translate }}</h1>
+      <p class="dashboard-subtitle">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
+    </header>
+
+    <!-- Module cards (bento grid) -->
+    <div class="row g-4 mb-4">
+
+      <!-- Equilibrium module: operational, navigates to the investigation flow -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="module-card module-card--active" (click)="goToEquilibrium()">
+          <span class="module-accent module-accent--primary"></span>
+          <div class="module-card__body">
+            <div class="module-card__head">
+              <div class="module-card__title">
+                <fa-icon [icon]="faFlaskVial"></fa-icon>
+                <h3>{{ 'DASHBOARD.MODULE_EQUILIBRIUM' | translate }}</h3>
               </div>
-              <p class="card-text font-weight-bold mt-3">{{ 'MAIN_PAGE.NEW_INVESTIGATION' | translate }}</p>
-            </mat-card-content>
-          </mat-card>
+              <span class="status-badge status-badge--operational">{{ 'DASHBOARD.STATUS_OPERATIONAL' | translate }}</span>
+            </div>
+            <p class="module-card__desc">{{ 'DASHBOARD.MODULE_EQUILIBRIUM_DESC' | translate }}</p>
+          </div>
+          <div class="module-card__foot">
+            <span class="module-card__action">{{ 'DASHBOARD.OPEN_PANEL' | translate }} &rarr;</span>
+          </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-4 mb-4">
-        <div class="card-container">
-          <mat-card class="dashboard-card" routerLink="/historic">
-            <mat-card-content class="text-center">
-              <div class="icon-container">
-                <fa-icon [icon]="faHistory" size="6x"></fa-icon>
+      <!-- Kinetics module: not built yet, shown disabled -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="module-card module-card--disabled">
+          <span class="module-accent module-accent--muted"></span>
+          <div class="module-card__body">
+            <div class="module-card__head">
+              <div class="module-card__title">
+                <fa-icon [icon]="faClock"></fa-icon>
+                <h3>{{ 'DASHBOARD.MODULE_KINETICS' | translate }}</h3>
               </div>
-              <p class="card-text font-weight-bold mt-3">{{ 'MAIN_PAGE.HIST' | translate }}</p>
-            </mat-card-content>
-          </mat-card>
+              <span class="status-badge status-badge--soon">{{ 'DASHBOARD.STATUS_COMING_SOON' | translate }}</span>
+            </div>
+            <p class="module-card__desc">{{ 'DASHBOARD.MODULE_KINETICS_DESC' | translate }}</p>
+          </div>
         </div>
       </div>
 
-      <div class="col-12 col-sm-6 col-md-4 mb-4" *ngIf="isAdmin()">
-        <div class="card-container">
-          <mat-card class="dashboard-card" routerLink="/users">
-            <mat-card-content class="text-center">
-              <div class="icon-container">
-                <fa-icon [icon]="faUsers" size="6x"></fa-icon>
-              </div>
-              <p class="card-text font-weight-bold mt-3">{{ 'MAIN_PAGE.USERS' | translate }}</p>
-            </mat-card-content>
-          </mat-card>
+      <!-- Quick stats -->
+      <div class="col-12 col-lg-4">
+        <div class="stats-card">
+          <div class="stats-card__icon">
+            <fa-icon [icon]="faChartLine"></fa-icon>
+          </div>
+          <div class="stats-card__number">{{ totalInvestigations }}</div>
+          <div class="stats-card__label">{{ 'DASHBOARD.TOTAL_INVESTIGATIONS' | translate }}</div>
         </div>
       </div>
+
     </div>
+
+    <!-- Recent activity -->
+    <section class="activity-card">
+      <div class="activity-card__head">
+        <div class="activity-card__title">
+          <fa-icon [icon]="faHistory"></fa-icon>
+          <h2>{{ 'DASHBOARD.RECENT_ACTIVITY' | translate }}</h2>
+        </div>
+        <a routerLink="/historic" class="activity-card__link">{{ 'DASHBOARD.VIEW_ALL' | translate }} &rarr;</a>
+      </div>
+
+      <div class="table-responsive"
+           *ngIf="!loadingActivity && !activityError && recentInvestigations.length > 0">
+        <table class="table activity-table mb-0">
+          <thead>
+          <tr>
+            <th>{{ 'DASHBOARD.COL_SAMPLE' | translate }}</th>
+            <th>{{ 'DASHBOARD.COL_USER' | translate }}</th>
+            <th>{{ 'DASHBOARD.COL_VERSIONS' | translate }}</th>
+            <th>{{ 'DASHBOARD.COL_DATE' | translate }}</th>
+            <th>{{ 'DASHBOARD.COL_STATUS' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let investigation of recentInvestigations">
+            <td class="activity-table__main">{{ investigation.sample?.title || '#' + investigation.investigation_id }}</td>
+            <td class="activity-table__muted">{{ investigation.user?.email }}</td>
+            <td>{{ investigation.versions?.length || 0 }}</td>
+            <td class="activity-table__muted">{{ lastVersionDate(investigation) | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <span class="status-dot status-dot--ok"></span>
+              {{ 'DASHBOARD.STATUS_COMPLETED' | translate }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty / loading / error states -->
+      <div class="activity-state" *ngIf="loadingActivity">{{ 'DASHBOARD.LOADING' | translate }}</div>
+      <div class="activity-state" *ngIf="!loadingActivity && activityError">{{ 'DASHBOARD.ACTIVITY_ERROR' | translate }}</div>
+      <div class="activity-state"
+           *ngIf="!loadingActivity && !activityError && recentInvestigations.length === 0">
+        {{ 'DASHBOARD.NO_ACTIVITY' | translate }}
+      </div>
+    </section>
+
   </div>
+
+  <!-- Institutional footer (kept from original main page) -->
   <div class="footer mt-auto py-3">
     <div class="container-fluid">
       <div class="row">
