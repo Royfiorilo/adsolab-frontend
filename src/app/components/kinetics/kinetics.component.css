@@ -1,0 +1,83 @@
+.stepper-container {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.stepper-navigation-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.stepper-button-container {
+  margin: 12px 0;
+  width: fit-content;
+}
+
+
+@media (min-width: 768px) {
+  .stepper-navigation-container {
+
+    justify-content: center;
+  }
+
+  .stepper-button-container {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+  }
+
+
+  .stepper-button-container:first-child {
+    left: 40px;
+  }
+
+  .stepper-button-container:last-child {
+    right: 40px;
+  }
+}
+
+
+@media (max-width: 767px) {
+  .stepper-button {
+    transform: scale(0.85);
+  }
+
+  :host ::ng-deep .mat-vertical-stepper-header-container {
+    margin-bottom: 12px;
+  }
+
+  :host ::ng-deep .mat-vertical-content-container {
+    margin-left: 12px;
+  }
+}
+
+:host ::ng-deep .mat-stepper-horizontal-line {
+  min-width: 10px;
+}
+
+:host ::ng-deep .mat-step-label {
+  white-space: normal;
+  text-align: center;
+}
+
+@media (max-width: 400px) {
+  :host ::ng-deep .mat-step-label {
+    font-size: 14px;
+  }
+}
+
+.container {
+  max-width: 600px;
+}
+
+.card {
+  border: 1px solid #007bff;
+}
+
+.card-body {
+  text-align: center;
+}

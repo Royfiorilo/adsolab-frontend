@@ -31,19 +31,22 @@
         </div>
       </div>
 
-      <!-- Kinetics module: not built yet, shown disabled -->
+      <!-- Kinetics module: operational, navigates to the kinetics flow -->
       <div class="col-12 col-md-6 col-lg-4">
-        <div class="module-card module-card--disabled">
-          <span class="module-accent module-accent--muted"></span>
+        <div class="module-card module-card--active" (click)="goToKinetics()">
+          <span class="module-accent module-accent--primary"></span>
           <div class="module-card__body">
             <div class="module-card__head">
               <div class="module-card__title">
                 <fa-icon [icon]="faClock"></fa-icon>
                 <h3>{{ 'DASHBOARD.MODULE_KINETICS' | translate }}</h3>
               </div>
-              <span class="status-badge status-badge--soon">{{ 'DASHBOARD.STATUS_COMING_SOON' | translate }}</span>
+              <span class="status-badge status-badge--operational">{{ 'DASHBOARD.STATUS_OPERATIONAL' | translate }}</span>
             </div>
             <p class="module-card__desc">{{ 'DASHBOARD.MODULE_KINETICS_DESC' | translate }}</p>
+          </div>
+          <div class="module-card__foot">
+            <span class="module-card__action">{{ 'DASHBOARD.OPEN_PANEL' | translate }} &rarr;</span>
           </div>
         </div>
       </div>
@@ -76,23 +79,18 @@
         <table class="table activity-table mb-0">
           <thead>
           <tr>
+            <th>{{ 'DASHBOARD.COL_ID' | translate }}</th>
             <th>{{ 'DASHBOARD.COL_SAMPLE' | translate }}</th>
+            <th>{{ 'DASHBOARD.COL_DESCRIPTION' | translate }}</th>
             <th>{{ 'DASHBOARD.COL_USER' | translate }}</th>
-            <th>{{ 'DASHBOARD.COL_VERSIONS' | translate }}</th>
-            <th>{{ 'DASHBOARD.COL_DATE' | translate }}</th>
-            <th>{{ 'DASHBOARD.COL_STATUS' | translate }}</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let investigation of recentInvestigations">
-            <td class="activity-table__main">{{ investigation.sample?.title || '#' + investigation.investigation_id }}</td>
+            <td class="activity-table__muted">#{{ investigation.investigation_id }}</td>
+            <td class="activity-table__main">{{ investigation.sample?.title }}</td>
+            <td class="activity-table__muted">{{ investigation.sample?.description }}</td>
             <td class="activity-table__muted">{{ investigation.user?.email }}</td>
-            <td>{{ investigation.versions?.length || 0 }}</td>
-            <td class="activity-table__muted">{{ lastVersionDate(investigation) | date:'dd/MM/yyyy HH:mm' }}</td>
-            <td>
-              <span class="status-dot status-dot--ok"></span>
-              {{ 'DASHBOARD.STATUS_COMPLETED' | translate }}
-            </td>
           </tr>
           </tbody>
         </table>

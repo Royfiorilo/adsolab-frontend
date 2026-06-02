@@ -42,11 +42,10 @@
             <fa-icon [icon]="faFlaskVial" class="nav-icon"></fa-icon>
             <span>{{ 'NAV.EQUILIBRIUM' | translate }}</span>
           </a>
-          <!-- Kinetics module is not built yet: shown disabled with a "coming soon" badge -->
-          <a mat-list-item disabled class="nav-disabled">
+          <a mat-list-item routerLink="/kinetics" routerLinkActive="active-link"
+             (click)="closeOnMobile(snav)">
             <fa-icon [icon]="faClock" class="nav-icon"></fa-icon>
             <span>{{ 'NAV.KINETICS' | translate }}</span>
-            <span class="coming-soon-badge">{{ 'NAV.COMING_SOON' | translate }}</span>
           </a>
           <a mat-list-item routerLink="/historic" routerLinkActive="active-link"
              (click)="closeOnMobile(snav)">

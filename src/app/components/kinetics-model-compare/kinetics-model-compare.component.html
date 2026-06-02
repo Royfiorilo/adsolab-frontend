@@ -1,0 +1,36 @@
+<div class="container-fluid m-3">
+
+  <div class="d-flex justify-content-end">
+    <button mat-button color="primary" class="m-2" disabled>
+      <fa-icon [icon]="faSave" class="m-2"></fa-icon>
+      {{ 'KINETICS_MODEL_COMPARE.SAVE_RESULTS' | translate }}
+    </button>
+  </div>
+
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+    <mat-tab label="{{ 'KINETICS_MODEL_COMPARE.COMPARISON' | translate }}">
+      <div class="row justify-content-center m-3">
+        <div class="col-lg-8 col-md-10">
+          <mat-card class="shadow">
+            <mat-card-content class="text-center p-4">
+              <p class="text-muted mb-0">{{ 'KINETICS_MODEL_COMPARE.NO_RESULTS' | translate }}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab *ngFor="let modelId of state().selectedModels" label="{{ getModelName(modelId) }}">
+      <div class="row justify-content-center m-3">
+        <div class="col-lg-8 col-md-10">
+          <mat-card class="shadow">
+            <mat-card-content class="text-center p-4">
+              <p class="text-muted mb-0">{{ 'KINETICS_MODEL_COMPARE.NO_RESULTS' | translate }}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+</div>

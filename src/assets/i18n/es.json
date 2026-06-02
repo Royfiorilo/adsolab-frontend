@@ -45,12 +45,10 @@
     "TOTAL_INVESTIGATIONS": "Investigaciones registradas",
     "RECENT_ACTIVITY": "Actividad reciente",
     "VIEW_ALL": "Ver todo el historial",
+    "COL_ID": "ID",
     "COL_SAMPLE": "Muestra",
+    "COL_DESCRIPTION": "Descripción",
     "COL_USER": "Usuario",
-    "COL_VERSIONS": "Versiones",
-    "COL_DATE": "Última versión",
-    "COL_STATUS": "Estado",
-    "STATUS_COMPLETED": "Completado",
     "LOADING": "Cargando actividad…",
     "NO_ACTIVITY": "Aún no hay investigaciones registradas.",
     "ACTIVITY_ERROR": "No se pudo cargar la actividad reciente."
@@ -62,6 +60,41 @@
     "CONTINUE_INVESTIGATION_TITLE": "Continuar investigación",
     "ONGOING_INVESTIGATION_DETECTED": "Detectamos que hay una investigación en curso.",
     "CONTINUE_INVESTIGATION_QUESTION": "¿Te gustaría retomarla o empezar una nueva?"
+  },
+  "KINETICS": {
+    "CONTINUE": "Continuar",
+    "CREATE_NEW": "Crear nueva",
+    "CONTINUE_INVESTIGATION_TITLE": "Continuar análisis cinético",
+    "ONGOING_INVESTIGATION_DETECTED": "Detectamos que hay un análisis cinético en curso.",
+    "CONTINUE_INVESTIGATION_QUESTION": "¿Te gustaría retomarlo o empezar uno nuevo?",
+    "STEP_DATA": "Datos",
+    "STEP_MODELS": "Selección de Modelos",
+    "STEP_CONFIG": "Configuración de Modelos",
+    "STEP_RESULTS": "Resultados"
+  },
+  "KINETICS_DATA_SELECTOR": {
+    "DRAG_FILE": "Arrastrar un archivo Excel o CSV",
+    "INFO": "(*) Las columnas deben ser tiempo (t) y capacidad adsorbida (qt).",
+    "LOAD_DEMO": "Cargar muestra de ejemplo",
+    "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
+    "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
+    "TIME": "Tiempo (min)",
+    "QT": "qt (mg/g)"
+  },
+  "KINETICS_MODEL_SELECTOR": {
+    "SELECT_ALL": "Seleccionar todos"
+  },
+  "KINETICS_MODEL_CONFIGURATION": {
+    "NOT_SELECTED_MODELS": "No se han seleccionado modelos",
+    "ITERATIONS": "Iteraciones",
+    "ITERATIONS_EXAMPLE": "Ej. 5000",
+    "STEPS": "Steps",
+    "SEEDS_NOTE": "Valores iniciales de los parámetros (seeds)."
+  },
+  "KINETICS_MODEL_COMPARE": {
+    "COMPARISON": "Comparación",
+    "SAVE_RESULTS": "Guardar resultados",
+    "NO_RESULTS": "Aún no hay resultados para mostrar."
   },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",

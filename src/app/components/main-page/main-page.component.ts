@@ -37,10 +37,8 @@ export class MainPageComponent implements OnInit {
     this.router.navigate(['/investigation']);
   }
 
-  // Most recent saved version timestamp, used as the activity date.
-  lastVersionDate(investigation: Investigation): string | undefined {
-    const versions = investigation.versions;
-    return versions?.length ? versions[versions.length - 1].created_at : undefined;
+  goToKinetics(): void {
+    this.router.navigate(['/kinetics']);
   }
 
   private loadRecentActivity(): void {

@@ -1,0 +1,74 @@
+<div class="row d-flex justify-content-center">
+  <div class="col-lg-10 col-md-12">
+    <mat-stepper [orientation]="(isMobile$ | async) ? 'vertical' : 'horizontal'" [linear]="true"
+                 [animationDuration]="'0'"
+                 (selectedIndexChange)="onStepChange($event)">
+      <mat-step [label]="'KINETICS.STEP_DATA' | translate" [completed]="!!state().kineticsSample" class="d-flex">
+        <div class="stepper-navigation-container">
+          <div class="stepper-button-container">
+
+          </div>
+
+          <div *ngIf="state().kineticsSample" class="stepper-button-container">
+            <button mat-fab matStepperNext class="fiuba-institutional-bg text-white stepper-button">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+        <app-kinetics-data-selector [kineticsSample]="state().kineticsSample"
+                                    (onSampleLoaded)="sampleLoaded($event)"></app-kinetics-data-selector>
+      </mat-step>
+
+      <mat-step [label]="'KINETICS.STEP_MODELS' | translate" [completed]="state().selectedModels.length !== 0">
+        <ng-template matStepContent>
+          <div class="stepper-navigation-container">
+            <div class="stepper-button-container" *ngIf="state().models.length !== 0">
+              <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white stepper-button">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+            </div>
+            <div class="stepper-button-container" *ngIf="state().selectedModels.length !== 0">
+              <button mat-fab matStepperNext class="fiuba-institutional-bg text-white stepper-button">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </div>
+          <app-kinetics-model-selector (onLoadedModels)="onLoadedModels($event)"
+                                       (onSelectedModels)="onModelSelected($event)">
+          </app-kinetics-model-selector>
+        </ng-template>
+      </mat-step>
+
+      <mat-step [label]="'KINETICS.STEP_CONFIG' | translate" [completed]="state().modelConfigurationDone">
+        <ng-template matStepContent>
+          <div class="stepper-navigation-container">
+            <div class="stepper-button-container">
+              <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white stepper-button">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+            </div>
+            <div class="stepper-button-container" *ngIf="state().modelConfigurationDone">
+              <button mat-fab matStepperNext class="fiuba-institutional-bg text-white stepper-button">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </div>
+          <app-kinetics-model-configuration [modelConfiguration]="state().modelConfiguration"
+                                            (onSelectedParams)="onSelectedParams($event)">
+          </app-kinetics-model-configuration>
+        </ng-template>
+      </mat-step>
+
+      <mat-step [label]="'KINETICS.STEP_RESULTS' | translate">
+        <ng-template matStepContent>
+          <div class="stepper-button-container">
+            <button mat-fab matStepperPrevious class="fiuba-institutional-bg text-white stepper-button">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+          </div>
+          <app-kinetics-model-compare></app-kinetics-model-compare>
+        </ng-template>
+      </mat-step>
+    </mat-stepper>
+  </div>
+</div>
