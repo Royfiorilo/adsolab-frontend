@@ -94,7 +94,24 @@
   "KINETICS_MODEL_COMPARE": {
     "COMPARISON": "Comparación",
     "SAVE_RESULTS": "Guardar resultados",
-    "NO_RESULTS": "Aún no hay resultados para mostrar."
+    "NO_RESULTS": "Aún no hay resultados para mostrar.",
+    "RUNNING": "Calculando ajustes...",
+    "ERROR": "Ocurrió un error al calcular los ajustes.",
+    "SAMPLE": "Muestra",
+    "PLOT_TITLE": "Cinética de adsorción",
+    "AXIS_TIME": "Tiempo (min)",
+    "AXIS_QT": "qt (mg/g)",
+    "STAT_MODEL": "Modelo",
+    "STAT_R2": "R²",
+    "STAT_RMSE": "RMSE",
+    "CUSTOMIZE": "Personalizar gráfico",
+    "COLOR": "Color",
+    "LINE_WIDTH": "Grosor de línea",
+    "CHART_TITLE": "Título del gráfico",
+    "X_LABEL": "Rótulo eje X",
+    "Y_LABEL": "Rótulo eje Y",
+    "EXPORT": "Exportar",
+    "FORMAT": "Formato"
   },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",

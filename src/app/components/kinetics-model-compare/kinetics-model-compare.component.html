@@ -7,30 +7,93 @@
     </button>
   </div>
 
-  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+  <div *ngIf="loading" class="d-flex justify-content-center align-items-center flex-column p-5">
+    <div class="spinner-border" role="status"></div>
+    <p class="text-muted mt-3 mb-0">{{ 'KINETICS_MODEL_COMPARE.RUNNING' | translate }}</p>
+  </div>
+
+  <div *ngIf="error" class="row justify-content-center m-3">
+    <div class="col-lg-8 col-md-10">
+      <mat-card class="shadow">
+        <mat-card-content class="text-center p-4">
+          <p class="text-muted mb-0">{{ 'KINETICS_MODEL_COMPARE.ERROR' | translate }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <mat-tab-group *ngIf="!loading && !error && results.length > 0" mat-stretch-tabs="false" mat-align-tabs="center">
     <mat-tab label="{{ 'KINETICS_MODEL_COMPARE.COMPARISON' | translate }}">
       <div class="row justify-content-center m-3">
-        <div class="col-lg-8 col-md-10">
+        <div class="col-lg-10 col-md-12">
           <mat-card class="shadow">
-            <mat-card-content class="text-center p-4">
-              <p class="text-muted mb-0">{{ 'KINETICS_MODEL_COMPARE.NO_RESULTS' | translate }}</p>
+            <mat-card-content class="p-3">
+              <plotly-plot #comparisonPlot *ngIf="comparisonGraph"
+                           [data]="comparisonGraph.data" [layout]="comparisonGraph.layout"
+                           [style]="{width: '100%', height: '450px'}" [config]="config"></plotly-plot>
+
+              <table class="table mt-3 mb-0">
+                <thead>
+                <tr>
+                  <th>{{ 'KINETICS_MODEL_COMPARE.STAT_MODEL' | translate }}</th>
+                  <th>{{ 'KINETICS_MODEL_COMPARE.STAT_R2' | translate }}</th>
+                  <th>{{ 'KINETICS_MODEL_COMPARE.STAT_RMSE' | translate }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let result of results">
+                  <td>{{ result.modelName }}</td>
+                  <td>{{ result.statistics.r2 | number:'1.4-4' }}</td>
+                  <td>{{ result.statistics.rmse | number:'1.4-4' }}</td>
+                </tr>
+                </tbody>
+              </table>
             </mat-card-content>
           </mat-card>
         </div>
       </div>
     </mat-tab>
 
-    <mat-tab *ngFor="let modelId of state().selectedModels" label="{{ getModelName(modelId) }}">
+    <mat-tab *ngFor="let result of results" label="{{ result.modelName }}">
       <div class="row justify-content-center m-3">
-        <div class="col-lg-8 col-md-10">
+        <div class="col-lg-10 col-md-12">
           <mat-card class="shadow">
-            <mat-card-content class="text-center p-4">
-              <p class="text-muted mb-0">{{ 'KINETICS_MODEL_COMPARE.NO_RESULTS' | translate }}</p>
+            <mat-card-content class="p-3">
+              <plotly-plot *ngIf="graphByModel[result.modelId]"
+                           [data]="graphByModel[result.modelId].data" [layout]="graphByModel[result.modelId].layout"
+                           [style]="{width: '100%', height: '420px'}" [config]="config"></plotly-plot>
+
+              <table class="table mt-3 mb-0">
+                <tbody>
+                <tr *ngFor="let param of result.params | keyvalue">
+                  <td>{{ param.key }}</td>
+                  <td>{{ param.value | number:'1.4-4' }}</td>
+                </tr>
+                <tr>
+                  <td>{{ 'KINETICS_MODEL_COMPARE.STAT_R2' | translate }}</td>
+                  <td>{{ result.statistics.r2 | number:'1.4-4' }}</td>
+                </tr>
+                <tr>
+                  <td>{{ 'KINETICS_MODEL_COMPARE.STAT_RMSE' | translate }}</td>
+                  <td>{{ result.statistics.rmse | number:'1.4-4' }}</td>
+                </tr>
+                </tbody>
+              </table>
             </mat-card-content>
           </mat-card>
         </div>
       </div>
     </mat-tab>
   </mat-tab-group>
+
+  <div *ngIf="!loading && !error && results.length === 0" class="row justify-content-center m-3">
+    <div class="col-lg-8 col-md-10">
+      <mat-card class="shadow">
+        <mat-card-content class="text-center p-4">
+          <p class="text-muted mb-0">{{ 'KINETICS_MODEL_COMPARE.NO_RESULTS' | translate }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
 
 </div>
