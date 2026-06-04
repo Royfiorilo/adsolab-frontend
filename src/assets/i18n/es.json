@@ -111,7 +111,10 @@
     "X_LABEL": "Rótulo eje X",
     "Y_LABEL": "Rótulo eje Y",
     "EXPORT": "Exportar",
-    "FORMAT": "Formato"
+    "FORMAT": "Formato",
+    "COLOR_MODE": "Modo de color",
+    "MODE_COLOR": "Color",
+    "MODE_BW": "B/N"
   },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",

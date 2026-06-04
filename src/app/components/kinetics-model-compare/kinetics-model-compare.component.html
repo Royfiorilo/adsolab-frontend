@@ -47,7 +47,15 @@
                [value]="plotSettings.lineWidth" (input)="onLineWidthChange($event)">
       </div>
 
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-3">
+        <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.COLOR_MODE' | translate }}</label>
+        <mat-button-toggle-group [(ngModel)]="colorMode" (ngModelChange)="rebuildGraphs()">
+          <mat-button-toggle value="color">{{ 'KINETICS_MODEL_COMPARE.MODE_COLOR' | translate }}</mat-button-toggle>
+          <mat-button-toggle value="bw">{{ 'KINETICS_MODEL_COMPARE.MODE_BW' | translate }}</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="col-12 col-md-3">
         <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.FORMAT' | translate }}</label>
         <mat-button-toggle-group [(ngModel)]="exportFormat" (ngModelChange)="updateConfig()">
           <mat-button-toggle value="png">PNG</mat-button-toggle>

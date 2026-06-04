@@ -29,7 +29,13 @@ export class KineticsModelCompareComponent implements OnInit {
 
   protected plotSettings!: IKineticsPlotSettings;
   protected exportFormat: ExportFormat = 'png';
+  protected colorMode: 'color' | 'bw' = 'color';
   protected config: any = {responsive: true};
+
+  // Grayscale shades + dash patterns used in black & white mode so models
+  // stay distinguishable when the chart is printed.
+  private readonly bwShades = ['#000000', '#555555', '#888888', '#bbbbbb'];
+  private readonly bwDashes = ['solid', 'dash', 'dot', 'dashdot'];
 
   constructor(protected stateService: KineticsStateService,
               private compareService: KineticsModelCompareService,
@@ -95,30 +101,37 @@ export class KineticsModelCompareComponent implements OnInit {
     };
 
     this.comparisonGraph = {
-      data: [sampleTrace, ...this.results.map(result => this.buildModelTrace(result))],
+      data: [sampleTrace, ...this.results.map((result, index) => this.buildModelTrace(result, index))],
       layout: this.buildLayout(),
     };
 
     this.graphByModel = {};
-    for (const result of this.results) {
+    this.results.forEach((result, index) => {
       this.graphByModel[result.modelId] = {
-        data: [sampleTrace, this.buildModelTrace(result)],
+        data: [sampleTrace, this.buildModelTrace(result, index)],
         layout: this.buildLayout(),
       };
-    }
+    });
 
     setTimeout(() => this.comparisonPlot?.updatePlot(), 0);
   }
 
-  private buildModelTrace(result: IKineticsFitResult): any {
-    const color = this.plotSettings.colorByModel[result.modelId];
+  private buildModelTrace(result: IKineticsFitResult, index: number): any {
+    const bw = this.colorMode === 'bw';
+    const color = bw
+      ? this.bwShades[index % this.bwShades.length]
+      : this.plotSettings.colorByModel[result.modelId];
+    const line: any = {color, width: this.plotSettings.lineWidth, shape: 'spline'};
+    if (bw) {
+      line.dash = this.bwDashes[index % this.bwDashes.length];
+    }
     return {
       x: result.curve.t,
       y: result.curve.qt,
       type: 'scatter',
       mode: 'lines',
       name: result.modelName,
-      line: {color, width: this.plotSettings.lineWidth, shape: 'spline'},
+      line,
       marker: {color},
     };
   }
