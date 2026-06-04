@@ -132,6 +132,11 @@ export class KineticsModelCompareComponent implements OnInit {
     };
   }
 
+  onLineWidthChange(event: Event): void {
+    this.plotSettings.lineWidth = Number((event.target as HTMLInputElement).value);
+    this.rebuildGraphs();
+  }
+
   updateConfig(): void {
     this.config = {
       responsive: true,
@@ -142,5 +147,6 @@ export class KineticsModelCompareComponent implements OnInit {
         scale: 2,
       },
     };
+    setTimeout(() => this.comparisonPlot?.updatePlot(), 0);
   }
 }

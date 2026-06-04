@@ -22,6 +22,52 @@
     </div>
   </div>
 
+  <mat-expansion-panel *ngIf="!loading && !error && results.length > 0" class="customize-panel m-3">
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{ 'KINETICS_MODEL_COMPARE.CUSTOMIZE' | translate }}</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row g-3">
+      <div class="col-12 col-md-4">
+        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.CHART_TITLE' | translate }}</label>
+        <input type="text" class="form-control" [(ngModel)]="plotSettings.title" (ngModelChange)="rebuildGraphs()">
+      </div>
+      <div class="col-12 col-md-4">
+        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.X_LABEL' | translate }}</label>
+        <input type="text" class="form-control" [(ngModel)]="plotSettings.xAxisLabel" (ngModelChange)="rebuildGraphs()">
+      </div>
+      <div class="col-12 col-md-4">
+        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.Y_LABEL' | translate }}</label>
+        <input type="text" class="form-control" [(ngModel)]="plotSettings.yAxisLabel" (ngModelChange)="rebuildGraphs()">
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.LINE_WIDTH' | translate }}: {{ plotSettings.lineWidth }}</label>
+        <input type="range" class="form-range" min="1" max="6" step="1"
+               [value]="plotSettings.lineWidth" (input)="onLineWidthChange($event)">
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.FORMAT' | translate }}</label>
+        <mat-button-toggle-group [(ngModel)]="exportFormat" (ngModelChange)="updateConfig()">
+          <mat-button-toggle value="png">PNG</mat-button-toggle>
+          <mat-button-toggle value="svg">SVG</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.COLOR' | translate }}</label>
+        <div class="d-flex flex-wrap gap-3">
+          <div *ngFor="let result of results" class="d-flex align-items-center gap-2">
+            <input type="color" class="color-input"
+                   [(ngModel)]="plotSettings.colorByModel[result.modelId]" (ngModelChange)="rebuildGraphs()">
+            <span>{{ result.modelName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+
   <mat-tab-group *ngIf="!loading && !error && results.length > 0" mat-stretch-tabs="false" mat-align-tabs="center">
     <mat-tab label="{{ 'KINETICS_MODEL_COMPARE.COMPARISON' | translate }}">
       <div class="row justify-content-center m-3">
