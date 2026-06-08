@@ -3,8 +3,8 @@ import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {TranslateService} from "@ngx-translate/core";
 import {PlotlyComponent} from "angular-plotly.js";
 import {KineticsStateService} from "../kinetics/kinetics-state.service";
-import {KINETICS_PLOT_PALETTE, KineticsModelCompareService} from "./kinetics-model-compare.service";
-import {ExportFormat, IKineticsFitResult, IKineticsPlotSettings} from "./interface";
+import {KINETICS_FONT_FAMILIES, KINETICS_PLOT_PALETTE, KineticsModelCompareService} from "./kinetics-model-compare.service";
+import {AxisScale, ExportFormat, IKineticsAxisSettings, IKineticsFitResult, IKineticsPlotSettings} from "./interface";
 
 interface PlotlyGraph {
   data: any[];
@@ -31,6 +31,7 @@ export class KineticsModelCompareComponent implements OnInit {
   protected exportFormat: ExportFormat = 'png';
   protected colorMode: 'color' | 'bw' = 'color';
   protected config: any = {responsive: true};
+  protected readonly fontFamilies = KINETICS_FONT_FAMILIES;
 
   // Grayscale shades + dash patterns used in black & white mode so models
   // stay distinguishable when the chart is printed.
@@ -75,16 +76,33 @@ export class KineticsModelCompareComponent implements OnInit {
   }
 
   private buildDefaultSettings(results: IKineticsFitResult[]): IKineticsPlotSettings {
+    const sample = this.state().kineticsSample;
     const colorByModel: { [modelId: number]: string } = {};
+    const visibleByModel: { [modelId: number]: boolean } = {};
     results.forEach((result, index) => {
       colorByModel[result.modelId] = KINETICS_PLOT_PALETTE[index % KINETICS_PLOT_PALETTE.length];
+      visibleByModel[result.modelId] = true;
     });
     return {
       title: this.translate.instant('KINETICS_MODEL_COMPARE.PLOT_TITLE'),
-      xAxisLabel: this.translate.instant('KINETICS_MODEL_COMPARE.AXIS_TIME'),
-      yAxisLabel: this.translate.instant('KINETICS_MODEL_COMPARE.AXIS_QT'),
+      font: {family: 'Arial', size: 14},
       lineWidth: 2,
       colorByModel,
+      visibleByModel,
+      xAxis: {
+        label: this.translate.instant('KINETICS_MODEL_COMPARE.AXIS_TIME'),
+        unit: sample?.time_unit ?? '',
+        scale: 'linear',
+        min: null,
+        max: null,
+      },
+      yAxis: {
+        label: this.translate.instant('KINETICS_MODEL_COMPARE.AXIS_QT'),
+        unit: sample?.measure_unit ?? '',
+        scale: 'linear',
+        min: null,
+        max: null,
+      },
     };
   }
 
@@ -100,8 +118,9 @@ export class KineticsModelCompareComponent implements OnInit {
       marker: {color: 'black'},
     };
 
+    const visibleResults = this.results.filter(result => this.plotSettings.visibleByModel[result.modelId]);
     this.comparisonGraph = {
-      data: [sampleTrace, ...this.results.map((result, index) => this.buildModelTrace(result, index))],
+      data: [sampleTrace, ...visibleResults.map(result => this.buildModelTrace(result, this.results.indexOf(result)))],
       layout: this.buildLayout(),
     };
 
@@ -137,16 +156,50 @@ export class KineticsModelCompareComponent implements OnInit {
   }
 
   private buildLayout(): any {
+    const font = this.plotSettings.font;
     return {
       title: this.plotSettings.title,
       autosize: true,
-      xaxis: {title: this.plotSettings.xAxisLabel},
-      yaxis: {title: this.plotSettings.yAxisLabel},
+      font,
+      xaxis: this.buildAxisLayout(this.plotSettings.xAxis),
+      yaxis: this.buildAxisLayout(this.plotSettings.yAxis),
     };
+  }
+
+  // Builds a Plotly axis from its settings: title (with unit), scale and range.
+  private buildAxisLayout(axis: IKineticsAxisSettings): any {
+    const title = axis.unit ? `${axis.label} (${axis.unit})` : axis.label;
+    const layout: any = {title, type: axis.scale};
+    if (axis.min !== null && axis.max !== null) {
+      // Plotly expects log-axis ranges as base-10 exponents.
+      layout.range = axis.scale === 'log'
+        ? [Math.log10(axis.min), Math.log10(axis.max)]
+        : [axis.min, axis.max];
+      layout.autorange = false;
+    } else {
+      layout.autorange = true;
+    }
+    return layout;
   }
 
   onLineWidthChange(event: Event): void {
     this.plotSettings.lineWidth = Number((event.target as HTMLInputElement).value);
+    this.rebuildGraphs();
+  }
+
+  onFontSizeChange(event: Event): void {
+    this.plotSettings.font.size = Number((event.target as HTMLInputElement).value);
+    this.rebuildGraphs();
+  }
+
+  onAxisRangeChange(axis: IKineticsAxisSettings, bound: 'min' | 'max', event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    axis[bound] = value === '' ? null : Number(value);
+    this.rebuildGraphs();
+  }
+
+  onAxisScaleChange(axis: IKineticsAxisSettings, scale: AxisScale): void {
+    axis.scale = scale;
     this.rebuildGraphs();
   }
 

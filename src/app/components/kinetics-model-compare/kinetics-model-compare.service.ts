@@ -11,6 +11,9 @@ export const KINETICS_PLOT_PALETTE = [
   '#008bce', '#e8743b', '#19a979', '#945ecf', '#bf399e', '#c8d322',
 ];
 
+// Web-safe font families Plotly renders without extra dependencies.
+export const KINETICS_FONT_FAMILIES = ['Arial', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana'];
+
 // Analytic kinetic models keyed by model id (mirrors the latex formulas
 // declared in kinetics-model-selector). Each returns qt as a function of t.
 type KineticFn = (t: number) => number;

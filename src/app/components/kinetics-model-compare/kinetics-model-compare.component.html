@@ -28,17 +28,81 @@
     </mat-expansion-panel-header>
 
     <div class="row g-3">
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-md-6">
         <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.CHART_TITLE' | translate }}</label>
         <input type="text" class="form-control" [(ngModel)]="plotSettings.title" (ngModelChange)="rebuildGraphs()">
       </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.X_LABEL' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="plotSettings.xAxisLabel" (ngModelChange)="rebuildGraphs()">
+
+      <div class="col-6 col-md-3">
+        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.FONT_FAMILY' | translate }}</label>
+        <select class="form-select" [(ngModel)]="plotSettings.font.family" (ngModelChange)="rebuildGraphs()">
+          <option *ngFor="let font of fontFamilies" [value]="font">{{ font }}</option>
+        </select>
       </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.Y_LABEL' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="plotSettings.yAxisLabel" (ngModelChange)="rebuildGraphs()">
+      <div class="col-6 col-md-3">
+        <label class="form-label">{{ 'KINETICS_MODEL_COMPARE.FONT_SIZE' | translate }}</label>
+        <input type="number" class="form-control" min="8" max="36" step="1"
+               [value]="plotSettings.font.size" (input)="onFontSizeChange($event)">
+      </div>
+
+      <!-- X axis -->
+      <div class="col-12 col-md-6">
+        <label class="form-label fw-semibold d-block">{{ 'KINETICS_MODEL_COMPARE.X_AXIS' | translate }}</label>
+        <div class="row g-2">
+          <div class="col-7">
+            <input type="text" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.X_LABEL' | translate }}"
+                   [(ngModel)]="plotSettings.xAxis.label" (ngModelChange)="rebuildGraphs()">
+          </div>
+          <div class="col-5">
+            <input type="text" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.UNIT' | translate }}"
+                   [(ngModel)]="plotSettings.xAxis.unit" (ngModelChange)="rebuildGraphs()">
+          </div>
+          <div class="col-12">
+            <mat-button-toggle-group [value]="plotSettings.xAxis.scale"
+                                     (change)="onAxisScaleChange(plotSettings.xAxis, $event.value)">
+              <mat-button-toggle value="linear">{{ 'KINETICS_MODEL_COMPARE.SCALE_LINEAR' | translate }}</mat-button-toggle>
+              <mat-button-toggle value="log">{{ 'KINETICS_MODEL_COMPARE.SCALE_LOG' | translate }}</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div class="col-6">
+            <input type="number" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.AXIS_MIN' | translate }}"
+                   [value]="plotSettings.xAxis.min" (input)="onAxisRangeChange(plotSettings.xAxis, 'min', $event)">
+          </div>
+          <div class="col-6">
+            <input type="number" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.AXIS_MAX' | translate }}"
+                   [value]="plotSettings.xAxis.max" (input)="onAxisRangeChange(plotSettings.xAxis, 'max', $event)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Y axis -->
+      <div class="col-12 col-md-6">
+        <label class="form-label fw-semibold d-block">{{ 'KINETICS_MODEL_COMPARE.Y_AXIS' | translate }}</label>
+        <div class="row g-2">
+          <div class="col-7">
+            <input type="text" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.Y_LABEL' | translate }}"
+                   [(ngModel)]="plotSettings.yAxis.label" (ngModelChange)="rebuildGraphs()">
+          </div>
+          <div class="col-5">
+            <input type="text" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.UNIT' | translate }}"
+                   [(ngModel)]="plotSettings.yAxis.unit" (ngModelChange)="rebuildGraphs()">
+          </div>
+          <div class="col-12">
+            <mat-button-toggle-group [value]="plotSettings.yAxis.scale"
+                                     (change)="onAxisScaleChange(plotSettings.yAxis, $event.value)">
+              <mat-button-toggle value="linear">{{ 'KINETICS_MODEL_COMPARE.SCALE_LINEAR' | translate }}</mat-button-toggle>
+              <mat-button-toggle value="log">{{ 'KINETICS_MODEL_COMPARE.SCALE_LOG' | translate }}</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div class="col-6">
+            <input type="number" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.AXIS_MIN' | translate }}"
+                   [value]="plotSettings.yAxis.min" (input)="onAxisRangeChange(plotSettings.yAxis, 'min', $event)">
+          </div>
+          <div class="col-6">
+            <input type="number" class="form-control" placeholder="{{ 'KINETICS_MODEL_COMPARE.AXIS_MAX' | translate }}"
+                   [value]="plotSettings.yAxis.max" (input)="onAxisRangeChange(plotSettings.yAxis, 'max', $event)">
+          </div>
+        </div>
       </div>
 
       <div class="col-12 col-md-6">
@@ -47,7 +111,7 @@
                [value]="plotSettings.lineWidth" (input)="onLineWidthChange($event)">
       </div>
 
-      <div class="col-12 col-md-3">
+      <div class="col-6 col-md-3">
         <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.COLOR_MODE' | translate }}</label>
         <mat-button-toggle-group [(ngModel)]="colorMode" (ngModelChange)="rebuildGraphs()">
           <mat-button-toggle value="color">{{ 'KINETICS_MODEL_COMPARE.MODE_COLOR' | translate }}</mat-button-toggle>
@@ -55,7 +119,7 @@
         </mat-button-toggle-group>
       </div>
 
-      <div class="col-12 col-md-3">
+      <div class="col-6 col-md-3">
         <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.FORMAT' | translate }}</label>
         <mat-button-toggle-group [(ngModel)]="exportFormat" (ngModelChange)="updateConfig()">
           <mat-button-toggle value="png">PNG</mat-button-toggle>
@@ -64,9 +128,11 @@
       </div>
 
       <div class="col-12">
-        <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.COLOR' | translate }}</label>
+        <label class="form-label d-block">{{ 'KINETICS_MODEL_COMPARE.SHOW_CURVES' | translate }}</label>
         <div class="d-flex flex-wrap gap-3">
           <div *ngFor="let result of results" class="d-flex align-items-center gap-2">
+            <input type="checkbox" class="form-check-input mt-0"
+                   [(ngModel)]="plotSettings.visibleByModel[result.modelId]" (ngModelChange)="rebuildGraphs()">
             <input type="color" class="color-input"
                    [(ngModel)]="plotSettings.colorByModel[result.modelId]" (ngModelChange)="rebuildGraphs()">
             <span>{{ result.modelName }}</span>
