@@ -2,19 +2,7 @@
   <div class="col-12 col-md-8">
     <div class="card mt-3 mb-3">
       <div class="card-body">
-
-        <!-- TODO: placeholder de carga. Reemplazar por componente de upload time/qt real. -->
-        <div class="upload-placeholder text-center">
-          <fa-icon [icon]="faFileUpload" class="upload-placeholder__icon"></fa-icon>
-          <p class="mt-2 mb-1">{{ 'KINETICS_DATA_SELECTOR.DRAG_FILE' | translate }}</p>
-          <small class="text-muted">{{ 'KINETICS_DATA_SELECTOR.INFO' | translate }}</small>
-        </div>
-
-        <div class="mt-3 d-flex justify-content-center">
-          <button class="btn fiuba-institutional" (click)="loadDemoSample()">
-            {{ 'KINETICS_DATA_SELECTOR.LOAD_DEMO' | translate }}
-          </button>
-        </div>
+        <app-kinetics-file-upload (onDataSampleUploaded)="onUploadDataSample($event)"></app-kinetics-file-upload>
       </div>
 
       <div class="m-3 card">

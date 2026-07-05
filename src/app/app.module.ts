@@ -21,6 +21,7 @@ import {InvestigationComponent} from './components/investigation/investigation.c
 import {KineticsComponent} from './components/kinetics/kinetics.component';
 import {KineticsModalComponent} from './components/kinetics/kinetics-modal.component';
 import {KineticsDataSelectorComponent} from './components/kinetics-data-selector/kinetics-data-selector.component';
+import {KineticsFileUploadComponent} from './components/kinetics-file-upload/kinetics-file-upload.component';
 import {KineticsModelSelectorComponent} from './components/kinetics-model-selector/kinetics-model-selector.component';
 import {KineticsModelConfigurationComponent} from './components/kinetics-model-configuration/kinetics-model-configuration.component';
 import {KineticsModelCompareComponent} from './components/kinetics-model-compare/kinetics-model-compare.component';
@@ -103,6 +104,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     KineticsComponent,
     KineticsModalComponent,
     KineticsDataSelectorComponent,
+    KineticsFileUploadComponent,
     KineticsModelSelectorComponent,
     KineticsModelConfigurationComponent,
     KineticsModelCompareComponent,

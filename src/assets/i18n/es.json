@@ -75,11 +75,11 @@
   "KINETICS_DATA_SELECTOR": {
     "DRAG_FILE": "Arrastrar un archivo Excel o CSV",
     "INFO": "(*) Las columnas deben ser tiempo (t) y capacidad adsorbida (qt).",
-    "LOAD_DEMO": "Cargar muestra de ejemplo",
     "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
     "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
     "TIME": "Tiempo (min)",
-    "QT": "qt (mg/g)"
+    "QT": "qt (mg/g)",
+    "CREATE_SAMPLE_ERROR": "No se pudo crear la muestra cinética."
   },
   "KINETICS_MODEL_SELECTOR": {
     "SELECT_ALL": "Seleccionar todos"

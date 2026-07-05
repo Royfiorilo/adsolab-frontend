@@ -1,0 +1,85 @@
+<div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+     [class.dragging]="isDragging">
+  <div>
+    <fa-icon [icon]="faUpload" size="5x" class="fiuba-institutional-text m-2"></fa-icon>
+  </div>
+
+  <div *ngIf="!uploadedFile.valid">
+    <div class="fiuba-gray-text m-2">{{ 'KINETICS_DATA_SELECTOR.DRAG_FILE' | translate }}</div>
+    <div class="fiuba-gray-text m-2">{{ 'OR' | translate }}</div>
+  </div>
+
+  <h5 *ngIf="uploadedFile.valid"><span class="badge bg-secondary">{{ uploadedFile.name }}</span></h5>
+
+  <label for="kineticsFileUploader"
+         class="btn fiuba-institutional-border fiuba-institutional-text">{{ 'FILE_UPLOAD.SELECT_FILE' | translate }}</label>
+  <input id="kineticsFileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv"/>
+
+  <div *ngIf="uploadedFile"
+       class="fiuba-institutional-text mt-3 ">
+    <div *ngIf="!uploadedFile.valid && uploadedFile.reason" class="error-message">
+      <div>
+        <fa-icon [icon]="faXmarkCircle" size="2x" class="error-message"></fa-icon>
+      </div>
+      {{ 'FILE_UPLOAD.INVALID_FILE.' + uploadedFile.reason | translate }}
+    </div>
+    <div *ngIf="uploadedFile.valid" class="success-message">
+      <div>
+        <fa-icon [icon]="faCircleCheck" size="2x" class="success-message"></fa-icon>
+      </div>
+      {{ 'FILE_UPLOAD.VALID_FILE' | translate }}
+    </div>
+  </div>
+  <div class="row text-body-tertiary">
+    {{ 'KINETICS_DATA_SELECTOR.INFO' | translate }}
+  </div>
+</div>
+<div *ngIf="uploadedFile.valid" class="mt-5">
+  <h5 class="m-3"> {{ 'FILE_UPLOAD.SAMPLE_SPEC' | translate }} </h5>
+
+  <form *ngIf="uploadedFile.valid" class="w-100 d-flex flex-column gap-3 mt-2">
+    <mat-form-field>
+      <mat-label> {{ 'FILE_UPLOAD.SAMPLE_DESCRIPTION' | translate }}</mat-label>
+      <textarea id="description" matInput [value]=[dataSample.description] (change)="onChange($event)"></textarea>
+    </mat-form-field>
+
+    <div class="d-flex gap-3 flex-md-row flex-column">
+      <mat-form-field class="flex-grow-1">
+        <mat-label>{{ 'FILE_UPLOAD.ADSORBATE' | translate }}</mat-label>
+        <mat-select
+          id="adsorbate"
+          [value]="dataSample.adsorbate_id"
+          (selectionChange)="onUnitChange($event,'adsorbate')"
+        >
+          <mat-option *ngFor="let adsorbate of adsorbates" [value]="adsorbate.id">
+            {{ adsorbate.iupac_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="flex-grow-1">
+        <mat-label>{{ 'FILE_UPLOAD.ADSORBENT' | translate }}</mat-label>
+        <mat-select
+          id="adsorbent"
+          [value]="dataSample.adsorbent_id"
+          (selectionChange)="onUnitChange($event, 'adsorbent')"
+        >
+          <mat-option *ngFor="let adorbent of adsorbents" [value]="adorbent.id">
+            {{ adorbent.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="flex-grow-1">
+        <mat-label>{{ 'FILE_UPLOAD.SAMPLE_TEMPERATURE' | translate }}</mat-label>
+        <input
+          id="temperature"
+          matInput
+          type="number"
+          placeholder="Ej. 298 (Kelvin)"
+          [value]=[dataSample.temperature]
+          (change)="onChange($event)"
+        >
+      </mat-form-field>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,24 @@
+.upload-area {
+  border: 1px dashed #008bce;
+  padding: 20px;
+  padding-bottom: 5px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.upload-area.dragging {
+  background-color: #D9D9D6;
+}
+
+.error-message {
+  color: red;
+}
+
+.success-message {
+  color: green;
+}
+
+.hide {
+  display: none !important;
+}

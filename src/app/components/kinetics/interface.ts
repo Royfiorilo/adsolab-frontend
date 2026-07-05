@@ -14,6 +14,24 @@ export interface IKineticsSample {
   temperature?: number;
   time_unit?: string;
   measure_unit?: string;
+  adsorbate_id: number | undefined;
+  adsorbate?: string;
+  adsorbent_id: number | undefined;
+  adsorbent?: string;
+}
+
+export interface CreateKineticSampleResponse {
+  kinetic_sample_id: number;
+  user_id: number;
+  time: number[];
+  qt: number[];
+  adsorbate_id: number;
+  adsorbent_id: number;
+  title: string;
+  description?: string;
+  temperature?: number;
+  time_unit?: string;
+  measure_unit?: string;
 }
 
 export interface IKineticsModelConfiguration {
