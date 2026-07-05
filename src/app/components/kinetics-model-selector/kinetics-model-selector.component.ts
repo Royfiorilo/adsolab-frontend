@@ -1,6 +1,9 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {KineticsStateService} from "../kinetics/kinetics-state.service";
 import {IKineticsModel} from "../kinetics/interface";
+import {KineticsModelSelectorService} from "./kinetics-model-selector.service";
+import {catchError, firstValueFrom} from "rxjs";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-kinetics-model-selector',
@@ -11,37 +14,34 @@ export class KineticsModelSelectorComponent implements OnInit {
   @Output() onSelectedModels: EventEmitter<number> = new EventEmitter();
   @Output() onLoadedModels: EventEmitter<IKineticsModel[]> = new EventEmitter();
   state = this.stateService.state;
+  protected loadingModels = false;
 
-  // TODO: reemplazar por KineticsModelSelectorService.getModels() -> GET /kinetics/models.
-  // Hardcodeado temporalmente para poder ver las cards y navegar el flujo visual.
-  private readonly kineticsModels: IKineticsModel[] = [
-    {
-      _id: 1,
-      name: 'Pseudo primer orden',
-      latex_formula: '$$q_t = q_e\\left(1 - e^{-k_1 t}\\right)$$',
-      parameters: {qe: 'mg/g', k1: '1/min'}
-    },
-    {
-      _id: 2,
-      name: 'Pseudo segundo orden',
-      latex_formula: '$$q_t = \\frac{k_2 q_e^2 t}{1 + k_2 q_e t}$$',
-      parameters: {qe: 'mg/g', k2: 'g/(mg·min)'}
-    },
-    {
-      _id: 3,
-      name: 'Difusión intraparticular',
-      latex_formula: '$$q_t = k_{id}\\sqrt{t} + C$$',
-      parameters: {kid: 'mg/(g·min^0.5)', C: 'mg/g'}
-    }
-  ];
-
-  constructor(protected stateService: KineticsStateService) {
+  constructor(
+    protected stateService: KineticsStateService,
+    private modelService: KineticsModelSelectorService,
+    private translateService: TranslateService) {
   }
 
   ngOnInit() {
     if (this.state().models.length === 0) {
-      this.onLoadedModels.emit(this.kineticsModels);
+      this.loadingModels = true;
+      this.modelService.getModels()
+        .pipe(catchError(async (error) => {
+          throw await firstValueFrom(this.translateService.get('KINETICS_MODEL_SELECTOR.ERROR_LOADING_MODELS', error));
+        }))
+        .subscribe(response => {
+          this.loadingModels = false;
+          this.onLoadedModels.emit(response.models);
+        });
     }
+  }
+
+  // Backend kinetic seeds store latex_formula without $ delimiters (unlike
+  // isotherms). app-latex-paragraph needs them to render math instead of raw
+  // text, so we add them when missing.
+  latexFormula(model: IKineticsModel): string {
+    const formula = model.latex_formula ?? '';
+    return formula.includes('$') ? formula : `$${formula}$`;
   }
 
   selectModel(modelId: number) {

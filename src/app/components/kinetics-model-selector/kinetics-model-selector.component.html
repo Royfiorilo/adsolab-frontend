@@ -1,4 +1,8 @@
-<div class="container-fluid">
+<ng-container *ngIf="loadingModels">
+  <app-loading></app-loading>
+</ng-container>
+
+<div class="container-fluid" *ngIf="!loadingModels">
   <div class="row d-flex justify-content-center m-3">
     <div class="col-12 text-start mb-2">
       <mat-checkbox color="accent"
@@ -35,7 +39,7 @@
           <div class="row mt-2">
             <div class="col text-center">
               <app-latex-paragraph [size]="'md'"
-                                   [inputString]="model.latex_formula"></app-latex-paragraph>
+                                   [inputString]="latexFormula(model)"></app-latex-paragraph>
             </div>
           </div>
         </mat-card-content>

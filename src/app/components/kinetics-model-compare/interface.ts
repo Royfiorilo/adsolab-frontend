@@ -6,6 +6,54 @@ export interface IKineticsFitResult {
   statistics: { r2: number; rmse: number };
 }
 
+// ---- Backend contract for POST /kinetics/run-no-linear-model ----
+
+export interface IKineticsSeed {
+  name: string;
+  value: number;
+}
+
+export interface IKineticsRunModelConfig {
+  model: number;
+  seeds: IKineticsSeed[];
+  iterations: number;
+  step: number;
+}
+
+export interface IKineticsRunRequest {
+  kinetic_sample_id: number;
+  models: IKineticsRunModelConfig[];
+  filter: number[];
+}
+
+export interface IKineticsFittedParameter {
+  name: string;
+  value: number;
+  std_err: number | null;
+}
+
+export interface IKineticsAdjustmentMethod {
+  name: string;
+  description?: string;
+  success: boolean;
+  parameters: IKineticsFittedParameter[];
+  statistics: { [key: string]: number };
+  residuals: { values: number[]; analysis: any };
+  transformed: { x: number[]; y: number[]; qt_pred: number[] };
+}
+
+export interface IKineticsModelResult {
+  model: number;
+  best_adjust: string;
+  adjustment_methods: IKineticsAdjustmentMethod[];
+}
+
+export interface IKineticsRunResponse {
+  kinetic_sample_id: number;
+  results: IKineticsModelResult[];
+  comparison: any;
+}
+
 export type AxisScale = 'linear' | 'log';
 
 // Per-axis visual settings. min/max null means autorange.

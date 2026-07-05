@@ -82,7 +82,8 @@
     "CREATE_SAMPLE_ERROR": "No se pudo crear la muestra cinética."
   },
   "KINETICS_MODEL_SELECTOR": {
-    "SELECT_ALL": "Seleccionar todos"
+    "SELECT_ALL": "Seleccionar todos",
+    "ERROR_LOADING_MODELS": "Error al cargar modelos: {{ message }}"
   },
   "KINETICS_MODEL_CONFIGURATION": {
     "NOT_SELECTED_MODELS": "No se han seleccionado modelos",
