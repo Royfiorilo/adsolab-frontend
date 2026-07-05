@@ -1,0 +1,63 @@
+<ng-container *ngIf="state().selectedModels.length === 0">
+  <div class="alert alert-warning" role="alert">
+    {{ 'KINETICS_MODEL_CONFIGURATION.NOT_SELECTED_MODELS' | translate }}
+  </div>
+</ng-container>
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <mat-accordion multi class="row justify-content-center">
+
+      <div *ngFor="let modelId of state().selectedModels" class="col-lg-8 col-12">
+        <mat-expansion-panel class="card m-3" [expanded]="true">
+          <mat-expansion-panel-header class="card-header fiuba-investigation mb-1">
+            <h4 class="card-title text-center">{{ getModelById(modelId)?.name }}</h4>
+          </mat-expansion-panel-header>
+
+          <div class="card-body d-flex flex-column">
+
+            <div class="d-flex gap-2 flex-md-row flex-column w-100">
+              <mat-form-field class="w-100 mb-md-0 mb-2">
+                <mat-label>{{ 'KINETICS_MODEL_CONFIGURATION.ITERATIONS' | translate }}</mat-label>
+                <input [id]="modelId.toString()"
+                       [(ngModel)]="modelConfiguration[modelId].iterations"
+                       (change)="onParamChange()"
+                       matInput type="number"
+                       placeholder="{{ 'KINETICS_MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}">
+              </mat-form-field>
+
+              <mat-form-field class="w-100">
+                <mat-label>{{ 'KINETICS_MODEL_CONFIGURATION.STEPS' | translate }}</mat-label>
+                <input [id]="modelId.toString()"
+                       [(ngModel)]="modelConfiguration[modelId].step"
+                       matInput type="number"
+                       min="0"
+                       max="1"
+                       step="0.1"
+                       (change)="validateStepsValue(modelId); onParamChange()"
+                       placeholder="{{ 'KINETICS_MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}">
+              </mat-form-field>
+            </div>
+
+            <small class="text-muted">{{ 'KINETICS_MODEL_CONFIGURATION.SEEDS_NOTE' | translate }}</small>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-1">
+              <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="col">
+                <div class="text-center">
+                  <mat-form-field class="w-100">
+                    <mat-label>{{ param.key }}</mat-label>
+                    <input matInput
+                           [(ngModel)]="param.value.value"
+                           (change)="onParamChange()"
+                           id="{{ param.key }}"
+                           type="number"/>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+  </div>
+</div>

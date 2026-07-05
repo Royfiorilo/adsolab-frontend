@@ -1,0 +1,25 @@
+.model-card {
+  border-radius: 0.5rem;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.model-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.model-card.selected {
+  border-color: #008bce;
+}
+
+.selection-icon {
+  color: #008bce;
+}
+
+.model-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: center;
+}

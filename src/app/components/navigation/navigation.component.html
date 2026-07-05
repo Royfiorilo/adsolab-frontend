@@ -25,14 +25,38 @@
 
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav #snav [mode]="'over'" [autoFocus]="false">
+    <mat-sidenav #snav
+                 [mode]="(isMobile$ | async) ? 'over' : 'side'"
+                 [opened]="!(isMobile$ | async)"
+                 [autoFocus]="false"
+                 class="app-sidenav">
       <div class="sidenav-content">
         <mat-nav-list>
-          <a mat-list-item routerLink="/investigation"
-             (click)="snav.toggle()">{{ 'MAIN_PAGE.NEW_INVESTIGATION' | translate }}</a>
-          <a mat-list-item routerLink="/historic" (click)="snav.toggle()">{{ 'MAIN_PAGE.HIST' | translate }}</a>
-          <a *ngIf="isAdmin()" mat-list-item routerLink="/users"
-             (click)="snav.toggle()">{{ 'MAIN_PAGE.USERS' | translate }}</a>
+          <a mat-list-item routerLink="/" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{exact: true}" (click)="closeOnMobile(snav)">
+            <fa-icon [icon]="faGauge" class="nav-icon"></fa-icon>
+            <span>{{ 'NAV.DASHBOARD' | translate }}</span>
+          </a>
+          <a mat-list-item routerLink="/investigation" routerLinkActive="active-link"
+             (click)="closeOnMobile(snav)">
+            <fa-icon [icon]="faFlaskVial" class="nav-icon"></fa-icon>
+            <span>{{ 'NAV.EQUILIBRIUM' | translate }}</span>
+          </a>
+          <a mat-list-item routerLink="/kinetics" routerLinkActive="active-link"
+             (click)="closeOnMobile(snav)">
+            <fa-icon [icon]="faClock" class="nav-icon"></fa-icon>
+            <span>{{ 'NAV.KINETICS' | translate }}</span>
+          </a>
+          <a mat-list-item routerLink="/historic" routerLinkActive="active-link"
+             (click)="closeOnMobile(snav)">
+            <fa-icon [icon]="faHistory" class="nav-icon"></fa-icon>
+            <span>{{ 'NAV.HISTORIC' | translate }}</span>
+          </a>
+          <a *ngIf="isAdmin()" mat-list-item routerLink="/users" routerLinkActive="active-link"
+             (click)="closeOnMobile(snav)">
+            <fa-icon [icon]="faUsers" class="nav-icon"></fa-icon>
+            <span>{{ 'NAV.USERS' | translate }}</span>
+          </a>
         </mat-nav-list>
         <div class="sidenav-footer" *ngIf="authService.isAuth()">
           <div>

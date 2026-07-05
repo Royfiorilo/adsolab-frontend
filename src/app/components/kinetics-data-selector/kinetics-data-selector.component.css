@@ -1,0 +1,11 @@
+.upload-placeholder {
+  border: 2px dashed #b9c2cc;
+  border-radius: 0.5rem;
+  padding: 2rem 1rem;
+  color: #404851;
+}
+
+.upload-placeholder__icon {
+  font-size: 2.5rem;
+  color: #008bce;
+}

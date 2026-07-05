@@ -20,6 +20,11 @@
   background: #ffffff;
 }
 
+.app-sidenav {
+  width: 260px;
+  border-right: 1px solid #e0e0e0;
+}
+
 .sidenav-content {
   display: flex;
   flex-direction: column;
@@ -28,6 +33,48 @@
 
 mat-nav-list {
   flex: 1;
+  padding-top: 8px;
+}
+
+/* Nav item layout: icon + label aligned horizontally */
+.nav-icon {
+  width: 20px;
+  margin-right: 16px;
+  text-align: center;
+  color: #008bce;
+}
+
+/* Active route highlight */
+.active-link {
+  background-color: rgba(0, 139, 206, 0.08);
+  border-left: 3px solid #008bce;
+}
+
+.active-link .nav-icon {
+  color: #006098;
+}
+
+/* Disabled module entry (e.g. kinetics, not built yet) */
+.nav-disabled {
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+.nav-disabled .nav-icon {
+  color: #9e9e9e;
+}
+
+.coming-soon-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6c757d;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 2px 8px;
 }
 
 .sidenav-footer {
@@ -40,6 +87,9 @@ mat-nav-list {
 
 ::ng-deep .mat-mdc-list-item-unscoped-content {
   color: #008bce !important;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .navigation-container {

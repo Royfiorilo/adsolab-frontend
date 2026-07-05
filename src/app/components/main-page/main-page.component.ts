@@ -1,26 +1,57 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
-import {AuthService} from "../../common/auth.service";
-import {faFlaskVial, faHistory, faUsers} from "@fortawesome/free-solid-svg-icons";
+import {Router} from "@angular/router";
+import {faChartLine, faClock, faFlaskVial, faHistory} from "@fortawesome/free-solid-svg-icons";
+import {InvestigationService} from "../historic-investigation/investigation.service";
+import {Investigation} from "../historic-investigation/interface";
+
+const RECENT_ACTIVITY_PAGE_SIZE = 5;
 
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css'
 })
-export class MainPageComponent {
+export class MainPageComponent implements OnInit {
 
-  constructor(translate: TranslateService, private authService: AuthService) {
+  recentInvestigations: Investigation[] = [];
+  totalInvestigations = 0;
+  loadingActivity = true;
+  activityError = false;
+
+  protected readonly faFlaskVial = faFlaskVial;
+  protected readonly faClock = faClock;
+  protected readonly faChartLine = faChartLine;
+  protected readonly faHistory = faHistory;
+
+  constructor(translate: TranslateService, private router: Router, private investigationService: InvestigationService) {
     translate.setDefaultLang('es');
     translate.use('es');
   }
 
-  isAdmin(): boolean {
-    return this.authService.isAdmin()
+  ngOnInit(): void {
+    this.loadRecentActivity();
   }
 
+  goToEquilibrium(): void {
+    this.router.navigate(['/investigation']);
+  }
 
-  protected readonly faHistory = faHistory;
-  protected readonly faUsers = faUsers;
-  protected readonly faFlaskVial = faFlaskVial;
+  goToKinetics(): void {
+    this.router.navigate(['/kinetics']);
+  }
+
+  private loadRecentActivity(): void {
+    this.investigationService.getInvestigations(1, RECENT_ACTIVITY_PAGE_SIZE).subscribe({
+      next: response => {
+        this.recentInvestigations = response.investigations;
+        this.totalInvestigations = response.total;
+        this.loadingActivity = false;
+      },
+      error: () => {
+        this.loadingActivity = false;
+        this.activityError = true;
+      }
+    });
+  }
 }

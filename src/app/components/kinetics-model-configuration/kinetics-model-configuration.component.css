@@ -1,0 +1,4 @@
+:host ::ng-deep .mat-expansion-indicator::after {
+  color: white !important;
+  fill: white !important;
+}

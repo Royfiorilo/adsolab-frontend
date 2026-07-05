@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <div class="row d-flex justify-content-center m-3">
+    <div class="col-12 text-start mb-2">
+      <mat-checkbox color="accent"
+                    [checked]="areAllSelected()"
+                    (change)="toggleSelectAll($event.checked)">
+        {{ 'KINETICS_MODEL_SELECTOR.SELECT_ALL' | translate }}
+      </mat-checkbox>
+    </div>
+    <div *ngFor="let model of state().models" class="p-3 col-lg-4 col-md-6 col-sm-8">
+
+      <mat-card
+        class="model-card h-100"
+        [class.selected]="state().selectedModels.includes(model._id)"
+        (click)="selectModel(model._id)"
+        matRipple>
+
+        <mat-card-content class="card-content">
+          <div class="row">
+            <div class="col">
+              <div class="float-end">
+                <mat-icon class="selection-icon">
+                  {{ state().selectedModels.includes(model._id) ? 'check_circle' : 'radio_button_unchecked' }}
+                </mat-icon>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h3 class="model-title">
+                {{ model.name }}
+              </h3>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col text-center">
+              <app-latex-paragraph [size]="'md'"
+                                   [inputString]="model.latex_formula"></app-latex-paragraph>
+            </div>
+          </div>
+        </mat-card-content>
+
+      </mat-card>
+
+    </div>
+  </div>
+</div>

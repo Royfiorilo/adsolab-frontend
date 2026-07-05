@@ -285,3 +285,6 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/webstorm,windows,linux,macos,angular,visualstudiocode
 
 
+.claude
+refactorParaTpp
+ultimoscambios.md
