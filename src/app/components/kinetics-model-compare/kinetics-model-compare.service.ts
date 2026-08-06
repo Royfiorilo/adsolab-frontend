@@ -7,6 +7,7 @@ import {
   IKineticsAdjustmentMethod,
   IKineticsFitResult,
   IKineticsModelResult,
+  IKineticsRunOutcome,
   IKineticsRunRequest,
   IKineticsRunResponse
 } from './interface';
@@ -29,19 +30,22 @@ export class KineticsModelCompareService {
   constructor(private httpClient: HttpClient) {
   }
 
-  // Runs the non-linear fit on the backend and maps its per-method response
-  // into the flat IKineticsFitResult[] the component plots (one curve per model,
-  // using each model's best adjustment method).
+  // Runs the non-linear fit on the backend and flattens its per-method response
+  // into one IKineticsFitResult per model, using each model's best adjustment
+  // method. The comparison block is passed through untouched.
   runModels(
     sample: IKineticsSample,
     selectedModels: number[],
     modelConfiguration: IKineticsModelsConfigurations,
     models: { _id: number; name: string }[]
-  ): Observable<IKineticsFitResult[]> {
+  ): Observable<IKineticsRunOutcome> {
     const request = this.buildRequest(sample, selectedModels, modelConfiguration);
     return this.httpClient
       .post<IKineticsRunResponse>(`${this.backendBaseUrl}/kinetics/run-no-linear-model`, request, {withCredentials: true})
-      .pipe(map(response => this.mapResults(response, models)));
+      .pipe(map(response => ({
+        results: this.mapResults(response, models),
+        comparison: response.comparison,
+      })));
   }
 
   private buildRequest(
@@ -79,12 +83,11 @@ export class KineticsModelCompareService {
         return {
           modelId: result.model,
           modelName: models.find(model => model._id === result.model)?.name ?? `#${result.model}`,
+          adjustmentName: method.name,
           params,
           curve: {t: method.transformed.x, qt: method.transformed.y},
-          statistics: {
-            r2: method.statistics['r_squared'],
-            rmse: method.statistics['RMSE'],
-          },
+          statistics: method.statistics,
+          residuals: method.residuals,
         };
       });
   }
