@@ -1,8 +1,19 @@
+import {IKineticsLinearizationItem} from "../kinetics-model-configuration/interface";
+
+export interface IKineticsLinearization {
+  linearization_id: number;
+  name: string;
+  formula?: string;
+  latex_formula?: string;
+  parameters?: { [key: string]: string };
+}
+
 export interface IKineticsModel {
   _id: number;
   name: string;
   latex_formula: string;
   parameters: { [key: string]: string };
+  linearizations?: IKineticsLinearization[];
 }
 
 export interface IKineticsSample {
@@ -34,10 +45,24 @@ export interface CreateKineticSampleResponse {
   measure_unit?: string;
 }
 
+export interface IKineticsSeedValue {
+  value: number | null;
+  stderr?: number | null;
+}
+
+export interface IKineticsPersistedLinearization {
+  bestResult: number | null;
+  linearizations: IKineticsLinearizationItem[];
+}
+
 export interface IKineticsModelConfiguration {
-  paramValues: { [key: string]: { value: number | null } };
+  paramValues: { [key: string]: IKineticsSeedValue };
   iterations: number;
   step: number;
+  automatedParams: boolean;
+  selectedLinearizations: number[];
+  knownParams: { [key: string]: number | null };
+  linearization?: IKineticsPersistedLinearization;
 }
 
 export interface IKineticsModelsConfigurations {

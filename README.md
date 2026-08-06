@@ -60,5 +60,3 @@ La aplicación utiliza `ngx-translate` para la gestión de traducciones. Los tex
 - Fórmulas matemáticas en formato LaTeX
 
 Para agregar nuevos textos, simplemente se debe modificar el archivo JSON siguiendo la estructura de objetos anidados existente.
-
-

@@ -90,7 +90,20 @@
     "ITERATIONS": "Iteraciones",
     "ITERATIONS_EXAMPLE": "Ej. 5000",
     "STEPS": "Steps",
-    "SEEDS_NOTE": "Valores iniciales de los parámetros (seeds)."
+    "SEEDS_NOTE": "Valores iniciales de los parámetros (seeds).",
+    "PARAM_TYPES": "Tipo de parámetros",
+    "AUTOMATED_PARAMS": "Parámetros automatizados",
+    "MANUAL_PARAMS": "Parámetros manuales",
+    "AVAILABLE_LINEARIZATIONS": "Linealizaciones disponibles",
+    "RUN_LINEARIZATION": "Ejecutar linealización",
+    "BEST_LINEARIZATION": "Mejor linealización",
+    "LINEARIZATION_ERROR": "No se pudo realizar la linealización. Por favor, ingrese los parámetros manualmente para poder avanzar.",
+    "LINEARIZATION_FAILED": "Esta linealización no pudo calcularse:",
+    "KNOWN_PARAM_HINT": "Si conoce el valor de estos parámetros, ingréselo. Si lo deja vacío, se estima a partir de la muestra.",
+    "ASSUMED_PARAM": "Se asumió {{ name }} = {{ value }} para construir la linealización.",
+    "DROPPED_POINTS": "Se descartaron {{ droppedPoints }} punto(s) que no pudieron transformarse.",
+    "SAMPLE_SERIES": "Muestra",
+    "LINEARIZATION_SERIES": "Linealización"
   },
   "KINETICS_MODEL_COMPARE": {
     "COMPARISON": "Comparación",
@@ -125,7 +138,9 @@
     "SCALE_LOG": "Log",
     "AXIS_MIN": "Mín",
     "AXIS_MAX": "Máx",
-    "SHOW_CURVES": "Curvas a mostrar"
+    "SHOW_CURVES": "Curvas a mostrar",
+    "STAT_LINEAR_R2": "R² linealizado",
+    "LINEAR_R2_NOTE": "El R² linealizado proviene del paso de configuración. Linealizar deforma la estructura del error, así que un R² linealizado alto no implica necesariamente un mejor ajuste que el no lineal."
   },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",
@@ -310,7 +325,7 @@
   },
   "COMPARACION": {
     "HEURISTICA@@html": "Usamos esta heurística para evaluar modelos equilibrando precisión, simplicidad y cumplimiento de supuestos estadísticos.<br><br><ul><li><b>R² ajustado (30%)</b>: Mide qué tan bien el modelo explica los datos, penalizando la complejidad.</li><li><b>RMSE (30%)</b>: Evalúa el error en las predicciones (se usa su inverso para favorecer valores bajos).</li><li><b>AIC (25%)</b>: Penaliza modelos complejos, favoreciendo los más simples y precisos.</li><li><b>Chi-cuadrado (10%)</b>: Indica qué tan bien el modelo se ajusta a los datos observados.</li><li><b>Supuestos estadísticos (15%)</b>: Se suman 5% si cumple normalidad, homocedasticidad e independencia.</li></ul>",
-    "ML@@html": "El criterio de evaluación se basa en Ridge Regression, una regresión lineal regularizada que previene el sobreajuste.\n Se le proporciona una matriz con las predicciones de qe(ŷ) obtenidas \u200B de los modelos que vamos a comparar y los valores reales de qe(y)\u200B. Ridge ajusta los coeficientes para minimizar el error, determinando así la importancia de cada modelo y permitiendo identificar el más preciso.",
+    "ML@@html": "El criterio de evaluación se basa en Ridge Regression, una regresión lineal regularizada que previene el sobreajuste.\n Se le proporciona una matriz con las predicciones de qe(ŷ) obtenidas ​ de los modelos que vamos a comparar y los valores reales de qe(y)​. Ridge ajusta los coeficientes para minimizar el error, determinando así la importancia de cada modelo y permitiendo identificar el más preciso.",
     "LATEX_RIDGE": "$$\\\\min \\left( \\sum_{i=1}^{m} (y_i - \\hat{y}_i)^2 + \\lambda \\sum_{j=1}^{n} \\beta_j^2 \\right)$$"
   },
   "ESTADISTICOS": {

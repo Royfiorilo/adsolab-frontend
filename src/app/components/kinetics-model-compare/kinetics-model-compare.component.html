@@ -157,6 +157,7 @@
                 <tr>
                   <th>{{ 'KINETICS_MODEL_COMPARE.STAT_MODEL' | translate }}</th>
                   <th>{{ 'KINETICS_MODEL_COMPARE.STAT_R2' | translate }}</th>
+                  <th *ngIf="hasLinearR2()">{{ 'KINETICS_MODEL_COMPARE.STAT_LINEAR_R2' | translate }}</th>
                   <th>{{ 'KINETICS_MODEL_COMPARE.STAT_RMSE' | translate }}</th>
                 </tr>
                 </thead>
@@ -164,10 +165,16 @@
                 <tr *ngFor="let result of results">
                   <td>{{ result.modelName }}</td>
                   <td>{{ result.statistics.r2 | number:'1.4-4' }}</td>
+                  <td *ngIf="hasLinearR2()">
+                    {{ getLinearR2(result.modelId) !== undefined ? (getLinearR2(result.modelId) | number:'1.4-4') : '—' }}
+                  </td>
                   <td>{{ result.statistics.rmse | number:'1.4-4' }}</td>
                 </tr>
                 </tbody>
               </table>
+              <small *ngIf="hasLinearR2()" class="text-muted d-block mt-2">
+                {{ 'KINETICS_MODEL_COMPARE.LINEAR_R2_NOTE' | translate }}
+              </small>
             </mat-card-content>
           </mat-card>
         </div>
@@ -192,6 +199,10 @@
                 <tr>
                   <td>{{ 'KINETICS_MODEL_COMPARE.STAT_R2' | translate }}</td>
                   <td>{{ result.statistics.r2 | number:'1.4-4' }}</td>
+                </tr>
+                <tr *ngIf="getLinearR2(result.modelId) !== undefined">
+                  <td>{{ 'KINETICS_MODEL_COMPARE.STAT_LINEAR_R2' | translate }}</td>
+                  <td>{{ getLinearR2(result.modelId) | number:'1.4-4' }}</td>
                 </tr>
                 <tr>
                   <td>{{ 'KINETICS_MODEL_COMPARE.STAT_RMSE' | translate }}</td>
