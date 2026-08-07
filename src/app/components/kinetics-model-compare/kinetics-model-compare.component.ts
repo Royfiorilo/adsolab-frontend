@@ -51,6 +51,25 @@ export class KineticsModelCompareComponent implements OnInit {
     return this.state().models.find(model => model._id === modelId)?.name;
   }
 
+  /**
+   * R² de la mejor linealización del modelo, calculado en el paso de configuración.
+   * Se muestra junto al R² del ajuste no lineal porque linealizar deforma la
+   * estructura del error: un R² lineal alto no implica mejor ajuste.
+   */
+  getLinearR2(modelId: number): number | undefined {
+    const persisted = this.state().modelConfiguration[modelId]?.linearization;
+    if (!persisted) {
+      return undefined;
+    }
+    return persisted.linearizations
+      .find(linearization => linearization.status === 'OK' && linearization.id === persisted.bestResult)
+      ?.statistics?.r_squared;
+  }
+
+  hasLinearR2(): boolean {
+    return this.results.some(result => this.getLinearR2(result.modelId) !== undefined);
+  }
+
   private runModels(): void {
     const {kineticsSample, selectedModels, modelConfiguration, models} = this.state();
     if (!kineticsSample || selectedModels.length === 0) {

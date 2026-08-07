@@ -82,7 +82,10 @@ export class KineticsComponent implements AfterViewInit {
           [key]: {value: null}
         }), {}),
         iterations: DEFAULT_ITERATIONS,
-        step: DEFAULT_STEPS
+        step: DEFAULT_STEPS,
+        automatedParams: true,
+        selectedLinearizations: (model?.linearizations ?? []).map(linearization => linearization.linearization_id),
+        knownParams: {}
       }
     };
 
@@ -120,7 +123,8 @@ export class KineticsComponent implements AfterViewInit {
   private checkConfigurationDone() {
     let configurationDone = this.state().selectedModels.length > 0 &&
       Object.values(this.state().modelConfiguration).every(config =>
-        Object.values(config.paramValues as Record<string, { value: number | null }>).every(param => param.value)
+        Object.values(config.paramValues as Record<string, { value: number | null }>)
+          .every(param => param.value !== null && param.value !== undefined)
       );
     this.stateService.state.set({
       ...this.state(),

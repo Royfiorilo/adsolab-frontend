@@ -17,10 +17,20 @@
           <div class="card-body d-flex flex-column">
 
             <div class="d-flex gap-2 flex-md-row flex-column w-100">
+              <mat-form-field class="w-100 mb-md-0 mb-2" *ngIf="getLinearizations(modelId).length">
+                <mat-label>{{ 'KINETICS_MODEL_CONFIGURATION.PARAM_TYPES' | translate }}</mat-label>
+                <mat-select [(value)]="modelConfiguration[modelId].automatedParams"
+                            (valueChange)="onParamChange()">
+                  <mat-option *ngFor="let option of seedParamOptions"
+                              [value]="option.name === SeedParamOption.AUTOMATED">
+                    {{ option.value }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
               <mat-form-field class="w-100 mb-md-0 mb-2">
                 <mat-label>{{ 'KINETICS_MODEL_CONFIGURATION.ITERATIONS' | translate }}</mat-label>
-                <input [id]="modelId.toString()"
-                       [(ngModel)]="modelConfiguration[modelId].iterations"
+                <input [(ngModel)]="modelConfiguration[modelId].iterations"
                        (change)="onParamChange()"
                        matInput type="number"
                        placeholder="{{ 'KINETICS_MODEL_CONFIGURATION.ITERATIONS_EXAMPLE' | translate }}">
@@ -28,8 +38,7 @@
 
               <mat-form-field class="w-100">
                 <mat-label>{{ 'KINETICS_MODEL_CONFIGURATION.STEPS' | translate }}</mat-label>
-                <input [id]="modelId.toString()"
-                       [(ngModel)]="modelConfiguration[modelId].step"
+                <input [(ngModel)]="modelConfiguration[modelId].step"
                        matInput type="number"
                        min="0"
                        max="1"
@@ -39,21 +48,85 @@
               </mat-form-field>
             </div>
 
-            <small class="text-muted">{{ 'KINETICS_MODEL_CONFIGURATION.SEEDS_NOTE' | translate }}</small>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-1">
-              <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="col">
-                <div class="text-center">
-                  <mat-form-field class="w-100">
-                    <mat-label>{{ param.key }}</mat-label>
-                    <input matInput
-                           [(ngModel)]="param.value.value"
-                           (change)="onParamChange()"
-                           id="{{ param.key }}"
-                           type="number"/>
-                  </mat-form-field>
+            <ng-container
+              *ngIf="modelConfiguration[modelId].automatedParams && getLinearizations(modelId).length; else manualParams">
+
+              <ng-container *ngIf="!linearizationGraphs[modelId]?.length">
+                <small class="text-muted">{{ 'KINETICS_MODEL_CONFIGURATION.AVAILABLE_LINEARIZATIONS' | translate }}</small>
+                <h6 class="text-muted" *ngFor="let linearization of getLinearizations(modelId)">
+                  - {{ linearization.name }}
+                </h6>
+
+                <ng-container *ngIf="requiredKnownParams(modelId).length">
+                  <small class="text-muted mt-2">{{ 'KINETICS_MODEL_CONFIGURATION.KNOWN_PARAM_HINT' | translate }}</small>
+                  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-1">
+                    <div *ngFor="let name of requiredKnownParams(modelId)" class="col">
+                      <mat-form-field class="w-100">
+                        <mat-label>{{ name }}</mat-label>
+                        <input matInput
+                               [(ngModel)]="modelConfiguration[modelId].knownParams[name]"
+                               type="number"/>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <div class="mt-auto d-flex align-content-center justify-content-center">
+                  <button (click)="runLinearization(modelId)"
+                          class="btn fiuba-investigation mt-3">
+                    {{ 'KINETICS_MODEL_CONFIGURATION.RUN_LINEARIZATION' | translate }}
+                  </button>
+                </div>
+              </ng-container>
+
+              <div class="row mb-3" *ngFor="let item of linearizationGraphs[modelId]">
+                <div class="col text-center m-0">
+                  <h5 class="text-center">{{ item.linearizationName }}</h5>
+                  <small *ngIf="item.isBestResult" class="text-center badge fiuba-institutional-bg text-white">
+                    {{ 'KINETICS_MODEL_CONFIGURATION.BEST_LINEARIZATION' | translate }}
+                  </small>
+                </div>
+
+                <div *ngIf="item.status === 'ERROR'" class="alert alert-warning mt-2" role="alert">
+                  {{ 'KINETICS_MODEL_CONFIGURATION.LINEARIZATION_FAILED' | translate }} {{ item.reason }}
+                </div>
+
+                <ng-container *ngIf="item.status === 'OK'">
+                  <div class="col-12 text-center">
+                    <small *ngFor="let assumed of item.assumedParams" class="d-block text-muted">
+                      {{ 'KINETICS_MODEL_CONFIGURATION.ASSUMED_PARAM' | translate:assumed }}
+                    </small>
+                    <small *ngIf="item.droppedPoints" class="d-block text-muted">
+                      {{ 'KINETICS_MODEL_CONFIGURATION.DROPPED_POINTS' | translate:item }}
+                    </small>
+                  </div>
+
+                  <plotly-plot *ngIf="item.graph"
+                               [data]="item.graph.data" [layout]="item.graph.layout"
+                               [style]="{width: '100%', minHeight: '450px'}"
+                               [config]="{responsive:true, displaylogo: false, editable: true}"></plotly-plot>
+
+                  <app-fit-result [parameters]="item.parameters" [statistics]="item.statistics"/>
+                </ng-container>
+              </div>
+            </ng-container>
+
+            <ng-template #manualParams>
+              <small class="text-muted">{{ 'KINETICS_MODEL_CONFIGURATION.SEEDS_NOTE' | translate }}</small>
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-1">
+                <div *ngFor="let param of modelConfiguration[modelId].paramValues | keyvalue" class="col">
+                  <div class="text-center">
+                    <mat-form-field class="w-100">
+                      <mat-label>{{ param.key }}</mat-label>
+                      <input matInput
+                             [(ngModel)]="param.value.value"
+                             (change)="onParamChange()"
+                             type="number"/>
+                    </mat-form-field>
+                  </div>
                 </div>
               </div>
-            </div>
+            </ng-template>
 
           </div>
         </mat-expansion-panel>
@@ -61,3 +134,7 @@
     </mat-accordion>
   </div>
 </div>
+
+<ng-container *ngIf="runningLinearization">
+  <app-loading [cancellable]="true" (cancelRequestEvent)="cancelCurrentRequest()"></app-loading>
+</ng-container>

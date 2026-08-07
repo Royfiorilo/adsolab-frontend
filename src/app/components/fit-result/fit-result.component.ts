@@ -8,11 +8,11 @@ import {IParameter, IStatistics} from "../../common/common.interface";
 })
 export class FitResultComponent {
   @Input() parameters!: IParameter[];
-  @Input() statistics!: IStatistics;
+  @Input() statistics!: Partial<IStatistics>;
 
   getStatisticsInOrder() {
 
-    let statisticsInOrder: IStatistics = {
+    let statisticsInOrder: Partial<IStatistics> = {
       chi_squared: this.statistics.chi_squared,
       adjust_chi_squeared: this.statistics.adjust_chi_squeared,
       r_squared: this.statistics.r_squared,
