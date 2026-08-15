@@ -1,9 +1,25 @@
+export interface IKineticsResidualsAnalysis {
+  normality_pvalue: number;
+  homoscedasticity_pvalue: number;
+  durbin_watson: number;
+  passes_normality: number | boolean;
+  passes_homoscedasticity: number | boolean;
+  passes_independence: number | boolean;
+}
+
+export interface IKineticsResiduals {
+  values: number[];
+  analysis: IKineticsResidualsAnalysis;
+}
+
 export interface IKineticsFitResult {
   modelId: number;
   modelName: string;
+  adjustmentName: string;
   params: { [name: string]: number };
   curve: { t: number[]; qt: number[] };      // smooth predicted curve
-  statistics: { r2: number; rmse: number };
+  statistics: { [name: string]: number };
+  residuals: IKineticsResiduals;
 }
 
 // ---- Backend contract for POST /kinetics/run-no-linear-model ----
@@ -38,8 +54,8 @@ export interface IKineticsAdjustmentMethod {
   success: boolean;
   parameters: IKineticsFittedParameter[];
   statistics: { [key: string]: number };
-  residuals: { values: number[]; analysis: any };
-  transformed: { x: number[]; y: number[]; qt_pred: number[] };
+  residuals: IKineticsResiduals;
+  transformed: { x: number[]; y: number[] };
 }
 
 export interface IKineticsModelResult {
@@ -48,10 +64,33 @@ export interface IKineticsModelResult {
   adjustment_methods: IKineticsAdjustmentMethod[];
 }
 
+export interface IKineticsHeuristicComparison {
+  best_model: number;
+  results: { model: number; score: number }[];
+}
+
+export interface IKineticsMlComparison {
+  best_model: number;
+  results: { model: number; coef: number }[];
+  statistics: { [name: string]: number };
+  residuals: IKineticsResiduals;
+  transformed: { x: number[]; y: number[] };
+}
+
+export interface IKineticsComparison {
+  heuristic: IKineticsHeuristicComparison | null;
+  ml: IKineticsMlComparison | null;
+}
+
 export interface IKineticsRunResponse {
   kinetic_sample_id: number;
   results: IKineticsModelResult[];
-  comparison: any;
+  comparison: IKineticsComparison;
+}
+
+export interface IKineticsRunOutcome {
+  results: IKineticsFitResult[];
+  comparison: IKineticsComparison;
 }
 
 export type AxisScale = 'linear' | 'log';

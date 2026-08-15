@@ -1,10 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {TranslateService} from "@ngx-translate/core";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PlotlyComponent} from "angular-plotly.js";
 import {KineticsStateService} from "../kinetics/kinetics-state.service";
 import {KINETICS_FONT_FAMILIES, KINETICS_PLOT_PALETTE, KineticsModelCompareService} from "./kinetics-model-compare.service";
-import {AxisScale, ExportFormat, IKineticsAxisSettings, IKineticsFitResult, IKineticsPlotSettings} from "./interface";
+import {
+  AxisScale,
+  ExportFormat,
+  IKineticsAxisSettings,
+  IKineticsComparison,
+  IKineticsFitResult,
+  IKineticsPlotSettings
+} from "./interface";
 
 interface PlotlyGraph {
   data: any[];
@@ -24,8 +32,15 @@ export class KineticsModelCompareComponent implements OnInit {
   protected loading = true;
   protected error = false;
   protected results: IKineticsFitResult[] = [];
+  protected comparison?: IKineticsComparison;
   protected comparisonGraph?: PlotlyGraph;
   protected graphByModel: { [modelId: number]: PlotlyGraph } = {};
+  protected residualsGraphByModel: { [modelId: number]: PlotlyGraph } = {};
+
+  @ViewChild('statModal') private statModalRef!: TemplateRef<any>;
+  @ViewChild('residualModal') private residualModalRef!: TemplateRef<any>;
+  protected selectedStatName = '';
+  protected selectedResidualName = '';
 
   protected plotSettings!: IKineticsPlotSettings;
   protected exportFormat: ExportFormat = 'png';
@@ -40,7 +55,8 @@ export class KineticsModelCompareComponent implements OnInit {
 
   constructor(protected stateService: KineticsStateService,
               private compareService: KineticsModelCompareService,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -70,6 +86,61 @@ export class KineticsModelCompareComponent implements OnInit {
     return this.results.some(result => this.getLinearR2(result.modelId) !== undefined);
   }
 
+  /** Las filas salen de las claves que manda el backend, no de una lista fija. */
+  getStatisticsRows(): string[] {
+    return Object.keys(this.results[0]?.statistics ?? {});
+  }
+
+  getResidualsRows(): string[] {
+    return Object.keys(this.results[0]?.residuals?.analysis ?? {});
+  }
+
+  statisticValue(modelId: number, name: string): number | undefined {
+    return this.results.find(result => result.modelId === modelId)?.statistics?.[name];
+  }
+
+  residualValue(modelId: number, name: string): number | boolean | undefined {
+    const analysis = this.results.find(result => result.modelId === modelId)?.residuals?.analysis;
+    return analysis ? (analysis as any)[name] : undefined;
+  }
+
+  getMlStatistic(name: string): number | undefined {
+    return this.comparison?.ml?.statistics?.[name];
+  }
+
+  getHeuristicScore(modelId: number): number | undefined {
+    return this.comparison?.heuristic?.results.find(result => result.model === modelId)?.score;
+  }
+
+  getMlCoefficient(modelId: number): number | undefined {
+    return this.comparison?.ml?.results.find(result => result.model === modelId)?.coef;
+  }
+
+  /** Sólo hay un ganador claro cuando heurística y ML coinciden. */
+  bestModelOverall(): string | undefined {
+    const heuristic = this.comparison?.heuristic?.best_model;
+    const ml = this.comparison?.ml?.best_model;
+    if (heuristic === undefined || ml === undefined || heuristic !== ml) {
+      return undefined;
+    }
+    return this.getModelName(heuristic);
+  }
+
+  hasDescription(prefix: string, name: string): boolean {
+    const key = `${prefix}.${name}`;
+    return this.translate.instant(key) !== key;
+  }
+
+  openStatModal(name: string): void {
+    this.selectedStatName = name;
+    this.modalService.open(this.statModalRef, {size: 'lg'});
+  }
+
+  openResidualModal(name: string): void {
+    this.selectedResidualName = name;
+    this.modalService.open(this.residualModalRef, {size: 'lg'});
+  }
+
   private runModels(): void {
     const {kineticsSample, selectedModels, modelConfiguration, models} = this.state();
     if (!kineticsSample || selectedModels.length === 0) {
@@ -80,9 +151,10 @@ export class KineticsModelCompareComponent implements OnInit {
     this.loading = true;
     this.error = false;
     this.compareService.runModels(kineticsSample, selectedModels, modelConfiguration, models).subscribe({
-      next: results => {
-        this.results = results;
-        this.plotSettings = this.buildDefaultSettings(results);
+      next: outcome => {
+        this.results = outcome.results;
+        this.comparison = outcome.comparison;
+        this.plotSettings = this.buildDefaultSettings(outcome.results);
         this.updateConfig();
         this.rebuildGraphs();
         this.loading = false;
@@ -144,14 +216,39 @@ export class KineticsModelCompareComponent implements OnInit {
     };
 
     this.graphByModel = {};
+    this.residualsGraphByModel = {};
     this.results.forEach((result, index) => {
       this.graphByModel[result.modelId] = {
         data: [sampleTrace, this.buildModelTrace(result, index)],
         layout: this.buildLayout(),
       };
+      this.residualsGraphByModel[result.modelId] = this.buildResidualsGraph(result, sample.time);
     });
 
     setTimeout(() => this.comparisonPlot?.updatePlot(), 0);
+  }
+
+  // `sample.time` ya viene ordenado desde el backend (`order_sample`), así que
+  // los residuos se alinean con él sin reordenar.
+  private buildResidualsGraph(result: IKineticsFitResult, time: number[]): PlotlyGraph {
+    const color = this.colorMode === 'bw' ? '#000000' : this.plotSettings.colorByModel[result.modelId];
+    return {
+      data: [{
+        x: time,
+        y: result.residuals?.values ?? [],
+        type: 'scatter',
+        mode: 'markers',
+        name: this.translate.instant('KINETICS_MODEL_COMPARE.RESIDUALS_PLOT'),
+        marker: {color},
+      }],
+      layout: {
+        title: this.translate.instant('KINETICS_MODEL_COMPARE.RESIDUALS_PLOT'),
+        autosize: true,
+        font: this.plotSettings.font,
+        xaxis: this.buildAxisLayout(this.plotSettings.xAxis),
+        yaxis: {title: this.translate.instant('KINETICS_MODEL_COMPARE.AXIS_RESIDUAL'), autorange: true},
+      },
+    };
   }
 
   private buildModelTrace(result: IKineticsFitResult, index: number): any {

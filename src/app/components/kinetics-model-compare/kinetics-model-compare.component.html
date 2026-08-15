@@ -164,11 +164,11 @@
                 <tbody>
                 <tr *ngFor="let result of results">
                   <td>{{ result.modelName }}</td>
-                  <td>{{ result.statistics.r2 | number:'1.4-4' }}</td>
+                  <td>{{ result.statistics['r_squared'] | number:'1.4-4' }}</td>
                   <td *ngIf="hasLinearR2()">
                     {{ getLinearR2(result.modelId) !== undefined ? (getLinearR2(result.modelId) | number:'1.4-4') : '—' }}
                   </td>
-                  <td>{{ result.statistics.rmse | number:'1.4-4' }}</td>
+                  <td>{{ result.statistics['RMSE'] | number:'1.4-4' }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -177,6 +177,101 @@
               </small>
             </mat-card-content>
           </mat-card>
+
+          <mat-card class="shadow mt-3" *ngIf="comparison?.heuristic || comparison?.ml">
+            <mat-card-content class="p-3">
+              <h4 class="text-center">{{ 'KINETICS_MODEL_COMPARE.BEST_MODEL' | translate }}</h4>
+              <h5 class="text-center fiuba-institutional-text" *ngIf="bestModelOverall(); else noAgreement">
+                {{ bestModelOverall() }}
+              </h5>
+              <ng-template #noAgreement>
+                <p class="text-center text-muted mb-0">{{ 'KINETICS_MODEL_COMPARE.NO_AGREEMENT' | translate }}</p>
+              </ng-template>
+
+              <table class="table mt-3 mb-0">
+                <thead>
+                <tr>
+                  <th>{{ 'KINETICS_MODEL_COMPARE.STAT_MODEL' | translate }}</th>
+                  <th>{{ 'KINETICS_MODEL_COMPARE.HEURISTIC' | translate }}</th>
+                  <th>{{ 'KINETICS_MODEL_COMPARE.ML' | translate }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let result of results">
+                  <td>{{ result.modelName }}</td>
+                  <td>{{ getHeuristicScore(result.modelId) ?? 'N/A' }}</td>
+                  <td>{{ getMlCoefficient(result.modelId) ?? 'N/A' }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-accordion multi class="d-block mt-3">
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ 'KINETICS_MODEL_COMPARE.STATISTICS_TITLE' | translate }}</mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="table-responsive">
+                <table class="table mb-0">
+                  <thead>
+                  <tr>
+                    <th></th>
+                    <th *ngFor="let result of results">{{ result.modelName }}</th>
+                    <th *ngIf="comparison?.ml">{{ 'KINETICS_MODEL_COMPARE.ML' | translate }}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let statName of getStatisticsRows()">
+                    <td>
+                      {{ 'STATISTICS.' + statName | translate }}
+                      <span class="text-muted" *ngIf="hasDescription('ESTADISTICOS', statName)">
+                        <mat-icon inline="true"
+                                  matTooltip="{{ 'KINETICS_MODEL_COMPARE.DETAIL' | translate }}"
+                                  (click)="openStatModal(statName); $event.stopPropagation()">info
+                        </mat-icon>
+                      </span>
+                    </td>
+                    <td *ngFor="let result of results">{{ statisticValue(result.modelId, statName) ?? 'N/A' }}</td>
+                    <td *ngIf="comparison?.ml">{{ getMlStatistic(statName) ?? 'N/A' }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ 'KINETICS_MODEL_COMPARE.RESIDUALS_ANALYSIS' | translate }}</mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="table-responsive">
+                <table class="table mb-0">
+                  <thead>
+                  <tr>
+                    <th></th>
+                    <th *ngFor="let result of results">{{ result.modelName }}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let residualName of getResidualsRows()">
+                    <td>
+                      {{ 'RESIDUALS.' + residualName | translate }}
+                      <span class="text-muted" *ngIf="hasDescription('RESIDUOS', residualName)">
+                        <mat-icon inline="true"
+                                  matTooltip="{{ 'KINETICS_MODEL_COMPARE.DETAIL' | translate }}"
+                                  (click)="openResidualModal(residualName); $event.stopPropagation()">info
+                        </mat-icon>
+                      </span>
+                    </td>
+                    <td *ngFor="let result of results">{{ residualValue(result.modelId, residualName) ?? 'N/A' }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
       </div>
     </mat-tab>
@@ -196,20 +291,30 @@
                   <td>{{ param.key }}</td>
                   <td>{{ param.value | number:'1.4-4' }}</td>
                 </tr>
-                <tr>
-                  <td>{{ 'KINETICS_MODEL_COMPARE.STAT_R2' | translate }}</td>
-                  <td>{{ result.statistics.r2 | number:'1.4-4' }}</td>
+                <tr *ngFor="let statName of getStatisticsRows()">
+                  <td>{{ 'STATISTICS.' + statName | translate }}</td>
+                  <td>{{ result.statistics[statName] ?? 'N/A' }}</td>
                 </tr>
                 <tr *ngIf="getLinearR2(result.modelId) !== undefined">
                   <td>{{ 'KINETICS_MODEL_COMPARE.STAT_LINEAR_R2' | translate }}</td>
                   <td>{{ getLinearR2(result.modelId) | number:'1.4-4' }}</td>
                 </tr>
-                <tr>
-                  <td>{{ 'KINETICS_MODEL_COMPARE.STAT_RMSE' | translate }}</td>
-                  <td>{{ result.statistics.rmse | number:'1.4-4' }}</td>
+                </tbody>
+              </table>
+
+              <table class="table mt-3 mb-0">
+                <tbody>
+                <tr *ngFor="let residualName of getResidualsRows()">
+                  <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                  <td>{{ residualValue(result.modelId, residualName) ?? 'N/A' }}</td>
                 </tr>
                 </tbody>
               </table>
+
+              <plotly-plot *ngIf="residualsGraphByModel[result.modelId]"
+                           [data]="residualsGraphByModel[result.modelId].data"
+                           [layout]="residualsGraphByModel[result.modelId].layout"
+                           [style]="{width: '100%', height: '320px'}" [config]="config"></plotly-plot>
             </mat-card-content>
           </mat-card>
         </div>
@@ -226,5 +331,31 @@
       </mat-card>
     </div>
   </div>
+
+  <ng-template #statModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">{{ 'STATISTICS.' + selectedStatName | translate }}</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Close click')"></button>
+    </div>
+    <div class="modal-body">
+      <p [innerHTML]="'ESTADISTICOS.' + selectedStatName | translate"></p>
+      <div class="row mt-2" *ngIf="hasDescription('LATEX', selectedStatName)">
+        <app-latex-paragraph [inputString]="'LATEX.' + selectedStatName | translate"></app-latex-paragraph>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #residualModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">{{ 'RESIDUALS.' + selectedResidualName | translate }}</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Close click')"></button>
+    </div>
+    <div class="modal-body">
+      <p [innerHTML]="'RESIDUOS.' + selectedResidualName | translate"></p>
+      <div class="row mt-2" *ngIf="hasDescription('LATEX', selectedResidualName)">
+        <app-latex-paragraph [inputString]="'LATEX.' + selectedResidualName | translate"></app-latex-paragraph>
+      </div>
+    </div>
+  </ng-template>
 
 </div>

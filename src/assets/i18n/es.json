@@ -140,7 +140,16 @@
     "AXIS_MAX": "Máx",
     "SHOW_CURVES": "Curvas a mostrar",
     "STAT_LINEAR_R2": "R² linealizado",
-    "LINEAR_R2_NOTE": "El R² linealizado proviene del paso de configuración. Linealizar deforma la estructura del error, así que un R² linealizado alto no implica necesariamente un mejor ajuste que el no lineal."
+    "LINEAR_R2_NOTE": "El R² linealizado proviene del paso de configuración. Linealizar deforma la estructura del error, así que un R² linealizado alto no implica necesariamente un mejor ajuste que el no lineal.",
+    "BEST_MODEL": "Mejor modelo",
+    "NO_AGREEMENT": "La heurística y el modelo combinado (ML) no coinciden en el mejor modelo.",
+    "HEURISTIC": "Puntaje heurístico",
+    "ML": "Coeficiente ML",
+    "STATISTICS_TITLE": "Estadísticos",
+    "RESIDUALS_ANALYSIS": "Análisis de residuos",
+    "RESIDUALS_PLOT": "Residuos",
+    "AXIS_RESIDUAL": "qt experimental - qt predicho",
+    "DETAIL": "Ver detalle"
   },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",
