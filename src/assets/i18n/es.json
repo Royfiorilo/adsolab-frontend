@@ -28,9 +28,10 @@
     "DASHBOARD": "Dashboard",
     "EQUILIBRIUM": "Equilibrio",
     "KINETICS": "Cinéticas",
-    "HISTORIC": "Histórico",
+    "HISTORIC": "Histórico equilibrio",
     "USERS": "Usuarios",
-    "COMING_SOON": "Próximamente"
+    "COMING_SOON": "Próximamente",
+    "KINETICS_HISTORIC": "Histórico cinéticas"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard General",
@@ -149,7 +150,12 @@
     "RESIDUALS_ANALYSIS": "Análisis de residuos",
     "RESIDUALS_PLOT": "Residuos",
     "AXIS_RESIDUAL": "qt experimental - qt predicho",
-    "DETAIL": "Ver detalle"
+    "DETAIL": "Ver detalle",
+    "SAVING": "Guardando...",
+    "SAVED": "Resultados guardados",
+    "SAVE_SUCCESS": "Resultados guardados como versión {{version_id}} de la investigación {{kinetic_investigation_id}}",
+    "SAVE_ERROR": "Hubo un error al guardar los resultados",
+    "SAVE_NOT_AUTHORIZED": "No está autorizado a guardar en la investigación de otro usuario."
   },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",
@@ -366,5 +372,18 @@
     "durbin_watson": "$$DW = \\frac{\\sum (e_t - e_{t-1})^2}{\\sum e_t^2}$$",
     "homoscedasticity_pvalue": "Sin fórmula específica. Se refiere al valor p obtenido de una prueba como Breusch-Pagan o White.",
     "normality_pvalue": "Sin fórmula específica. Se refiere al valor p de pruebas como Shapiro-Wilk o Jarque-Bera."
+  },
+  "KINETICS_HISTORIC": {
+    "TITLE": "Investigaciones cinéticas",
+    "INVESTIGATION": "Investigación",
+    "OPEN_VERSION": "Ver versión",
+    "BACK": "Volver al histórico",
+    "CREATE": "Crear un análisis cinético",
+    "NO_DATA_MESSAGE": "No hay investigaciones cinéticas guardadas. Se guardan con \"Guardar resultados\" en el paso de Resultados.",
+    "LOADING_VERSIONS": "Cargando versiones...",
+    "ERROR_LOADING_INVESTIGATIONS": "Error al cargar las investigaciones cinéticas",
+    "ERROR_LOADING_VERSIONS": "Error al cargar las versiones",
+    "ERROR_LOADING_VERSION": "No se pudo cargar la versión solicitada.",
+    "ERROR_LOADING_MODELS": "Error al cargar los modelos cinéticos"
   }
 }

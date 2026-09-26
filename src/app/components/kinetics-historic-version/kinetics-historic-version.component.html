@@ -1,0 +1,19 @@
+<div class="container-fluid p-4">
+  <div class="d-flex align-items-center flex-wrap gap-3">
+    <button mat-button color="primary" routerLink="/kinetics/historic">
+      <fa-icon [icon]="faArrowLeft" class="me-2"></fa-icon>
+      {{ 'KINETICS_HISTORIC.BACK' | translate }}
+    </button>
+    <h4 class="mb-0">
+      {{ 'KINETICS_HISTORIC.INVESTIGATION' | translate }} {{ investigationId }}
+      · {{ 'VERSIONS.VERSION' | translate }} {{ versionId }}
+    </h4>
+    <span *ngIf="savedVersion?.sample?.title" class="text-muted">{{ savedVersion?.sample?.title }}</span>
+  </div>
+
+  <app-loading *ngIf="loading"></app-loading>
+
+  <p *ngIf="error" class="text-center text-muted m-5">{{ 'KINETICS_HISTORIC.ERROR_LOADING_VERSION' | translate }}</p>
+
+  <app-kinetics-model-compare *ngIf="savedVersion" [savedVersion]="savedVersion"></app-kinetics-model-compare>
+</div>

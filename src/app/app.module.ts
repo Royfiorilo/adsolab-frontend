@@ -25,6 +25,8 @@ import {KineticsFileUploadComponent} from './components/kinetics-file-upload/kin
 import {KineticsModelSelectorComponent} from './components/kinetics-model-selector/kinetics-model-selector.component';
 import {KineticsModelConfigurationComponent} from './components/kinetics-model-configuration/kinetics-model-configuration.component';
 import {KineticsModelCompareComponent} from './components/kinetics-model-compare/kinetics-model-compare.component';
+import {KineticsHistoricComponent} from './components/kinetics-historic/kinetics-historic.component';
+import {KineticsHistoricVersionComponent} from './components/kinetics-historic-version/kinetics-historic-version.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {DataSelectorComponent} from "./components/data-selector/data-selector.component";
@@ -108,6 +110,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     KineticsModelSelectorComponent,
     KineticsModelConfigurationComponent,
     KineticsModelCompareComponent,
+    KineticsHistoricComponent,
+    KineticsHistoricVersionComponent,
     DataSelectorComponent,
     ModelSelectorComponent,
     ModelConfigurationComponent,

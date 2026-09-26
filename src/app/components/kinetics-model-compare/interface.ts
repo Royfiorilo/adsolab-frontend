@@ -1,3 +1,5 @@
+import {IKineticsModel, IKineticsSample} from "../kinetics/interface";
+
 export interface IKineticsResidualsAnalysis {
   normality_pvalue: number;
   homoscedasticity_pvalue: number;
@@ -62,6 +64,7 @@ export interface IKineticsModelResult {
   model: number;
   best_adjust: string;
   adjustment_methods: IKineticsAdjustmentMethod[];
+  seeds?: IKineticsSavedSeed[];
 }
 
 export interface IKineticsHeuristicComparison {
@@ -90,6 +93,35 @@ export interface IKineticsRunResponse {
 
 export interface IKineticsRunOutcome {
   results: IKineticsFitResult[];
+  comparison: IKineticsComparison;
+  rawResults: IKineticsModelResult[];   // what the backend sent, kept to save the version as-is
+}
+
+// ---- Backend contract for POST /kinetics/investigation/save ----
+
+export interface IKineticsSavedSeed {
+  name: string;
+  value: number;
+  stderr?: number | null;
+}
+
+export interface IKineticsSaveRequest {
+  kinetic_sample_id: number;
+  results: IKineticsModelResult[];
+  comparison: IKineticsComparison;
+}
+
+export interface IKineticsSaveResponse {
+  status: string;
+  kinetic_investigation_id: number;
+  version_id: number;
+}
+
+// A saved version rendered read-only by KineticsModelCompareComponent.
+export interface IKineticsSavedVersion {
+  sample: IKineticsSample;
+  models: IKineticsModel[];
+  results: IKineticsModelResult[];
   comparison: IKineticsComparison;
 }
 

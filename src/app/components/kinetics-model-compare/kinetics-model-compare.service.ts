@@ -2,14 +2,18 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {map, Observable} from 'rxjs';
-import {IKineticsModelsConfigurations, IKineticsSample} from '../kinetics/interface';
+import {IKineticsModelConfiguration, IKineticsModelsConfigurations, IKineticsSample} from '../kinetics/interface';
 import {
   IKineticsAdjustmentMethod,
+  IKineticsComparison,
   IKineticsFitResult,
   IKineticsModelResult,
   IKineticsRunOutcome,
   IKineticsRunRequest,
-  IKineticsRunResponse
+  IKineticsRunResponse,
+  IKineticsSavedSeed,
+  IKineticsSaveRequest,
+  IKineticsSaveResponse
 } from './interface';
 
 // Default color palette used to seed each model's plot color.
@@ -42,10 +46,52 @@ export class KineticsModelCompareService {
     const request = this.buildRequest(sample, selectedModels, modelConfiguration);
     return this.httpClient
       .post<IKineticsRunResponse>(`${this.backendBaseUrl}/kinetics/run-no-linear-model`, request, {withCredentials: true})
-      .pipe(map(response => ({
-        results: this.mapResults(response, models),
-        comparison: response.comparison,
-      })));
+      .pipe(map(response => this.toOutcome(response.results, response.comparison, models)));
+  }
+
+  // Shared by a fresh run and by a saved version: both carry the same
+  // per-method results and comparison block.
+  toOutcome(
+    results: IKineticsModelResult[],
+    comparison: IKineticsComparison,
+    models: { _id: number; name: string }[]
+  ): IKineticsRunOutcome {
+    return {
+      results: this.mapResults(results, models),
+      comparison,
+      rawResults: results,
+    };
+  }
+
+  // Saves the run as a new version. The backend reuses the investigation of
+  // (sample, user) if it exists, so no investigation id is sent.
+  saveVersion(
+    sample: IKineticsSample,
+    rawResults: IKineticsModelResult[],
+    comparison: IKineticsComparison,
+    modelConfiguration: IKineticsModelsConfigurations
+  ): Observable<IKineticsSaveResponse> {
+    const request: IKineticsSaveRequest = {
+      kinetic_sample_id: sample.sample_id!,
+      results: rawResults.map(result => ({
+        model: result.model,
+        best_adjust: result.best_adjust,
+        adjustment_methods: result.adjustment_methods,
+        seeds: this.buildSeeds(modelConfiguration[result.model]),
+      })),
+      comparison,
+    };
+    return this.httpClient.post<IKineticsSaveResponse>(
+      `${this.backendBaseUrl}/kinetics/investigation/save`, request, {withCredentials: true}
+    );
+  }
+
+  private buildSeeds(config: IKineticsModelConfiguration | undefined): IKineticsSavedSeed[] {
+    return Object.entries(config?.paramValues ?? {}).map(([name, param]) => ({
+      name,
+      value: Number(param.value),
+      stderr: param.stderr ?? null,
+    }));
   }
 
   private buildRequest(
@@ -71,8 +117,8 @@ export class KineticsModelCompareService {
     };
   }
 
-  private mapResults(response: IKineticsRunResponse, models: { _id: number; name: string }[]): IKineticsFitResult[] {
-    return response.results
+  private mapResults(results: IKineticsModelResult[], models: { _id: number; name: string }[]): IKineticsFitResult[] {
+    return results
       .filter(result => result.adjustment_methods?.length)
       .map(result => {
         const method = this.pickBestMethod(result);

@@ -157,4 +157,56 @@ describe('KineticsModelCompareService', () => {
     expect(outcome.results).toEqual([]);
     expect(outcome.comparison).toEqual(COMPARISON as any);
   });
+
+  describe('saveVersion', () => {
+    const SAVE_URL = `${environment.backendBaseUrl}/kinetics/investigation/save`;
+    const configuration: IKineticsModelsConfigurations = {
+      [MODEL_ID]: {...CONFIGURATION[MODEL_ID], paramValues: {qe: {value: 12.02, stderr: 0.3}, k2: {value: 0.0014}}},
+    };
+
+    function save(): any {
+      service.saveVersion(SAMPLE, singleResult.results as any, COMPARISON as any, configuration).subscribe();
+      const call = httpMock.expectOne(SAVE_URL);
+      call.flush({status: 'ok', kinetic_investigation_id: 3, version_id: 1});
+      return call.request;
+    }
+
+    it('should post to the save endpoint with credentials', () => {
+      const request = save();
+
+      expect(request.method).toBe('POST');
+      expect(request.withCredentials).toBeTrue();
+    });
+
+    it('should send the raw results and the comparison untouched', () => {
+      const body = save().body;
+
+      expect(body.kinetic_sample_id).toBe(7);
+      expect(body.results[0].model).toBe(MODEL_ID);
+      expect(body.results[0].best_adjust).toBe('leastsq');
+      expect(body.results[0].adjustment_methods).toEqual(singleResult.results[0].adjustment_methods);
+      expect(body.comparison).toEqual(COMPARISON);
+    });
+
+    it('should send the configured seeds with their stderr', () => {
+      const body = save().body;
+
+      expect(body.results[0].seeds).toEqual([
+        {name: 'qe', value: 12.02, stderr: 0.3},
+        {name: 'k2', value: 0.0014, stderr: null},
+      ]);
+    });
+
+    it('should let the backend resolve the investigation instead of sending an id', () => {
+      const body = save().body;
+
+      expect('kinetic_investigation_id' in body).toBeFalse();
+    });
+  });
+
+  it('should keep the raw backend results to save them later', () => {
+    const outcome = run(singleResult);
+
+    expect(outcome.rawResults).toEqual(singleResult.results as any);
+  });
 });
