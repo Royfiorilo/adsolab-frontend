@@ -182,20 +182,30 @@ export class KineticsHistoricComponent implements OnInit {
     this.dialog.open(this.deleteVersionDialog, {data: {investigationId, versionId}});
   }
 
+  // Reloads the page so the next investigation fills the gap; if the deleted one was the
+  // last of a page other than the first, steps back so the paginator never shows an empty page.
   deleteInvestigation(investigationId: number): void {
     this.loading = true;
-    this.historicService.deleteInvestigation(investigationId)
-      .pipe(finalize(() => this.loading = false))
-      .subscribe({
-        next: () => {
-          this.investigations = this.investigations.filter(
-            investigation => investigation.kinetic_investigation_id !== investigationId
-          );
-          this.total--;
-          this.applyFilter();
-        },
-        error: error => this.handleDeleteError(error),
-      });
+    this.historicService.deleteInvestigation(investigationId).subscribe({
+      next: () => {
+        if (this.investigations.length === 1 && this.pageIndex > 0) {
+          this.pageIndex--;
+        }
+        this.loadInvestigations();
+      },
+      error: error => {
+        this.loading = false;
+        this.handleDeleteError(error);
+      },
+    });
+  }
+
+  hasNoInvestigations(): boolean {
+    return !this.loading && this.investigations.length === 0;
+  }
+
+  hasNoFilterMatches(): boolean {
+    return !this.loading && this.investigations.length > 0 && this.rows.length === 0;
   }
 
   deleteVersion(investigationId: number, versionId: number): void {

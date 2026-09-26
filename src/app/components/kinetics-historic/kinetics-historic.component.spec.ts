@@ -116,6 +116,49 @@ describe('KineticsHistoricComponent', () => {
     expect(snackBar.openFromComponent).toHaveBeenCalled();
   });
 
+  it('should step back a page after deleting the last investigation of a later page', () => {
+    const {component, historicService} = build([investigation(3, 'Zinc')]);
+    component.onPageChange({pageIndex: 1, pageSize: 10, length: 11} as any);
+    historicService.deleteInvestigation.and.returnValue(of({}));
+    historicService.getInvestigations.calls.reset();
+
+    component.deleteInvestigation(3);
+
+    expect(historicService.getInvestigations).toHaveBeenCalledOnceWith(1, 10, undefined);
+  });
+
+  it('should reload the same page after deleting when other investigations remain on it', () => {
+    const {component, historicService} = build();
+    component.onPageChange({pageIndex: 1, pageSize: 10, length: 12} as any);
+    historicService.deleteInvestigation.and.returnValue(of({}));
+    historicService.getInvestigations.calls.reset();
+
+    component.deleteInvestigation(1);
+
+    expect(historicService.getInvestigations).toHaveBeenCalledOnceWith(2, 10, undefined);
+  });
+
+  it('should stop loading when deleting fails', () => {
+    const {component, historicService} = build();
+    historicService.deleteInvestigation.and.returnValue(throwError(() => ({status: 500})));
+
+    component.deleteInvestigation(1);
+
+    expect((component as any).loading).toBeFalse();
+  });
+
+  it('should tell an empty page apart from a search without matches', () => {
+    const {component} = build();
+
+    component.onFilterChange({target: {value: 'no existe'}} as any);
+    expect(component.hasNoFilterMatches()).toBeTrue();
+    expect(component.hasNoInvestigations()).toBeFalse();
+
+    const empty = build([]).component;
+    expect(empty.hasNoInvestigations()).toBeTrue();
+    expect(empty.hasNoFilterMatches()).toBeFalse();
+  });
+
   it('should read created_at as UTC', () => {
     const {component} = build();
 

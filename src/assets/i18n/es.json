@@ -384,6 +384,7 @@
     "ERROR_LOADING_INVESTIGATIONS": "Error al cargar las investigaciones cinéticas",
     "ERROR_LOADING_VERSIONS": "Error al cargar las versiones",
     "ERROR_LOADING_VERSION": "No se pudo cargar la versión solicitada.",
-    "ERROR_LOADING_MODELS": "Error al cargar los modelos cinéticos"
+    "ERROR_LOADING_MODELS": "Error al cargar los modelos cinéticos",
+    "NO_FILTER_MATCHES": "Ninguna investigación de esta página coincide con la búsqueda."
   }
 }
