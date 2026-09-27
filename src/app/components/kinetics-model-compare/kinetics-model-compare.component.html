@@ -1,9 +1,9 @@
 <div class="container-fluid m-3">
 
-  <div class="d-flex justify-content-end">
-    <button mat-button color="primary" class="m-2" disabled>
+  <div *ngIf="!savedVersion" class="d-flex justify-content-end">
+    <button mat-button color="primary" class="m-2" [disabled]="!canSave()" (click)="saveResults()">
       <fa-icon [icon]="faSave" class="m-2"></fa-icon>
-      {{ 'KINETICS_MODEL_COMPARE.SAVE_RESULTS' | translate }}
+      {{ saveLabel() | translate }}
     </button>
   </div>
 

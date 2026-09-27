@@ -43,7 +43,7 @@
             <span>{{ 'NAV.EQUILIBRIUM' | translate }}</span>
           </a>
           <a mat-list-item routerLink="/kinetics" routerLinkActive="active-link"
-             (click)="closeOnMobile(snav)">
+             [routerLinkActiveOptions]="{exact: true}" (click)="closeOnMobile(snav)">
             <fa-icon [icon]="faClock" class="nav-icon"></fa-icon>
             <span>{{ 'NAV.KINETICS' | translate }}</span>
           </a>
@@ -51,6 +51,11 @@
              (click)="closeOnMobile(snav)">
             <fa-icon [icon]="faHistory" class="nav-icon"></fa-icon>
             <span>{{ 'NAV.HISTORIC' | translate }}</span>
+          </a>
+          <a mat-list-item routerLink="/kinetics/historic" routerLinkActive="active-link"
+             (click)="closeOnMobile(snav)">
+            <fa-icon [icon]="faHistory" class="nav-icon"></fa-icon>
+            <span>{{ 'NAV.KINETICS_HISTORIC' | translate }}</span>
           </a>
           <a *ngIf="isAdmin()" mat-list-item routerLink="/users" routerLinkActive="active-link"
              (click)="closeOnMobile(snav)">

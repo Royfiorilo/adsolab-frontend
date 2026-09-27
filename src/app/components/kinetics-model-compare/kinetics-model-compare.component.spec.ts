@@ -1,4 +1,5 @@
 import {signal} from '@angular/core';
+import {of, throwError} from 'rxjs';
 import {KineticsModelCompareComponent} from './kinetics-model-compare.component';
 import {IKineticsModelsConfigurations, IKineticsState} from '../kinetics/interface';
 import {IKineticsPersistedLinearization} from '../kinetics/interface';
@@ -74,7 +75,11 @@ function build(configuration: IKineticsModelsConfigurations, results?: any[]): K
   translate.instant.and.callFake((key: string) => translated.has(key) ? `texto de ${key}` : key);
 
   const modalService = jasmine.createSpyObj('NgbModal', ['open']);
-  const component = new KineticsModelCompareComponent({state} as any, compareService, translate, modalService);
+  const snackBar = jasmine.createSpyObj('MatSnackBar', ['openFromComponent']);
+  const dialog = jasmine.createSpyObj('MatDialog', ['open']);
+  const component = new KineticsModelCompareComponent(
+    {state} as any, compareService, translate, modalService, snackBar, dialog
+  );
   (component as any).results = results ?? [fitResult(MODEL_ID, 'Pseudo-Segundo Orden')];
   return component;
 }
@@ -243,6 +248,132 @@ describe('KineticsModelCompareComponent', () => {
       const component = withComparison(undefined);
 
       expect(component.bestModelOverall()).toBeUndefined();
+    });
+  });
+
+  describe('saved version (read-only)', () => {
+    const SAVED_SAMPLE = {time: [0, 30, 60], qt: [0, 7.1, 9.4], sample_id: 50, adsorbate_id: 1, adsorbent_id: 1};
+    const SAVED_VERSION = {
+      sample: SAVED_SAMPLE,
+      models: [{_id: MODEL_ID, name: 'PSO guardado', latex_formula: '', parameters: {}}],
+      results: [{model: MODEL_ID, best_adjust: 'leastsq', adjustment_methods: []}],
+      comparison: {heuristic: {best_model: MODEL_ID, results: []}, ml: {best_model: MODEL_ID} as any},
+    };
+
+    function buildSaved(): KineticsModelCompareComponent {
+      // The stepper holds a linearization from another run: it must not leak in.
+      const component = build(buildConfiguration({
+        bestResult: 20,
+        linearizations: [{id: 20, name: 'PSO', status: 'OK', statistics: {r_squared: 0.9988}}],
+      }));
+      const compareService = (component as any).compareService;
+      compareService.toOutcome = jasmine.createSpy('toOutcome').and.returnValue({
+        results: [fitResult(MODEL_ID, 'PSO guardado')],
+        comparison: SAVED_VERSION.comparison,
+        rawResults: SAVED_VERSION.results,
+      });
+      component.savedVersion = SAVED_VERSION as any;
+      component.ngOnInit();
+      return component;
+    }
+
+    it('should render the saved results instead of running the fit', () => {
+      const component = buildSaved();
+      const compareService = (component as any).compareService;
+
+      expect(compareService.runModels).not.toHaveBeenCalled();
+      expect(compareService.toOutcome).toHaveBeenCalledWith(
+        SAVED_VERSION.results, SAVED_VERSION.comparison, SAVED_VERSION.models
+      );
+    });
+
+    it('should plot the saved sample, not the one in the stepper', () => {
+      const component = buildSaved();
+      component.rebuildGraphs();
+
+      expect((component as any).comparisonGraph.data[0].x).toEqual(SAVED_SAMPLE.time);
+    });
+
+    it('should name models from the saved version', () => {
+      const component = buildSaved();
+
+      expect(component.bestModelOverall()).toBe('PSO guardado');
+    });
+
+    it('should not show the stepper linear R2 for a saved version', () => {
+      const component = buildSaved();
+
+      expect(component.getLinearR2(MODEL_ID)).toBeUndefined();
+    });
+
+    it('should not allow saving a saved version again', () => {
+      expect(buildSaved().canSave()).toBeFalse();
+    });
+  });
+
+  describe('saveResults', () => {
+    const RAW = [{model: MODEL_ID, best_adjust: 'leastsq', adjustment_methods: []}];
+    const COMPARISON = {heuristic: {best_model: MODEL_ID, results: []}, ml: null};
+
+    function buildReady(): KineticsModelCompareComponent {
+      const component = build(buildConfiguration());
+      (component as any).loading = false;
+      (component as any).rawResults = RAW;
+      (component as any).comparison = COMPARISON;
+      return component;
+    }
+
+    it('should save the raw results with the stepper sample and configuration', () => {
+      const component = buildReady();
+      const compareService = (component as any).compareService;
+      compareService.saveVersion = jasmine.createSpy('saveVersion')
+        .and.returnValue(of({status: 'ok', kinetic_investigation_id: 3, version_id: 1}));
+
+      component.saveResults();
+
+      const [sample, raw, comparison, configuration] = compareService.saveVersion.calls.mostRecent().args;
+      expect(sample.sample_id).toBe(1);
+      expect(raw).toBe(RAW);
+      expect(comparison).toBe(COMPARISON);
+      expect(configuration[MODEL_ID]).toBeDefined();
+    });
+
+    it('should block a second save once saved', () => {
+      const component = buildReady();
+      (component as any).compareService.saveVersion = () => of({status: 'ok', kinetic_investigation_id: 3, version_id: 1});
+
+      expect(component.canSave()).toBeTrue();
+      component.saveResults();
+
+      expect(component.canSave()).toBeFalse();
+    });
+
+    it('should not allow saving without a heuristic comparison', () => {
+      const component = buildReady();
+      (component as any).comparison = {heuristic: null, ml: null};
+
+      expect(component.canSave()).toBeFalse();
+    });
+
+    it('should warn with a snack bar when the user is not the owner', () => {
+      const component = buildReady();
+      (component as any).compareService.saveVersion = () => throwError(() => ({status: 403}));
+
+      component.saveResults();
+
+      expect((component as any).snackBar.openFromComponent).toHaveBeenCalled();
+      expect((component as any).dialog.open).not.toHaveBeenCalled();
+      expect(component.canSave()).toBeTrue();
+    });
+
+    it('should open the error dialog on any other failure', () => {
+      const component = buildReady();
+      (component as any).compareService.saveVersion = () => throwError(() => ({status: 400, error: {message: 'bad'}}));
+
+      component.saveResults();
+
+      expect((component as any).dialog.open).toHaveBeenCalled();
+      expect(component.canSave()).toBeTrue();
     });
   });
 });

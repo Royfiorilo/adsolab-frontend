@@ -1,8 +1,14 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {TranslateService} from "@ngx-translate/core";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PlotlyComponent} from "angular-plotly.js";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
+import {finalize} from "rxjs";
+import {SnackBarComponent} from "../snack-bar/snack-bar.component";
+import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {IKineticsModel, IKineticsSample} from "../kinetics/interface";
 import {KineticsStateService} from "../kinetics/kinetics-state.service";
 import {KINETICS_FONT_FAMILIES, KINETICS_PLOT_PALETTE, KineticsModelCompareService} from "./kinetics-model-compare.service";
 import {
@@ -11,7 +17,10 @@ import {
   IKineticsAxisSettings,
   IKineticsComparison,
   IKineticsFitResult,
-  IKineticsPlotSettings
+  IKineticsModelResult,
+  IKineticsPlotSettings,
+  IKineticsRunOutcome,
+  IKineticsSavedVersion
 } from "./interface";
 
 interface PlotlyGraph {
@@ -26,6 +35,8 @@ interface PlotlyGraph {
 })
 export class KineticsModelCompareComponent implements OnInit {
   @ViewChild('comparisonPlot') comparisonPlot?: PlotlyComponent;
+  // When set, renders a saved version read-only instead of running the fit.
+  @Input() savedVersion?: IKineticsSavedVersion;
   state = this.stateService.state;
   protected readonly faSave = faSave;
 
@@ -33,6 +44,9 @@ export class KineticsModelCompareComponent implements OnInit {
   protected error = false;
   protected results: IKineticsFitResult[] = [];
   protected comparison?: IKineticsComparison;
+  private rawResults: IKineticsModelResult[] = [];
+  protected saving = false;
+  protected saved = false;
   protected comparisonGraph?: PlotlyGraph;
   protected graphByModel: { [modelId: number]: PlotlyGraph } = {};
   protected residualsGraphByModel: { [modelId: number]: PlotlyGraph } = {};
@@ -56,15 +70,30 @@ export class KineticsModelCompareComponent implements OnInit {
   constructor(protected stateService: KineticsStateService,
               private compareService: KineticsModelCompareService,
               private translate: TranslateService,
-              private modalService: NgbModal) {
+              private modalService: NgbModal,
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.runModels();
+    if (this.savedVersion) {
+      const {results, comparison, models} = this.savedVersion;
+      this.showOutcome(this.compareService.toOutcome(results, comparison, models));
+    } else {
+      this.runModels();
+    }
+  }
+
+  private get sample(): IKineticsSample | undefined {
+    return this.savedVersion?.sample ?? this.state().kineticsSample;
+  }
+
+  private get models(): IKineticsModel[] {
+    return this.savedVersion?.models ?? this.state().models;
   }
 
   getModelName(modelId: number): string | undefined {
-    return this.state().models.find(model => model._id === modelId)?.name;
+    return this.models.find(model => model._id === modelId)?.name;
   }
 
   /**
@@ -73,6 +102,10 @@ export class KineticsModelCompareComponent implements OnInit {
    * estructura del error: un R² lineal alto no implica mejor ajuste.
    */
   getLinearR2(modelId: number): number | undefined {
+    // Not stored with the version; the stepper state is from another run.
+    if (this.savedVersion) {
+      return undefined;
+    }
     const persisted = this.state().modelConfiguration[modelId]?.linearization;
     if (!persisted) {
       return undefined;
@@ -151,14 +184,7 @@ export class KineticsModelCompareComponent implements OnInit {
     this.loading = true;
     this.error = false;
     this.compareService.runModels(kineticsSample, selectedModels, modelConfiguration, models).subscribe({
-      next: outcome => {
-        this.results = outcome.results;
-        this.comparison = outcome.comparison;
-        this.plotSettings = this.buildDefaultSettings(outcome.results);
-        this.updateConfig();
-        this.rebuildGraphs();
-        this.loading = false;
-      },
+      next: outcome => this.showOutcome(outcome),
       error: () => {
         this.error = true;
         this.loading = false;
@@ -166,8 +192,66 @@ export class KineticsModelCompareComponent implements OnInit {
     });
   }
 
+  private showOutcome(outcome: IKineticsRunOutcome): void {
+    this.results = outcome.results;
+    this.comparison = outcome.comparison;
+    this.rawResults = outcome.rawResults;
+    this.loading = false;
+    if (this.results.length === 0) {
+      return;
+    }
+    this.plotSettings = this.buildDefaultSettings(outcome.results);
+    this.updateConfig();
+    this.rebuildGraphs();
+  }
+
+  canSave(): boolean {
+    return !this.savedVersion && !this.loading && !this.error && !this.saving && !this.saved
+      && this.rawResults.length > 0 && !!this.comparison?.heuristic;
+  }
+
+  saveLabel(): string {
+    if (this.saved) {
+      return 'KINETICS_MODEL_COMPARE.SAVED';
+    }
+    return this.saving ? 'KINETICS_MODEL_COMPARE.SAVING' : 'KINETICS_MODEL_COMPARE.SAVE_RESULTS';
+  }
+
+  saveResults(): void {
+    const {kineticsSample, modelConfiguration} = this.state();
+    this.saving = true;
+    this.compareService.saveVersion(kineticsSample!, this.rawResults, this.comparison!, modelConfiguration)
+      .pipe(finalize(() => this.saving = false))
+      .subscribe({
+        next: response => {
+          this.saved = true;
+          this.openSnackBar(this.translate.instant('KINETICS_MODEL_COMPARE.SAVE_SUCCESS', response));
+        },
+        error: error => {
+          if (error.status === 403) {
+            this.openSnackBar(this.translate.instant('KINETICS_MODEL_COMPARE.SAVE_NOT_AUTHORIZED'));
+            return;
+          }
+          this.dialog.open(ErrorDialogComponent, {
+            data: {
+              main_message: this.translate.instant('KINETICS_MODEL_COMPARE.SAVE_ERROR'),
+              error_message: error.error?.message ?? error.message,
+            }
+          });
+        }
+      });
+  }
+
+  private openSnackBar(message: string): void {
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: 3000,
+      verticalPosition: 'top',
+      data: {message},
+    });
+  }
+
   private buildDefaultSettings(results: IKineticsFitResult[]): IKineticsPlotSettings {
-    const sample = this.state().kineticsSample;
+    const sample = this.sample;
     const colorByModel: { [modelId: number]: string } = {};
     const visibleByModel: { [modelId: number]: boolean } = {};
     results.forEach((result, index) => {
@@ -199,7 +283,7 @@ export class KineticsModelCompareComponent implements OnInit {
 
   // Recomputes every plot's traces/layout from results + plotSettings.
   rebuildGraphs(): void {
-    const sample = this.state().kineticsSample!;
+    const sample = this.sample!;
     const sampleTrace = {
       x: sample.time,
       y: sample.qt,
