@@ -261,7 +261,7 @@ describe('KineticsModelCompareComponent', () => {
     };
 
     function buildSaved(): KineticsModelCompareComponent {
-      // El stepper tiene una linealización persistida de otra corrida: no debe filtrarse.
+      // The stepper holds a linearization from another run: it must not leak in.
       const component = build(buildConfiguration({
         bestResult: 20,
         linearizations: [{id: 20, name: 'PSO', status: 'OK', statistics: {r_squared: 0.9988}}],

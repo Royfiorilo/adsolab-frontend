@@ -102,7 +102,7 @@ export class KineticsModelCompareComponent implements OnInit {
    * estructura del error: un R² lineal alto no implica mejor ajuste.
    */
   getLinearR2(modelId: number): number | undefined {
-    // La linealización no se guarda en la versión; el estado del stepper es de otra corrida.
+    // Not stored with the version; the stepper state is from another run.
     if (this.savedVersion) {
       return undefined;
     }

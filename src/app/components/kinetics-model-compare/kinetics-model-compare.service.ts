@@ -49,8 +49,7 @@ export class KineticsModelCompareService {
       .pipe(map(response => this.toOutcome(response.results, response.comparison, models)));
   }
 
-  // Shared by a fresh run and by a saved version: both carry the same
-  // per-method results and comparison block.
+  // Used by a fresh run and by a saved version.
   toOutcome(
     results: IKineticsModelResult[],
     comparison: IKineticsComparison,
@@ -63,8 +62,7 @@ export class KineticsModelCompareService {
     };
   }
 
-  // Saves the run as a new version. The backend reuses the investigation of
-  // (sample, user) if it exists, so no investigation id is sent.
+  // No investigation id: the backend reuses the (sample, user) one.
   saveVersion(
     sample: IKineticsSample,
     rawResults: IKineticsModelResult[],

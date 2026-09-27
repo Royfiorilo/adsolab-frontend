@@ -16,7 +16,7 @@ export class KineticsHistoricService {
   constructor(private httpClient: HttpClient) {
   }
 
-  // `userId` narrows the list to that user's investigations ("Mis investigaciones").
+  // userId: only that user's investigations.
   getInvestigations(page: number, perPage: number, userId?: number): Observable<IKineticsInvestigationsResponse> {
     let params = new HttpParams().set('page', page).set('per_page', perPage);
     if (userId !== undefined) {
@@ -62,7 +62,7 @@ export function toKineticsSample(sample: CreateKineticSampleResponse): IKinetics
   return {...sample, sample_id: sample.kinetic_sample_id};
 }
 
-// A saved fitted model has the same shape as a run result, keyed by `kinetic_model_id`.
+// Same shape as a run result, keyed by kinetic_model_id.
 export function toModelResult(fittedModel: IKineticsFittedModel): IKineticsModelResult {
   return {
     model: fittedModel.kinetic_model_id,

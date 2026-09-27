@@ -144,7 +144,7 @@ export class KineticsHistoricComponent implements OnInit {
     return this.models.find(model => model._id === modelId)?.name ?? `#${modelId}`;
   }
 
-  /** Sólo hay un ganador claro cuando heurística y ML coinciden (igual que en Resultados). */
+  // A winner only when heuristic and ML agree.
   bestModelOverall(version: IKineticsVersion): string | undefined {
     const heuristic = version.comparison?.heuristic?.best_model;
     const ml = version.comparison?.ml?.best_model;
@@ -154,7 +154,7 @@ export class KineticsHistoricComponent implements OnInit {
     return this.getModelName(heuristic);
   }
 
-  // The backend stores `created_at` with `datetime.utcnow()` and serializes it without an offset.
+  // created_at comes from utcnow() without an offset.
   createdAt(version: IKineticsVersion): Date {
     const hasOffset = /(Z|[+-]\d{2}:?\d{2})$/.test(version.created_at);
     return new Date(hasOffset ? version.created_at : `${version.created_at}Z`);
@@ -182,8 +182,7 @@ export class KineticsHistoricComponent implements OnInit {
     this.dialog.open(this.deleteVersionDialog, {data: {investigationId, versionId}});
   }
 
-  // Reloads the page so the next investigation fills the gap; if the deleted one was the
-  // last of a page other than the first, steps back so the paginator never shows an empty page.
+  // Reload so the next item fills the gap; step back if the page was emptied.
   deleteInvestigation(investigationId: number): void {
     this.loading = true;
     this.historicService.deleteInvestigation(investigationId).subscribe({
