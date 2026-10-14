@@ -34,3 +34,5 @@ export class CommonUtilsService {
 
 export const DEFAULT_ITERATIONS = 10000;
 export const DEFAULT_STEPS = 0.1;
+// The backend rejects a kinetic fit with fewer points (5-fold cross-validation of the comparison).
+export const MIN_FIT_POINTS = 5;

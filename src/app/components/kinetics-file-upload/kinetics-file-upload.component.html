@@ -13,7 +13,7 @@
 
   <label for="kineticsFileUploader"
          class="btn fiuba-institutional-border fiuba-institutional-text">{{ 'FILE_UPLOAD.SELECT_FILE' | translate }}</label>
-  <input id="kineticsFileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv"/>
+  <input #fileInput id="kineticsFileUploader" type="file" class="hide" (change)="onFileSelect($event)" accept=".xls,.xlsx,.csv"/>
 
   <div *ngIf="uploadedFile"
        class="fiuba-institutional-text mt-3 ">
@@ -40,7 +40,8 @@
   <form *ngIf="uploadedFile.valid" class="w-100 d-flex flex-column gap-3 mt-2">
     <mat-form-field>
       <mat-label> {{ 'FILE_UPLOAD.SAMPLE_DESCRIPTION' | translate }}</mat-label>
-      <textarea id="description" matInput [value]=[dataSample.description] (change)="onChange($event)"></textarea>
+      <textarea id="description" matInput [value]=[dataSample.description] [disabled]="isSampleCreated"
+                (change)="onChange($event)"></textarea>
     </mat-form-field>
 
     <div class="d-flex gap-3 flex-md-row flex-column">
@@ -49,6 +50,7 @@
         <mat-select
           id="adsorbate"
           [value]="dataSample.adsorbate_id"
+          [disabled]="isSampleCreated"
           (selectionChange)="onUnitChange($event,'adsorbate')"
         >
           <mat-option *ngFor="let adsorbate of adsorbates" [value]="adsorbate.id">
@@ -62,6 +64,7 @@
         <mat-select
           id="adsorbent"
           [value]="dataSample.adsorbent_id"
+          [disabled]="isSampleCreated"
           (selectionChange)="onUnitChange($event, 'adsorbent')"
         >
           <mat-option *ngFor="let adorbent of adsorbents" [value]="adorbent.id">
@@ -77,6 +80,7 @@
           type="number"
           placeholder="Ej. 298 (Kelvin)"
           [value]=[dataSample.temperature]
+          [disabled]="isSampleCreated"
           (change)="onChange($event)"
         >
       </mat-form-field>

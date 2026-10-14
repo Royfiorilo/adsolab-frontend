@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {EMPTY, Observable} from "rxjs";
-import {CreateKineticSampleResponse, IKineticsSample} from "../kinetics/interface";
+import {CreateKineticSampleResponse, GetKineticSamplesResponse, IKineticsSample} from "../kinetics/interface";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,16 @@ export class KineticsSampleService {
 
   constructor(private httpClient: HttpClient) {
     this.backendBaseUrl = environment.backendBaseUrl;
+  }
+
+  getSamples(userId: number): Observable<GetKineticSamplesResponse> {
+    return this.httpClient.get<GetKineticSamplesResponse>(
+      `${this.backendBaseUrl}/kinetics/samples`, {params: {user_id: userId}}
+    );
+  }
+
+  deleteSample(sampleId: number): Observable<unknown> {
+    return this.httpClient.delete(`${this.backendBaseUrl}/kinetics/sample/${sampleId}`, {withCredentials: true});
   }
 
   createKineticSample(sample: IKineticsSample): Observable<CreateKineticSampleResponse> {

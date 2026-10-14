@@ -1,0 +1,14 @@
+
+.sample-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.sample-option {
+  cursor: pointer;
+}
+
+.disabled-option {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

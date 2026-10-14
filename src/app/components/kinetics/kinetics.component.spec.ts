@@ -62,4 +62,49 @@ describe('KineticsComponent', () => {
 
     expect(stateService.state().modelConfigurationDone).toBeFalse();
   });
+
+  describe('changing the sample', () => {
+    const sample = (id: number) => ({
+      time: [0, 5, 10, 20, 30], qt: [0, 3, 5, 6, 7], sample_id: id, adsorbate_id: 1, adsorbent_id: 1,
+    });
+
+    beforeEach(() => {
+      // The real snack bar renders SnackBarComponent, which needs the translate pipe.
+      spyOn(TestBed.inject(MatSnackBar), 'openFromComponent');
+      stateService.state.set({
+        ...stateService.state(),
+        kineticsSample: sample(1),
+        selectedModels: [1, 2],
+        modelConfiguration: configurationWith({kid: {value: 1.2}, C: {value: 0.5}}),
+        modelConfigurationDone: true,
+      });
+    });
+
+    it('should discard the models and their configuration when another sample is chosen', () => {
+      component.sampleLoaded(sample(2));
+
+      const state = stateService.state();
+      expect(state.kineticsSample?.sample_id).toBe(2);
+      expect(state.selectedModels).toEqual([]);
+      expect(state.modelConfiguration).toEqual({});
+      expect(state.modelConfigurationDone).toBeFalse();
+    });
+
+    it('should keep the models and their configuration when the same sample is loaded again', () => {
+      component.sampleLoaded(sample(1));
+
+      const state = stateService.state();
+      expect(state.selectedModels).toEqual([1, 2]);
+      expect(state.modelConfigurationDone).toBeTrue();
+    });
+
+    it('should clear the whole state when the chosen sample is deleted', () => {
+      component.sampleDeleted();
+
+      const state = stateService.state();
+      expect(state.kineticsSample).toBeUndefined();
+      expect(state.selectedModels).toEqual([]);
+      expect(state.stepId).toBe(0);
+    });
+  });
 });

@@ -16,7 +16,8 @@
           </div>
         </div>
         <app-kinetics-data-selector [kineticsSample]="state().kineticsSample"
-                                    (onSampleLoaded)="sampleLoaded($event)"></app-kinetics-data-selector>
+                                    (onSampleLoaded)="sampleLoaded($event)"
+                                    (onSampleDeleted)="sampleDeleted()"></app-kinetics-data-selector>
       </mat-step>
 
       <mat-step [label]="'KINETICS.STEP_MODELS' | translate" [completed]="state().selectedModels.length !== 0">
