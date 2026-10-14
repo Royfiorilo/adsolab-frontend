@@ -8,7 +8,47 @@
       <div class="m-3 card">
         <div class="card-body">
           <h5 class="card-title">{{ 'KINETICS_DATA_SELECTOR.USE_PREVIOUS_SAMPLE' | translate }}</h5>
-          <p class="text-muted">{{ 'KINETICS_DATA_SELECTOR.NO_DATA_SAMPLES_YET' | translate }}</p>
+
+          <app-loading *ngIf="loadingSamples"></app-loading>
+
+          <ng-container *ngIf="!loadingSamples">
+            <p class="text-muted" *ngIf="!options.length">{{ 'KINETICS_DATA_SELECTOR.NO_DATA_SAMPLES_YET' | translate }}</p>
+
+            <ng-container *ngIf="options.length">
+              <mat-form-field class="w-100">
+                <input matInput
+                       [placeholder]="'KINETICS_DATA_SELECTOR.SEARCH_SAMPLE' | translate"
+                       [value]="filterText"
+                       (input)="onFilterChange($event)">
+              </mat-form-field>
+
+              <p class="text-muted" *ngIf="!filteredOptions.length">{{ 'KINETICS_DATA_SELECTOR.NO_MATCHES' | translate }}</p>
+
+              <div class="list-group sample-list">
+                <div *ngFor="let option of filteredOptions"
+                     class="list-group-item d-flex align-items-center justify-content-between sample-option"
+                     [class.active]="isSelected(option)"
+                     [class.disabled-option]="option.tooShort"
+                     [attr.data-sample-id]="option.sample.sample_id"
+                     (click)="selectSample(option)">
+                  <div class="flex-grow-1">
+                    <div class="fw-semibold">{{ option.sample.title }}</div>
+                    <small>
+                      {{ option.sample.adsorbate }} / {{ option.sample.adsorbent }}
+                      · {{ 'KINETICS_DATA_SELECTOR.POINTS' | translate:{points: option.points} }}
+                    </small>
+                    <div *ngIf="option.tooShort" class="small text-danger">
+                      {{ 'KINETICS_DATA_SELECTOR.TOO_FEW_POINTS' | translate:{min: minPoints} }}
+                    </div>
+                  </div>
+                  <button mat-icon-button color="warn" type="button" class="delete-sample"
+                          (click)="openDeleteDialog(option, $event)">
+                    <fa-icon [icon]="faTrash"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
         </div>
       </div>
 
@@ -43,3 +83,22 @@
     </div>
   </div>
 </div>
+
+<ng-template let-data #deleteSampleDialog>
+  <h2 mat-dialog-title>
+    {{ 'KINETICS_DATA_SELECTOR.DELETE' | translate }}
+  </h2>
+  <mat-dialog-content class="mat-typography">
+    <p>{{ 'KINETICS_DATA_SELECTOR.DELETE_CONFIRMATION' | translate:data }}</p>
+    <p class="text-muted">{{ 'KINETICS_DATA_SELECTOR.DELETE_NOTE' | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button color="primary" mat-dialog-close>
+      {{ 'CANCEL' | translate }}
+    </button>
+    <button mat-flat-button color="warn" class="text-white confirm-delete" [mat-dialog-close]="true"
+            (click)="deleteSample(data.sampleId)">
+      {{ 'CONFIRM' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

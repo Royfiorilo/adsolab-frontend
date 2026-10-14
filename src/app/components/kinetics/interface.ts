@@ -45,6 +45,10 @@ export interface CreateKineticSampleResponse {
   measure_unit?: string;
 }
 
+export interface GetKineticSamplesResponse {
+  samples: CreateKineticSampleResponse[];
+}
+
 export interface IKineticsSeedValue {
   value: number | null;
   stderr?: number | null;

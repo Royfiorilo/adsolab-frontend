@@ -46,9 +46,12 @@ export class KineticsComponent implements AfterViewInit {
   }
 
   sampleLoaded(sample: IKineticsSample) {
+    // The models, parameters and linearizations belong to the previous sample.
+    const changed = this.state().kineticsSample?.sample_id !== sample.sample_id;
     this.stateService.state.set({
       ...this.state(),
       kineticsSample: sample,
+      ...(changed ? {selectedModels: [], modelConfiguration: {}, modelConfigurationDone: false} : {}),
     });
     this._snackBar.openFromComponent(SnackBarComponent, {
       duration: 3000,
@@ -57,6 +60,10 @@ export class KineticsComponent implements AfterViewInit {
         message: "Muestra cargada con éxito"
       }
     });
+  }
+
+  sampleDeleted() {
+    this.resetInvestigation();
   }
 
   private removeModel(modelId: number) {

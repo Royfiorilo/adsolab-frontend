@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
 import * as XLSX from 'xlsx';
 import {IAdsorbate, IAdsorbent, InvalidFileReason} from "../data-selector/data-sample";
 import {IKineticsSample} from "../kinetics/interface";
@@ -21,13 +21,8 @@ export class KineticsFileUploadComponent {
   protected faCircleCheck = faCircleCheck;
   protected faXmarkCircle = faXmarkCircle;
   protected uploadedFile: { name?: string, valid?: boolean, reason?: InvalidFileReason } = {};
-  protected dataSample: IKineticsSample = {
-    adsorbate_id: undefined, adsorbent_id: undefined,
-    temperature: undefined, description: undefined,
-    time_unit: 'min', measure_unit: 'mg/g',
-    time: [],
-    qt: []
-  }
+  @ViewChild('fileInput') private fileInput?: ElementRef<HTMLInputElement>;
+  protected dataSample: IKineticsSample = this.emptySample();
   protected adsorbents: IAdsorbent[] = [];
   protected adsorbates: IAdsorbate[] = [];
 
@@ -49,6 +44,29 @@ export class KineticsFileUploadComponent {
         this.adsorbents = response.adsorbents
       })
 
+  }
+
+  private emptySample(): IKineticsSample {
+    return {
+      adsorbate_id: undefined, adsorbent_id: undefined,
+      temperature: undefined, description: undefined,
+      time_unit: 'min', measure_unit: 'mg/g',
+      time: [],
+      qt: []
+    };
+  }
+
+  // A created sample cannot be edited, so every new file starts a new sample from scratch.
+  reset(): void {
+    this.dataSample = this.emptySample();
+    this.uploadedFile = {};
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+  get isSampleCreated(): boolean {
+    return this.dataSample.sample_id !== undefined;
   }
 
   onDragOver(event: DragEvent) {
@@ -79,6 +97,7 @@ export class KineticsFileUploadComponent {
   }
 
   handleFile(file: File) {
+    this.reset();
     this.uploadedFile = {name: file.name};
 
     const allowedTypes = ['application/vnd.ms-excel', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
