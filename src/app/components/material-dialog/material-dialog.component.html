@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>{{ 'MATERIALS.TITLE_' + data.kind.toUpperCase() | translate }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="d-flex flex-column gap-2 pt-2" (ngSubmit)="submit()">
+    <mat-form-field *ngFor="let field of fields" class="w-100">
+      <mat-label>{{ 'MATERIALS.FIELD.' + field.toUpperCase() | translate }}</mat-label>
+      <input matInput [id]="'material-' + field" [formControlName]="field">
+      <mat-hint align="end">{{ length(field) }} / {{ limits[field] }}</mat-hint>
+      <mat-error *ngIf="form.get(field)?.hasError('required')">{{ 'MATERIALS.REQUIRED' | translate }}</mat-error>
+      <mat-error *ngIf="form.get(field)?.hasError('maxlength')">
+        {{ 'MATERIALS.TOO_LONG' | translate:{max: limits[field]} }}
+      </mat-error>
+    </mat-form-field>
+    <small class="text-muted">{{ 'MATERIALS.SHARED_NOTE' | translate }}</small>
+    <button type="submit" hidden></button>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button color="primary" type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
+  <button mat-flat-button color="primary" class="text-white save-material" type="button"
+          [disabled]="saving" (click)="submit()">
+    {{ (saving ? 'MATERIALS.SAVING' : 'MATERIALS.SAVE') | translate }}
+  </button>
+</mat-dialog-actions>

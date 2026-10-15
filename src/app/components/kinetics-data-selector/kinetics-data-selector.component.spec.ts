@@ -31,7 +31,7 @@ function build(options: { samples?: CreateKineticSampleResponse[] | 'none' | 'er
   } else {
     sampleService.getSamples.and.returnValue(of({samples}));
   }
-  const selectorService = jasmine.createSpyObj('SampleSelectorService', ['getMaterials', 'syncMaterials']);
+  const selectorService = jasmine.createSpyObj('SampleSelectorService', ['getMaterials']);
   selectorService.getMaterials.and.returnValue(of(MATERIALS));
   const authService = {user: () => 'user' in options ? options.user : {id: USER_ID}};
   const translate = jasmine.createSpyObj('TranslateService', ['instant']);
@@ -97,21 +97,22 @@ describe('KineticsDataSelectorComponent', () => {
     expect(component.loadingSamples).toBeFalse();
   });
 
-  it('should retry the materials after syncing them when the first read is a 404', () => {
+  it('should list the samples without material names when the materials table is empty (404)', () => {
     const sampleService = jasmine.createSpyObj('KineticsSampleService', ['getSamples']);
     sampleService.getSamples.and.returnValue(of({samples: [dto(1, 6)]}));
-    const selectorService = jasmine.createSpyObj('SampleSelectorService', ['getMaterials', 'syncMaterials']);
-    selectorService.getMaterials.and.returnValues(throwError(() => ({status: 404})), of(MATERIALS));
-    selectorService.syncMaterials.and.returnValue(of({}));
+    const selectorService = jasmine.createSpyObj('SampleSelectorService', ['getMaterials']);
+    selectorService.getMaterials.and.returnValue(throwError(() => ({status: 404})));
+    const dialog = jasmine.createSpyObj('MatDialog', ['open']);
     const component = new KineticsDataSelectorComponent(
       sampleService, selectorService, {user: () => ({id: USER_ID})} as any,
-      {instant: (key: string) => key} as any, jasmine.createSpyObj('MatDialog', ['open']), {} as any
+      {instant: (key: string) => key} as any, dialog, {} as any
     );
 
     component.ngOnInit();
 
-    expect(selectorService.syncMaterials).toHaveBeenCalledTimes(1);
-    expect((component as any).options[0].sample.adsorbate).toBe('Cromo');
+    expect((component as any).options.length).toBe(1);
+    expect((component as any).options[0].sample.adsorbate).toBeUndefined();
+    expect(dialog.open).not.toHaveBeenCalled();
   });
 
   it('should warn about, and not allow choosing, a sample with fewer points than the fit needs', () => {

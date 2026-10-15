@@ -66,6 +66,7 @@
           <mat-option *ngFor="let adsorbate of adsorbates" [value]="adsorbate.id">
             {{ adsorbate.iupac_name }}
           </mat-option>
+          <mat-option [value]="NEW_MATERIAL" class="new-material-option">{{ 'MATERIALS.ADD_NEW' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -79,6 +80,7 @@
           <mat-option *ngFor="let adorbent of adsorbents" [value]="adorbent.id">
             {{ adorbent.name }}
           </mat-option>
+          <mat-option [value]="NEW_MATERIAL" class="new-material-option">{{ 'MATERIALS.ADD_NEW' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="flex-grow-1">

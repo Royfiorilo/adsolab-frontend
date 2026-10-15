@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
-import {catchError, finalize, forkJoin, Observable, of, switchMap, throwError} from "rxjs";
+import {catchError, finalize, forkJoin, Observable, of, throwError} from "rxjs";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {TranslateService} from "@ngx-translate/core";
 import {MatDialog} from "@angular/material/dialog";
@@ -72,11 +72,11 @@ export class KineticsDataSelectorComponent implements OnInit {
     });
   }
 
-  // Materials are synced from the external source and retried when the first read finds none.
+  // 404 means an empty table (a database without the seed).
   private fetchMaterials(): Observable<GetMaterialsResponse> {
     return this.sampleSelectorService.getMaterials().pipe(
       catchError(error => error.status === 404
-        ? this.sampleSelectorService.syncMaterials().pipe(switchMap(() => this.sampleSelectorService.getMaterials()))
+        ? of<GetMaterialsResponse>({adsorbates: [], adsorbents: []})
         : throwError(() => error))
     );
   }
