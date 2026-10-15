@@ -1,12 +1,23 @@
 import {of} from 'rxjs';
 import {KineticsFileUploadComponent} from './kinetics-file-upload.component';
+import {NEW_MATERIAL} from '../material-dialog/interface';
 
-function build() {
-  const sampleService = jasmine.createSpyObj('SampleSelectorService', ['getMaterials', 'syncMaterials']);
-  sampleService.getMaterials.and.returnValue(of({adsorbates: [], adsorbents: []}));
+function build(created?: object) {
+  const sampleService = jasmine.createSpyObj('SampleSelectorService', ['getMaterials']);
+  sampleService.getMaterials.and.returnValue(of({
+    adsorbates: [{id: 1, ion_name: 'cromato', iupac_name: 'cromato (VI)', formula: 'CrO4'}],
+    adsorbents: [{id: 1, name: 'Carbón activado'}],
+  }));
   const translate = jasmine.createSpyObj('TranslateService', ['get']);
-  const component = new KineticsFileUploadComponent(translate, sampleService) as any;
+  const materialDialog = jasmine.createSpyObj('MaterialDialogService', ['create']);
+  materialDialog.create.and.returnValue(of(created));
+  const component = new KineticsFileUploadComponent(translate, sampleService, materialDialog) as any;
+  component.materialDialogSpy = materialDialog;
   return component;
+}
+
+function selectChange(value: number) {
+  return {value, source: {value}};
 }
 
 function csv(rows: number): string {
@@ -76,5 +87,62 @@ describe('KineticsFileUploadComponent', () => {
 
     expect(component.uploadedFile.valid).toBeFalse();
     expect(component.dataSample.time).toEqual([]);
+  });
+
+  describe('"Agregar nuevo..."', () => {
+    it('should open the dialog for the right kind and keep the previous choice while it is open', () => {
+      const component = build(undefined);
+      component.onUnitChange(selectChange(1), 'adsorbent');
+      const change = selectChange(NEW_MATERIAL);
+
+      component.onUnitChange(change, 'adsorbent');
+
+      expect(component.materialDialogSpy.create).toHaveBeenCalledOnceWith('adsorbent');
+      expect(change.source.value).toBe(1);
+      expect(component.dataSample.adsorbent_id).toBe(1);
+    });
+
+    it('should leave everything as it was when the dialog is cancelled', () => {
+      const component = build(undefined);
+      const emitted: unknown[] = [];
+      component.onDataSampleUploaded.subscribe((sample: unknown) => emitted.push(sample));
+
+      component.onUnitChange(selectChange(NEW_MATERIAL), 'adsorbate');
+
+      expect(component.dataSample.adsorbate_id).toBeUndefined();
+      expect(component.adsorbates.length).toBe(1);
+      expect(emitted).toEqual([]);
+    });
+
+    it('should add the created adsorbate to the list and select it', () => {
+      const component = build({id: 11, ion_name: 'mercurio', iupac_name: 'mercurio (II)', formula: 'Hg'});
+
+      component.onUnitChange(selectChange(NEW_MATERIAL), 'adsorbate');
+
+      expect(component.adsorbates.map((a: any) => a.id)).toEqual([1, 11]);
+      expect(component.dataSample.adsorbate_id).toBe(11);
+      expect(component.dataSample.adsorbate).toBe('mercurio (II)');
+    });
+
+    it('should select an existing material without duplicating it in the list', () => {
+      const component = build({id: 1, name: 'Carbón activado'});
+
+      component.onUnitChange(selectChange(NEW_MATERIAL), 'adsorbent');
+
+      expect(component.adsorbents.length).toBe(1);
+      expect(component.dataSample.adsorbent_id).toBe(1);
+    });
+
+    it('should keep the file and the rest of the form', () => {
+      const component = build({id: 7, name: 'Zeolita'});
+      component.validateCSVContent(csv(6));
+      component.dataSample.description = 'cromo';
+
+      component.onUnitChange(selectChange(NEW_MATERIAL), 'adsorbent');
+
+      expect(component.dataSample.time.length).toBe(6);
+      expect(component.dataSample.description).toBe('cromo');
+      expect(component.uploadedFile.valid).toBeTrue();
+    });
   });
 });

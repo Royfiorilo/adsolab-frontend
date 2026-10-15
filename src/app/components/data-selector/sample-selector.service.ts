@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
-import {GetMaterialsResponse, GetSampleResponse} from "./data-sample";
+import {GetMaterialsResponse, GetSampleResponse, IAdsorbate, IAdsorbent} from "./data-sample";
+import {IAdsorbateCreation, IAdsorbentCreation} from "../material-dialog/interface";
 
 
 @Injectable({
@@ -24,8 +25,12 @@ export class SampleSelectorService {
     return this.httpClient.get<GetMaterialsResponse>(`${this.backendBaseUrl}/adsorption-materials`);
   }
 
-  syncMaterials(): Observable<any> {
-    return this.httpClient.get<any>(`${this.backendBaseUrl}/materials_sync`);
+  createAdsorbate(adsorbate: IAdsorbateCreation): Observable<IAdsorbate> {
+    return this.httpClient.post<IAdsorbate>(`${this.backendBaseUrl}/adsorbates`, adsorbate, {withCredentials: true});
+  }
+
+  createAdsorbent(adsorbent: IAdsorbentCreation): Observable<IAdsorbent> {
+    return this.httpClient.post<IAdsorbent>(`${this.backendBaseUrl}/adsorbents`, adsorbent, {withCredentials: true});
   }
 
   deleteSample(sampleId: number | undefined) {

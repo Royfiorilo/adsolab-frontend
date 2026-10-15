@@ -167,6 +167,24 @@
     "SAVE_ERROR": "Hubo un error al guardar los resultados",
     "SAVE_NOT_AUTHORIZED": "No está autorizado a guardar en la investigación de otro usuario."
   },
+  "MATERIALS": {
+    "ADD_NEW": "Agregar nuevo...",
+    "TITLE_ADSORBATE": "Nuevo adsorbato",
+    "TITLE_ADSORBENT": "Nuevo adsorbente",
+    "FIELD": {
+      "ION_NAME": "Nombre del ion",
+      "IUPAC_NAME": "Nombre IUPAC",
+      "FORMULA": "Fórmula",
+      "NAME": "Nombre"
+    },
+    "REQUIRED": "Campo obligatorio",
+    "TOO_LONG": "Máximo {{ max }} caracteres",
+    "SHARED_NOTE": "El material queda disponible para todos los usuarios.",
+    "SAVE": "Guardar",
+    "SAVING": "Guardando...",
+    "ALREADY_EXISTS": "Ese material ya existía: se seleccionó el existente.",
+    "CREATE_ERROR": "No se pudo crear el material."
+  },
   "FILE_UPLOAD": {
     "SELECT_FILE": "Buscar archivo",
     "DRAG_FILE": "Arrastrar un archivo Excel o CSV",

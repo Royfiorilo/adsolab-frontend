@@ -6,6 +6,9 @@ import {faCircleCheck, faFileUpload, faXmarkCircle} from '@fortawesome/free-soli
 import {TranslateService} from "@ngx-translate/core";
 import {SampleSelectorService} from "../data-selector/sample-selector.service";
 import {catchError, firstValueFrom} from "rxjs";
+import {MatSelectChange} from "@angular/material/select";
+import {MaterialDialogService} from "../material-dialog/material-dialog.service";
+import {MaterialKind, NEW_MATERIAL, withMaterial} from "../material-dialog/interface";
 
 const MIN_SAMPLE_POINTS = 2;
 
@@ -26,14 +29,17 @@ export class KineticsFileUploadComponent {
   protected adsorbents: IAdsorbent[] = [];
   protected adsorbates: IAdsorbate[] = [];
 
-  constructor(private translateService: TranslateService, private sampleService: SampleSelectorService) {
+  protected readonly NEW_MATERIAL = NEW_MATERIAL;
+
+  constructor(private translateService: TranslateService, private sampleService: SampleSelectorService,
+              private materialDialog: MaterialDialogService) {
 
     this.sampleService.getMaterials()
       .pipe(
         catchError(async error => {
+          // 404 means an empty table (a database without the seed).
           if (error.status === 404) {
-            await firstValueFrom(this.sampleService.syncMaterials())
-            return await firstValueFrom(this.sampleService.getMaterials());
+            return {adsorbates: [], adsorbents: []};
           } else {
             throw await firstValueFrom(this.translateService.get('DATA_SELECTOR.ERROR_LOADING_PREVIOUS_SAMPLES', error));
           }
@@ -217,6 +223,10 @@ export class KineticsFileUploadComponent {
   }
 
   onUnitChange(event: any, type: string): void {
+    if (event.value === NEW_MATERIAL) {
+      this.addMaterial(event, type as MaterialKind);
+      return;
+    }
     const selectedValue = event.value;
     if (type === 'adsorbate') {
       this.dataSample.adsorbate_id = selectedValue;
@@ -226,6 +236,22 @@ export class KineticsFileUploadComponent {
       this.dataSample.adsorbent = this.adsorbents.find(adsorbent => adsorbent.id === selectedValue)?.name;
     }
     this.onDataSampleUploaded.emit(this.dataSample);
+  }
+
+  // "Agregar nuevo..." keeps the previous choice while the dialog is open and selects the result.
+  private addMaterial(event: MatSelectChange, kind: MaterialKind): void {
+    event.source.value = kind === 'adsorbate' ? this.dataSample.adsorbate_id : this.dataSample.adsorbent_id;
+    this.materialDialog.create(kind).subscribe(material => {
+      if (!material) {
+        return;
+      }
+      if (kind === 'adsorbate') {
+        this.adsorbates = withMaterial(this.adsorbates, material as IAdsorbate);
+      } else {
+        this.adsorbents = withMaterial(this.adsorbents, material as IAdsorbent);
+      }
+      this.onUnitChange({value: material.id}, kind);
+    });
   }
 
   onChange(event: Event) {
