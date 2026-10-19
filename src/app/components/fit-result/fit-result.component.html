@@ -11,7 +11,7 @@
           <div>
             <span class="fiuba-institutional-text">{{ param.name }}</span>
             <span class="text-muted text-body-emphasis">
-              <h5>{{ param.value }} <small class="text-muted">± {{ param.std_err }}</small></h5>
+              <h5>{{ commonUtilsService.formatNumber(param.value) }} <small class="text-muted">± {{ commonUtilsService.formatNumber(param.std_err) }}</small></h5>
             </span>
           </div>
         </div>
@@ -31,7 +31,7 @@
     <div class="col" *ngFor="let statistic of getStatisticsInOrder()">
       <div>
         <span class="card-title text-muted">{{ 'STATISTICS.' + statistic[0] | translate }}</span>
-        <h5 class="mt-1">{{ statistic[1] }}</h5>
+        <h5 class="mt-1">{{ commonUtilsService.formatNumber(statistic[1]) }}</h5>
       </div>
     </div>
   </div>

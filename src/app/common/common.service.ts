@@ -10,18 +10,12 @@ export class CommonUtilsService {
     return models.filter(model => model._id === modelId).pop()!;
   }
 
-
   getBestComparisonModelOverall(modelOne: number, modelTwo: number, models: Model[]): string | undefined {
-
     if (modelOne === modelTwo) {
-
       return this.getModelById(modelOne, models).name;
-
     } else {
-
       return undefined;
     }
-
   }
 
   isInteger(str: string) {
@@ -29,6 +23,26 @@ export class CommonUtilsService {
     return Number.isInteger(num) && str.trim() !== '';
   }
 
+  formatNumber(value: number | string | boolean | null | undefined, sigFigs: number = 4): string {
+    if (value === null || value === undefined || value === '') {
+      return 'N/A';
+    }
+    if (typeof value === 'boolean') {
+      return String(value);
+    }
+    const num = typeof value === 'number' ? value : Number(value);
+    if (isNaN(num) || !isFinite(num)) {
+      return String(value);
+    }
+    if (num === 0) {
+      return '0';
+    }
+    const absNum = Math.abs(num);
+    if (absNum < 1e-3 || absNum >= 1e5) {
+      return num.toExponential(sigFigs - 1);
+    }
+    return Number(num.toPrecision(sigFigs)).toString();
+  }
 
 }
 
