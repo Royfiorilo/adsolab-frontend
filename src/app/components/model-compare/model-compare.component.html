@@ -14,9 +14,7 @@
                       [ridgeResult]="ridgeResult"
                       [noLinearResults]="noLinearResults"
                       [xForCurvePlot]="xForCurvePlot">
-        >
       </app-downloader>
-
     </div>
 
     <div>
@@ -26,8 +24,6 @@
         {{ 'MODEL_COMPARE.SAVE_RESULTS' | translate }}
       </button>
     </div>
-
-
   </div>
 
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" *ngIf="!selectedModelsChanged && !noLinearFailed">
@@ -38,55 +34,38 @@
           <mat-card class="shadow">
             <mat-card-content class="d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center">
-                <h5
-                  class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
+                <h5 class="card-title mb-0 flex-grow-1 text-center">{{ 'MODEL_COMPARE.BEST_MODEL' | translate }}</h5>
               </div>
 
               <h2 class="text-center">
-              <span
-                [ngClass]="getBestComparisonModelOverall() ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
-              {{ getBestComparisonModelOverall() ?? ('UNDEFINED' | translate) }}
-              </span>
+                <span [ngClass]="getBestComparisonModelOverall() ? 'badge fiuba-institutional-bg text-white' : 'badge bg-warning'">
+                  {{ getBestComparisonModelOverall() ?? ('UNDEFINED' | translate) }}
+                </span>
               </h2>
-
-              <!--          Resumen del por que de la eleccion del mejor-->
-
 
               <mat-card class="m-2">
                 <mat-card-content>
-                  <div
-                    class="align-items-center text-center">
+                  <div class="align-items-center text-center">
                     <h5 class="card-title mb-2">
                       {{ 'MODEL_COMPARE.HEURISTIC' | translate }}
                       <span class="text-muted">
                         <mat-icon matSuffix inline="true" matTooltip="{{ 'MODEL_COMPARE.DETAIL'| translate }}"
                                   (click)="openContent(content); $event.stopPropagation()">info
-                      </mat-icon>
+                        </mat-icon>
                       </span>
                     </h5>
 
-
                     <div class="row justify-content-center">
-
                       <div *ngFor="let result of noLinearCompareResult!.heuristic!.results" class="col-md-6 col-lg-3">
-
-                        <div
-                          [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        <div [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
                           {{ commonUtilsService.getModelById(result.model, state().models).name }}
                         </div>
-
-                        <div
-                          [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                          <div>{{ result.score }}</div>
+                        <div [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.heuristic!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                          <div>{{ commonUtilsService.formatNumber(result.score) }}</div>
                         </div>
-
                       </div>
-
                     </div>
-
-
                   </div>
-
                 </mat-card-content>
               </mat-card>
 
@@ -107,8 +86,7 @@
 
               <mat-card class="m-2">
                 <mat-card-content>
-                  <div
-                    class="align-items-center text-center">
+                  <div class="align-items-center text-center">
                     <h5 class="card-title mb-2">
                       {{ 'MODEL_COMPARE.RIDGE' | translate }}
                       <span class="text-muted">
@@ -119,28 +97,17 @@
                     </h5>
 
                     <div class="row justify-content-center">
-
                       <div *ngFor="let result of noLinearCompareResult!.ridge!.results" class="col-md-6 col-lg-3">
-
-                        <div
-                          [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                        <div [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
                           {{ commonUtilsService.getModelById(result.model, state().models).name }}
                         </div>
-
-                        <div
-                          [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
-                          <div>{{ result.coef }}</div>
+                        <div [ngClass]="commonUtilsService.getModelById(noLinearCompareResult!.ridge!.best_model, state().models).name === commonUtilsService.getModelById(result.model, state().models).name ? 'fw-bold fiuba-institutional-text' : ''">
+                          <div>{{ commonUtilsService.formatNumber(result.coef) }}</div>
                         </div>
-
                       </div>
-
                     </div>
-
-
                   </div>
-
                 </mat-card-content>
-
               </mat-card>
 
               <ng-template #contentRidge let-modal>
@@ -170,7 +137,6 @@
       </div>
 
       <div class="row m-0">
-
         <div class="d-flex justify-content-end mb-3">
           <button mat-icon-button color="primary"
                   [ngClass]="{'bg-primary-subtle': selectedComparisonLayout === comparisonViewOptions.TWO_COLUMNS}"
@@ -232,15 +198,14 @@
                   <tbody>
                   <tr *ngFor="let ceValue of state().investigation?.sample?.ce; let i = index">
                     <th scope="row">{{ i + 1 }}</th>
-                    <td>{{ ceValue }}</td>
+                    <td>{{ commonUtilsService.formatNumber(ceValue) }}</td>
                     <td *ngFor="let modelId of getNoLinearResultsModelIds()">
-                      {{ bestTransformedValue(+modelId, ceValue) ?? 'N/A' }}
+                      {{ bestTransformedValue(+modelId, ceValue) !== undefined ? commonUtilsService.formatNumber(bestTransformedValue(+modelId, ceValue)) : 'N/A' }}
                     </td>
                   </tr>
                   </tbody>
                 </table>
               </ng-template>
-
             </mat-expansion-panel>
 
             <mat-expansion-panel [expanded]="true">
@@ -275,9 +240,9 @@
                       </td>
 
                       <td *ngFor="let modelId of getNoLinearResultsModelIds()">
-                        {{ bestStatisticValue(+modelId, statName) ?? 'N/A' }}
+                        {{ bestStatisticValue(+modelId, statName) !== undefined ? commonUtilsService.formatNumber(bestStatisticValue(+modelId, statName)) : 'N/A' }}
                       </td>
-                      <td>{{ getRidgeStatistic(statName) }}</td>
+                      <td>{{ commonUtilsService.formatNumber(getRidgeStatistic(statName)) }}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -309,8 +274,6 @@
                   </div>
                 </div>
               </ng-template>
-
-
             </mat-expansion-panel>
 
             <mat-expansion-panel [expanded]="true">
@@ -344,7 +307,7 @@
                       </td>
 
                       <td *ngFor="let modelId of getNoLinearResultsModelIds()">
-                        {{ bestResidualValue(+modelId, residualName) }}
+                        {{ commonUtilsService.formatNumber(bestResidualValue(+modelId, residualName)) }}
                       </td>
                     </tr>
                     </tbody>
@@ -377,8 +340,6 @@
                   </div>
                 </div>
               </ng-template>
-
-
             </mat-expansion-panel>
 
           </mat-accordion>
@@ -388,7 +349,6 @@
     </mat-tab>
 
     <mat-tab label="{{'MODEL_COMPARE.ALL_RESULTS' | translate}}">
-
 
       <div class="d-flex justify-content-end mb-3">
         <button mat-icon-button color="primary"
@@ -417,8 +377,7 @@
 
             <div class="mt-4 m-2 card ">
               <div class="card-header fiuba-investigation mb-1">
-                <h4
-                  class="card-title text-center">{{ commonUtilsService.getModelById(+modelId, state().models).name }}</h4>
+                <h4 class="card-title text-center">{{ commonUtilsService.getModelById(+modelId, state().models).name }}</h4>
               </div>
               <div class="card-body d-flex flex-column">
 
@@ -435,8 +394,8 @@
                              class="mb-0">
                           <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
                           <span class="text-muted text-body-emphasis">
-                                <h5>{{ param.value }} <small class="text-muted">± {{ param.std_err }}</small></h5>
-                              </span>
+                            <h5>{{ commonUtilsService.formatNumber(param.value) }} <small class="text-muted">± {{ commonUtilsService.formatNumber(param.std_err) }}</small></h5>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -445,8 +404,7 @@
                   <div class="col-6">
                     <div class="row">
                       <div class="col mt-0">
-                          <span
-                            class="card-title text-muted float-end">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
+                        <span class="card-title text-muted float-end">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
                       </div>
                     </div>
                     <div class="row">
@@ -454,14 +412,10 @@
                         <h5 class="float-end">{{ getBestAdjustmentDataByModel(+modelId).adjustment_name }}</h5>
                       </div>
                     </div>
-
                   </div>
-
                 </div>
 
-
               </div>
-
             </div>
 
           </div>
@@ -483,7 +437,6 @@
             </div>
 
             <div *ngFor="let modelId of getNoLinearResultsModelIds()" class="col-12">
-
 
               <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header>
@@ -518,14 +471,14 @@
                           <tr *ngFor="let item of noLinearResults[modelId].successful_fits"
                               [ngClass]="{'table-active fw-bold': noLinearResults[modelId].bestAdjustment === item.adjustment_name}">
                             <th scope="row"> {{ item.adjustment_name }}</th>
-                            <td *ngFor="let param of item.parameters">{{ param.value }}</td>
-                            <td> {{ item.statistics.chi_squared }}</td>
-                            <td> {{ item.statistics.r_squared }}</td>
-                            <td> {{ item.statistics.adjust_r_squared }}</td>
-                            <td> {{ item.statistics.adjust_chi_squeared }}</td>
-                            <td> {{ item.statistics.RMSE }}</td>
-                            <td> {{ item.statistics.SSE }}</td>
-                            <td> {{ item.statistics.HYBRID }}</td>
+                            <td *ngFor="let param of item.parameters">{{ commonUtilsService.formatNumber(param.value) }}</td>
+                            <td> {{ commonUtilsService.formatNumber(item.statistics.chi_squared) }}</td>
+                            <td> {{ commonUtilsService.formatNumber(item.statistics.r_squared) }}</td>
+                            <td> {{ commonUtilsService.formatNumber(item.statistics.adjust_r_squared) }}</td>
+                            <td> {{ commonUtilsService.formatNumber(item.statistics.adjust_chi_squeared) }}</td>
+                            <td> {{ commonUtilsService.formatNumber(item.statistics.RMSE) }}</td>
+                            <td> {{ commonUtilsService.formatNumber(item.statistics.SSE) }}</td>
+                            <td> {{ commonUtilsService.formatNumber(item.statistics.HYBRID) }}</td>
                           </tr>
                           </tbody>
                         </table>
@@ -545,8 +498,8 @@
                               {{ item.adjustment_name }}
                               <span *ngIf="noLinearResults[+modelId].bestAdjustment === item.adjustment_name"
                                     class="badge fiuba-institutional-bg text-white">
-                                  {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
-                                </span>
+                                {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
+                              </span>
                             </h5>
                             <plotly-plot [data]="item.graph.data" [layout]="item.graph.layout"
                                          [style]="{width: '100%', height: '450px'}"
@@ -568,10 +521,9 @@
                           <div class="card-body text-center">
                             <h5 class="">
                               {{ item.adjustment_name }}
-                              <span
-                                class="badge bg-danger text-white">
-                                  {{ 'ERROR.ERROR' | translate }}
-                                </span>
+                              <span class="badge bg-danger text-white">
+                                {{ 'ERROR.ERROR' | translate }}
+                              </span>
                             </h5>
                             <p>
                               {{ item.error }}
@@ -579,7 +531,6 @@
                           </div>
                         </div>
                       </div>
-
 
                     </div>
                   </div>
@@ -597,8 +548,6 @@
 
     </mat-tab>
   </mat-tab-group>
-
-
 </div>
 <ng-container *ngIf="runningNoLinearAdjustment || savingInvestigation">
   <app-loading [cancellable]="true" (cancelRequestEvent)="cancelCurrentRequest()"></app-loading>

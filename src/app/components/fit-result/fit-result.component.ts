@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {IParameter, IStatistics} from "../../common/common.interface";
+import {CommonUtilsService} from "../../common/common.service";
 
 @Component({
   selector: 'app-fit-result',
@@ -10,8 +11,9 @@ export class FitResultComponent {
   @Input() parameters!: IParameter[];
   @Input() statistics!: Partial<IStatistics>;
 
-  getStatisticsInOrder() {
+  constructor(public commonUtilsService: CommonUtilsService) {}
 
+  getStatisticsInOrder() {
     let statisticsInOrder: Partial<IStatistics> = {
       chi_squared: this.statistics.chi_squared,
       adjust_chi_squeared: this.statistics.adjust_chi_squeared,
@@ -24,6 +26,6 @@ export class FitResultComponent {
       SSE: this.statistics.SSE,
     };
 
-    return Object.entries(statisticsInOrder).filter(([_, value]) => value !== undefined)
+    return Object.entries(statisticsInOrder).filter(([_, value]) => value !== undefined);
   }
 }
