@@ -2,8 +2,16 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
-import {CreateKineticSampleResponse, IKineticsSample} from "../kinetics/interface";
-import {IKineticsModelResult} from "../kinetics-model-compare/interface";
+import {DEFAULT_ITERATIONS, DEFAULT_STEPS} from "../../common/common.service";
+import {
+  CreateKineticSampleResponse,
+  IKineticsModel,
+  IKineticsModelsConfigurations,
+  IKineticsSample,
+  IKineticsSeedValue,
+  IKineticsState
+} from "../kinetics/interface";
+import {IKineticsModelResult, IKineticsSavedVersion} from "../kinetics-model-compare/interface";
 import {IKineticsFittedModel, IKineticsInvestigationsResponse, IKineticsVersion, IKineticsVersionsResponse} from "./interface";
 
 @Injectable({
@@ -70,4 +78,45 @@ export function toModelResult(fittedModel: IKineticsFittedModel): IKineticsModel
     adjustment_methods: fittedModel.adjustment_methods,
     seeds: fittedModel.seeds,
   };
+}
+
+// The configuration step of the stepper, where a resumed version opens.
+const CONFIGURATION_STEP = 2;
+
+// Rebuilds the stepper state from a saved version, with its seeds as manual parameters.
+export function toResumeState(version: IKineticsSavedVersion, iterations: number | null,
+                              step: number | null): IKineticsState {
+  const modelConfiguration: IKineticsModelsConfigurations = {};
+  for (const result of version.results) {
+    const model = version.models.find(item => item._id === result.model);
+    modelConfiguration[result.model] = {
+      paramValues: seedValues(result, model),
+      iterations: iterations ?? DEFAULT_ITERATIONS,
+      step: step ?? DEFAULT_STEPS,
+      automatedParams: false,
+      selectedLinearizations: (model?.linearizations ?? []).map(linearization => linearization.linearization_id),
+      knownParams: {},
+    };
+  }
+  return {
+    shouldRender: true,
+    kineticsSample: version.sample,
+    stepId: CONFIGURATION_STEP,
+    models: version.models,
+    selectedModels: version.results.map(result => result.model),
+    modelConfiguration,
+    modelConfigurationDone: Object.values(modelConfiguration).every(config =>
+      Object.values<IKineticsSeedValue>(config.paramValues).every(param => param.value !== null)),
+  };
+}
+
+function seedValues(result: IKineticsModelResult, model: IKineticsModel | undefined): { [name: string]: IKineticsSeedValue } {
+  const values: { [name: string]: IKineticsSeedValue } = {};
+  for (const name of Object.keys(model?.parameters ?? {})) {
+    values[name] = {value: null};
+  }
+  for (const seed of result.seeds ?? []) {
+    values[seed.name] = {value: seed.value, stderr: seed.stderr ?? null};
+  }
+  return values;
 }

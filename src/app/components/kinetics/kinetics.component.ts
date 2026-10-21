@@ -32,6 +32,11 @@ export class KineticsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    if (this.route.snapshot.queryParamMap.get('fromHistoric')) {
+      // Deferred: selecting a step during the first check would change bindings already checked.
+      setTimeout(() => this.steps.get(this.state().stepId)?.select());
+      return;
+    }
     if (this.state().kineticsSample) {
       const dialogRef = this.dialog.open(KineticsModalComponent);
 
