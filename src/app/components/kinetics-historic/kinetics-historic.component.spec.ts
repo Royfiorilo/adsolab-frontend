@@ -77,6 +77,26 @@ describe('KineticsHistoricComponent', () => {
     expect(filterBy('')).toEqual([1, 2]);
   });
 
+  it('should filter the current page by adsorbate or adsorbent', () => {
+    const lead = investigation(1, 'Muestra A');
+    lead.sample.adsorbate = 'Plomo';
+    lead.sample.adsorbent = 'Zeolita';
+    const {component} = build([lead, investigation(2, 'Muestra B', 7)]);
+    const filterBy = (value: string) => {
+      component.onFilterChange({target: {value}} as any);
+      return (component as any).rows.map((row: IKineticsInvestigation) => row.kinetic_investigation_id);
+    };
+
+    expect(filterBy('plomo')).toEqual([1]);
+    expect(filterBy('zeolita')).toEqual([1]);
+  });
+
+  it('should show the adsorbate and adsorbent columns', () => {
+    const {component} = build();
+
+    expect((component as any).displayedColumns).toEqual(jasmine.arrayContaining(['adsorbate', 'adsorbent']));
+  });
+
   it('should only let the owner delete', () => {
     const {component} = build();
 

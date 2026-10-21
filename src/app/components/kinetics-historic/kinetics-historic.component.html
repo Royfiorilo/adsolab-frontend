@@ -54,6 +54,16 @@
         <td class="text-center" mat-cell *matCellDef="let element">{{ element.sample?.title }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="adsorbate">
+        <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'KINETICS_EXPORT.ADSORBATE' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element">{{ element.sample?.adsorbate }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="adsorbent">
+        <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'KINETICS_EXPORT.ADSORBENT' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element">{{ element.sample?.adsorbent }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="description">
         <th class="text-center fw-bold" mat-header-cell *matHeaderCellDef>{{ 'VERSIONS.DESCRIPTION' | translate }}</th>
         <td class="text-center" mat-cell *matCellDef="let element">{{ element.sample?.description }}</td>
