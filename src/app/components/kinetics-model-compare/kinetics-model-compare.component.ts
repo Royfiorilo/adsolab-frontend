@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {faSave} from "@fortawesome/free-solid-svg-icons";
+import {faFileDownload, faSave} from "@fortawesome/free-solid-svg-icons";
 import {TranslateService} from "@ngx-translate/core";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PlotlyComponent} from "angular-plotly.js";
@@ -8,15 +8,20 @@ import {MatDialog} from "@angular/material/dialog";
 import {finalize} from "rxjs";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {CommonUtilsService} from "../../common/common.service";
+import {AllResultsViewOption} from "../model-compare/interface";
 import {IKineticsModel, IKineticsSample} from "../kinetics/interface";
 import {KineticsStateService} from "../kinetics/kinetics-state.service";
 import {KINETICS_FONT_FAMILIES, KINETICS_PLOT_PALETTE, KineticsModelCompareService} from "./kinetics-model-compare.service";
+import {KineticsResultsExportService} from "./kinetics-results-export.service";
 import {
   AxisScale,
   ExportFormat,
+  IKineticsAdjustmentMethod,
   IKineticsAxisSettings,
   IKineticsComparison,
   IKineticsFitResult,
+  IKineticsModelMethods,
   IKineticsModelResult,
   IKineticsPlotSettings,
   IKineticsRunOutcome,
@@ -39,17 +44,21 @@ export class KineticsModelCompareComponent implements OnInit {
   @Input() savedVersion?: IKineticsSavedVersion;
   state = this.stateService.state;
   protected readonly faSave = faSave;
+  protected readonly faDownload = faFileDownload;
 
   protected loading = true;
   protected error = false;
   protected results: IKineticsFitResult[] = [];
   protected comparison?: IKineticsComparison;
-  private rawResults: IKineticsModelResult[] = [];
+  protected rawResults: IKineticsModelResult[] = [];
   protected saving = false;
   protected saved = false;
   protected comparisonGraph?: PlotlyGraph;
-  protected graphByModel: { [modelId: number]: PlotlyGraph } = {};
-  protected residualsGraphByModel: { [modelId: number]: PlotlyGraph } = {};
+  protected methodsByModel: { [modelId: number]: IKineticsModelMethods } = {};
+  protected methodsGraphByModel: { [modelId: number]: PlotlyGraph } = {};
+  protected residualsGraphByMethod: { [modelId: number]: { [method: string]: PlotlyGraph } } = {};
+  protected allResultsView = AllResultsViewOption.SIMPLIFIED;
+  protected readonly allResultsViewOption = AllResultsViewOption;
 
   @ViewChild('statModal') private statModalRef!: TemplateRef<any>;
   @ViewChild('residualModal') private residualModalRef!: TemplateRef<any>;
@@ -72,7 +81,9 @@ export class KineticsModelCompareComponent implements OnInit {
               private translate: TranslateService,
               private modalService: NgbModal,
               private snackBar: MatSnackBar,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              protected commonUtilsService: CommonUtilsService,
+              private exportService: KineticsResultsExportService) {
   }
 
   ngOnInit(): void {
@@ -196,6 +207,7 @@ export class KineticsModelCompareComponent implements OnInit {
     this.results = outcome.results;
     this.comparison = outcome.comparison;
     this.rawResults = outcome.rawResults;
+    this.methodsByModel = this.groupMethods();
     this.loading = false;
     if (this.results.length === 0) {
       return;
@@ -203,6 +215,43 @@ export class KineticsModelCompareComponent implements OnInit {
     this.plotSettings = this.buildDefaultSettings(outcome.results);
     this.updateConfig();
     this.rebuildGraphs();
+  }
+
+  methodsOf(modelId: number): IKineticsModelMethods {
+    return this.methodsByModel[modelId] ?? {successful: [], failed: []};
+  }
+
+  private groupMethods(): { [modelId: number]: IKineticsModelMethods } {
+    return Object.fromEntries(this.results.map(result => {
+      const methods = this.rawResults.find(raw => raw.model === result.modelId)?.adjustment_methods ?? [];
+      return [result.modelId, {
+        best: methods.find(method => method.name === result.adjustmentName),
+        successful: methods.filter(method => method.success),
+        failed: methods.filter(method => !method.success),
+      }];
+    }));
+  }
+
+  rerun(): void {
+    this.saved = false;
+    this.runModels();
+  }
+
+  downloadResults(): void {
+    const configuration = this.savedVersion ? undefined : this.state().modelConfiguration;
+    this.exportService.download({
+      sample: this.sample!,
+      models: this.models,
+      rawResults: this.rawResults,
+      comparison: this.comparison,
+      bestModel: this.bestModelOverall(),
+      seedsByModel: Object.fromEntries(this.rawResults.map(result =>
+        [result.model, result.seeds ?? this.compareService.buildSeeds(configuration?.[result.model])]
+      )),
+      automatedByModel: configuration && Object.fromEntries(this.rawResults.map(result =>
+        [result.model, !!configuration[result.model]?.automatedParams]
+      )),
+    });
   }
 
   canSave(): boolean {
@@ -299,14 +348,18 @@ export class KineticsModelCompareComponent implements OnInit {
       layout: this.buildLayout(),
     };
 
-    this.graphByModel = {};
-    this.residualsGraphByModel = {};
+    this.methodsGraphByModel = {};
+    this.residualsGraphByMethod = {};
     this.results.forEach((result, index) => {
-      this.graphByModel[result.modelId] = {
-        data: [sampleTrace, this.buildModelTrace(result, index)],
+      const methods = this.methodsOf(result.modelId).successful;
+      this.methodsGraphByModel[result.modelId] = {
+        data: [sampleTrace, ...methods.map((method, methodIndex) => this.buildMethodTrace(method, methodIndex))],
         layout: this.buildLayout(),
       };
-      this.residualsGraphByModel[result.modelId] = this.buildResidualsGraph(result, sample.time);
+      const color = this.colorMode === 'bw' ? '#000000' : this.plotSettings.colorByModel[result.modelId];
+      this.residualsGraphByMethod[result.modelId] = Object.fromEntries(methods.map(method =>
+        [method.name, this.buildResidualsGraph(method.residuals?.values ?? [], color, sample.time)]
+      ));
     });
 
     setTimeout(() => this.comparisonPlot?.updatePlot(), 0);
@@ -314,12 +367,11 @@ export class KineticsModelCompareComponent implements OnInit {
 
   // `sample.time` ya viene ordenado desde el backend (`order_sample`), así que
   // los residuos se alinean con él sin reordenar.
-  private buildResidualsGraph(result: IKineticsFitResult, time: number[]): PlotlyGraph {
-    const color = this.colorMode === 'bw' ? '#000000' : this.plotSettings.colorByModel[result.modelId];
+  private buildResidualsGraph(values: number[], color: string, time: number[]): PlotlyGraph {
     return {
       data: [{
         x: time,
-        y: result.residuals?.values ?? [],
+        y: values,
         type: 'scatter',
         mode: 'markers',
         name: this.translate.instant('KINETICS_MODEL_COMPARE.RESIDUALS_PLOT'),
@@ -353,6 +405,15 @@ export class KineticsModelCompareComponent implements OnInit {
       line,
       marker: {color},
     };
+  }
+
+  private buildMethodTrace(method: IKineticsAdjustmentMethod, index: number): any {
+    const line: any = {width: this.plotSettings.lineWidth, shape: 'spline'};
+    if (this.colorMode === 'bw') {
+      line.color = this.bwShades[index % this.bwShades.length];
+      line.dash = this.bwDashes[index % this.bwDashes.length];
+    }
+    return {x: method.transformed.x, y: method.transformed.y, type: 'scatter', mode: 'lines', name: method.name, line};
   }
 
   private buildLayout(): any {

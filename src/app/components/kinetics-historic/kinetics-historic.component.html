@@ -103,8 +103,8 @@
                     </div>
                     <div *ngFor="let param of bestParameters(fittedModel)">
                       <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
-                      {{ param.value | number:'1.4-4' }}
-                      <small *ngIf="param.std_err !== null" class="text-muted">± {{ param.std_err | number:'1.4-4' }}</small>
+                      {{ commonUtilsService.formatNumber(param.value) }}
+                      <small *ngIf="param.std_err !== null" class="text-muted">± {{ commonUtilsService.formatNumber(param.std_err) }}</small>
                     </div>
                   </div>
 

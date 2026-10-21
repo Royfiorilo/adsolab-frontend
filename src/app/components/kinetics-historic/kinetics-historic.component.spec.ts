@@ -1,4 +1,5 @@
 import {of, throwError} from 'rxjs';
+import {CommonUtilsService} from '../../common/common.service';
 import {KineticsHistoricComponent} from './kinetics-historic.component';
 import {IKineticsInvestigation, IKineticsVersion} from './interface';
 
@@ -40,7 +41,8 @@ function build(investigations = [investigation(1, 'Cromo'), investigation(2, 'Pl
   const router = jasmine.createSpyObj('Router', ['navigate']);
 
   const component = new KineticsHistoricComponent(
-    historicService, modelService, authService as any, router, translate, dialog, snackBar
+    historicService, modelService, authService as any, router, translate, dialog, snackBar,
+    new CommonUtilsService()
   );
   component.ngOnInit();
   return {component, historicService, router, snackBar};

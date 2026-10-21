@@ -1,7 +1,15 @@
 <div class="container-fluid m-3">
 
-  <div *ngIf="!savedVersion" class="d-flex justify-content-end">
-    <button mat-button color="primary" class="m-2" [disabled]="!canSave()" (click)="saveResults()">
+  <div class="d-flex justify-content-end">
+    <button *ngIf="!savedVersion" mat-button color="primary" class="m-2" [disabled]="loading" (click)="rerun()">
+      <mat-icon>refresh</mat-icon>
+      {{ 'MODEL_COMPARE.RERUN_COMPARISON' | translate }}
+    </button>
+    <button mat-button color="primary" class="m-2" [disabled]="loading || rawResults.length === 0" (click)="downloadResults()">
+      <fa-icon [icon]="faDownload" class="m-2"></fa-icon>
+      {{ 'MODEL_COMPARE.DOWNLOAD_RESULTS' | translate }}
+    </button>
+    <button *ngIf="!savedVersion" mat-button color="primary" class="m-2" [disabled]="!canSave()" (click)="saveResults()">
       <fa-icon [icon]="faSave" class="m-2"></fa-icon>
       {{ saveLabel() | translate }}
     </button>
@@ -164,11 +172,11 @@
                 <tbody>
                 <tr *ngFor="let result of results">
                   <td>{{ result.modelName }}</td>
-                  <td>{{ result.statistics['r_squared'] | number:'1.4-4' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(result.statistics['r_squared']) }}</td>
                   <td *ngIf="hasLinearR2()">
-                    {{ getLinearR2(result.modelId) !== undefined ? (getLinearR2(result.modelId) | number:'1.4-4') : '—' }}
+                    {{ getLinearR2(result.modelId) !== undefined ? commonUtilsService.formatNumber(getLinearR2(result.modelId)) : '—' }}
                   </td>
-                  <td>{{ result.statistics['RMSE'] | number:'1.4-4' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(result.statistics['RMSE']) }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -199,8 +207,8 @@
                 <tbody>
                 <tr *ngFor="let result of results">
                   <td>{{ result.modelName }}</td>
-                  <td>{{ getHeuristicScore(result.modelId) ?? 'N/A' }}</td>
-                  <td>{{ getMlCoefficient(result.modelId) ?? 'N/A' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(getHeuristicScore(result.modelId)) }}</td>
+                  <td>{{ commonUtilsService.formatNumber(getMlCoefficient(result.modelId)) }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -233,8 +241,8 @@
                         </mat-icon>
                       </span>
                     </td>
-                    <td *ngFor="let result of results">{{ statisticValue(result.modelId, statName) ?? 'N/A' }}</td>
-                    <td *ngIf="comparison?.ml">{{ getMlStatistic(statName) ?? 'N/A' }}</td>
+                    <td *ngFor="let result of results">{{ commonUtilsService.formatNumber(statisticValue(result.modelId, statName)) }}</td>
+                    <td *ngIf="comparison?.ml">{{ commonUtilsService.formatNumber(getMlStatistic(statName)) }}</td>
                   </tr>
                   </tbody>
                 </table>
@@ -265,7 +273,7 @@
                         </mat-icon>
                       </span>
                     </td>
-                    <td *ngFor="let result of results">{{ residualValue(result.modelId, residualName) ?? 'N/A' }}</td>
+                    <td *ngFor="let result of results">{{ commonUtilsService.formatNumber(residualValue(result.modelId, residualName)) }}</td>
                   </tr>
                   </tbody>
                 </table>
@@ -276,48 +284,120 @@
       </div>
     </mat-tab>
 
-    <mat-tab *ngFor="let result of results" label="{{ result.modelName }}">
-      <div class="row justify-content-center m-3">
-        <div class="col-lg-10 col-md-12">
-          <mat-card class="shadow">
+    <mat-tab label="{{ 'MODEL_COMPARE.ALL_RESULTS' | translate }}">
+      <div class="d-flex justify-content-end m-3">
+        <button mat-icon-button color="primary"
+                [ngClass]="{'bg-primary-subtle': allResultsView === allResultsViewOption.SIMPLIFIED}"
+                matTooltip="{{ 'MODEL_COMPARE.SIMPLIFIED_VIEW' | translate }}"
+                (click)="allResultsView = allResultsViewOption.SIMPLIFIED">
+          <mat-icon>grid_view</mat-icon>
+        </button>
+        <button mat-icon-button color="primary"
+                [ngClass]="{'bg-primary-subtle': allResultsView === allResultsViewOption.DETAILED}"
+                matTooltip="{{ 'MODEL_COMPARE.DETAILED_VIEW' | translate }}"
+                (click)="allResultsView = allResultsViewOption.DETAILED">
+          <mat-icon>analytics</mat-icon>
+        </button>
+      </div>
+
+      <div *ngIf="allResultsView === allResultsViewOption.SIMPLIFIED" class="row justify-content-center m-3">
+        <div *ngFor="let result of results" class="col-12 col-md-6">
+          <mat-card class="shadow m-2">
             <mat-card-content class="p-3">
-              <plotly-plot *ngIf="graphByModel[result.modelId]"
-                           [data]="graphByModel[result.modelId].data" [layout]="graphByModel[result.modelId].layout"
-                           [style]="{width: '100%', height: '420px'}" [config]="config"></plotly-plot>
-
-              <table class="table mt-3 mb-0">
-                <tbody>
-                <tr *ngFor="let param of result.params | keyvalue">
-                  <td>{{ param.key }}</td>
-                  <td>{{ param.value | number:'1.4-4' }}</td>
-                </tr>
-                <tr *ngFor="let statName of getStatisticsRows()">
-                  <td>{{ 'STATISTICS.' + statName | translate }}</td>
-                  <td>{{ result.statistics[statName] ?? 'N/A' }}</td>
-                </tr>
-                <tr *ngIf="getLinearR2(result.modelId) !== undefined">
-                  <td>{{ 'KINETICS_MODEL_COMPARE.STAT_LINEAR_R2' | translate }}</td>
-                  <td>{{ getLinearR2(result.modelId) | number:'1.4-4' }}</td>
-                </tr>
-                </tbody>
-              </table>
-
-              <table class="table mt-3 mb-0">
-                <tbody>
-                <tr *ngFor="let residualName of getResidualsRows()">
-                  <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
-                  <td>{{ residualValue(result.modelId, residualName) ?? 'N/A' }}</td>
-                </tr>
-                </tbody>
-              </table>
-
-              <plotly-plot *ngIf="residualsGraphByModel[result.modelId]"
-                           [data]="residualsGraphByModel[result.modelId].data"
-                           [layout]="residualsGraphByModel[result.modelId].layout"
-                           [style]="{width: '100%', height: '320px'}" [config]="config"></plotly-plot>
+              <h4 class="text-center">{{ result.modelName }}</h4>
+              <div class="d-flex justify-content-between">
+                <div>
+                  <span class="text-muted">{{ 'MODEL_COMPARE.PARAMS' | translate }}</span>
+                  <div *ngFor="let param of methodsOf(result.modelId).best?.parameters">
+                    <span class="fiuba-institutional-text me-2">{{ param.name }}</span>
+                    <h5 class="d-inline">{{ commonUtilsService.formatNumber(param.value) }}</h5>
+                    <small *ngIf="param.std_err !== null" class="text-muted"> ± {{ commonUtilsService.formatNumber(param.std_err) }}</small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <span class="text-muted">{{ 'MODEL_COMPARE.BEST_FIT' | translate }}</span>
+                  <h5>{{ result.adjustmentName }}</h5>
+                </div>
+              </div>
             </mat-card-content>
           </mat-card>
         </div>
+      </div>
+
+      <div *ngIf="allResultsView === allResultsViewOption.DETAILED" class="m-3">
+        <mat-accordion multi #allResultsAccordion="matAccordion">
+          <div class="m-2">
+            <button mat-button color="primary" (click)="allResultsAccordion.openAll()">
+              {{ 'MODEL_COMPARE.EXPAND_ALL' | translate }}
+            </button>
+            <button mat-button color="primary" (click)="allResultsAccordion.closeAll()">
+              {{ 'MODEL_COMPARE.COLLAPSE_ALL' | translate }}
+            </button>
+          </div>
+
+          <mat-expansion-panel *ngFor="let result of results" [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title><h4 class="mb-0">{{ result.modelName }}</h4></mat-panel-title>
+            </mat-expansion-panel-header>
+            <ng-template matExpansionPanelContent>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>{{ 'MODEL_COMPARE.FIT' | translate }}</th>
+                    <th *ngFor="let param of methodsOf(result.modelId).best?.parameters">{{ param.name }}</th>
+                    <th *ngFor="let statName of getStatisticsRows()">{{ 'STATISTICS.' + statName | translate }}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let method of methodsOf(result.modelId).successful"
+                      [ngClass]="{'table-active fw-bold': method.name === result.adjustmentName}">
+                    <th>{{ method.name }}</th>
+                    <td *ngFor="let param of method.parameters">{{ commonUtilsService.formatNumber(param.value) }}</td>
+                    <td *ngFor="let statName of getStatisticsRows()">{{ commonUtilsService.formatNumber(method.statistics[statName]) }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <plotly-plot *ngIf="methodsGraphByModel[result.modelId]"
+                           [data]="methodsGraphByModel[result.modelId].data"
+                           [layout]="methodsGraphByModel[result.modelId].layout"
+                           [style]="{width: '100%', height: '420px'}" [config]="config"></plotly-plot>
+
+              <mat-card *ngFor="let method of methodsOf(result.modelId).successful" class="shadow m-3">
+                <mat-card-content class="p-3">
+                  <h5 class="text-center">
+                    {{ method.name }}
+                    <span *ngIf="method.name === result.adjustmentName" class="badge fiuba-institutional-bg text-white">
+                      {{ 'MODEL_COMPARE.BEST_FIT' | translate }}
+                    </span>
+                  </h5>
+                  <plotly-plot [data]="residualsGraphByMethod[result.modelId][method.name].data"
+                               [layout]="residualsGraphByMethod[result.modelId][method.name].layout"
+                               [style]="{width: '100%', height: '320px'}" [config]="config"></plotly-plot>
+                  <table class="table mt-3 mb-0">
+                    <tbody>
+                    <tr *ngFor="let residualName of getResidualsRows()">
+                      <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
+                      <td>{{ commonUtilsService.formatNumber($any(method.residuals.analysis)[residualName]) }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card *ngFor="let method of methodsOf(result.modelId).failed" class="shadow m-3">
+                <mat-card-content class="p-3 text-center">
+                  <h5 class="mb-0">
+                    {{ method.name }}
+                    <span class="badge bg-danger text-white">{{ 'ERROR.ERROR' | translate }}</span>
+                  </h5>
+                </mat-card-content>
+              </mat-card>
+            </ng-template>
+          </mat-expansion-panel>
+        </mat-accordion>
       </div>
     </mat-tab>
   </mat-tab-group>
