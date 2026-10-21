@@ -79,7 +79,8 @@ function build(configuration: IKineticsModelsConfigurations, results?: any[]): K
   const snackBar = jasmine.createSpyObj('MatSnackBar', ['openFromComponent']);
   const dialog = jasmine.createSpyObj('MatDialog', ['open']);
   const component = new KineticsModelCompareComponent(
-    {state} as any, compareService, translate, modalService, snackBar, dialog, new CommonUtilsService()
+    {state} as any, compareService, translate, modalService, snackBar, dialog, new CommonUtilsService(),
+    jasmine.createSpyObj('KineticsResultsExportService', ['download'])
   );
   (component as any).results = results ?? [fitResult(MODEL_ID, 'Pseudo-Segundo Orden')];
   return component;
@@ -309,6 +310,50 @@ describe('KineticsModelCompareComponent', () => {
 
     it('should not allow saving a saved version again', () => {
       expect(buildSaved().canSave()).toBeFalse();
+    });
+  });
+
+  describe('all results', () => {
+    function method(name: string, success: boolean) {
+      return {
+        name, success, statistics: STATISTICS, residuals: RESIDUALS,
+        parameters: [{name: 'qe', value: 12.02, std_err: 0.1}, {name: 'k2', value: 0.0014, std_err: null}],
+        transformed: {x: [0, 20], y: [0, 6.1]},
+      };
+    }
+
+    const RAW = [{
+      model: MODEL_ID, best_adjust: 'leastsq',
+      adjustment_methods: [method('leastsq', true), method('nelder', true), method('cobyla', false)],
+    }];
+
+    function buildWithMethods(): KineticsModelCompareComponent {
+      const component = build(buildConfiguration());
+      (component as any).showOutcome({results: [fitResult(MODEL_ID, 'PSO')], comparison: undefined, rawResults: RAW});
+      return component;
+    }
+
+    it('should split the fitting methods of each model into successful and failed', () => {
+      const methods = buildWithMethods().methodsOf(MODEL_ID);
+
+      expect(methods.best?.name).toBe('leastsq');
+      expect(methods.successful.map(m => m.name)).toEqual(['leastsq', 'nelder']);
+      expect(methods.failed.map(m => m.name)).toEqual(['cobyla']);
+    });
+
+    it('should plot the sample and one curve per successful method', () => {
+      const component = buildWithMethods();
+
+      const graph = (component as any).methodsGraphByModel[MODEL_ID];
+      expect(graph.data.map((trace: any) => trace.name)).toEqual(['KINETICS_MODEL_COMPARE.SAMPLE', 'leastsq', 'nelder']);
+      expect(Object.keys((component as any).residualsGraphByMethod[MODEL_ID])).toEqual(['leastsq', 'nelder']);
+    });
+
+    it('should return no methods for a model without results', () => {
+      const methods = buildWithMethods().methodsOf(OTHER_MODEL_ID);
+
+      expect(methods.successful).toEqual([]);
+      expect(methods.failed).toEqual([]);
     });
   });
 

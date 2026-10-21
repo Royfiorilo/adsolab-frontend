@@ -148,3 +148,20 @@ export interface IKineticsPlotSettings {
 }
 
 export type ExportFormat = 'png' | 'svg';
+
+export interface IKineticsModelMethods {
+  best?: IKineticsAdjustmentMethod;
+  successful: IKineticsAdjustmentMethod[];
+  failed: IKineticsAdjustmentMethod[];
+}
+
+export interface IKineticsExportData {
+  sample: IKineticsSample;
+  models: IKineticsModel[];
+  rawResults: IKineticsModelResult[];
+  comparison?: IKineticsComparison;
+  bestModel?: string;
+  seedsByModel: { [modelId: number]: IKineticsSavedSeed[] };
+  // Unknown for saved versions: only the stepper knows whether seeds came from a linearization.
+  automatedByModel?: { [modelId: number]: boolean };
+}

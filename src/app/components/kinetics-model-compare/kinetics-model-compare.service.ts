@@ -84,7 +84,7 @@ export class KineticsModelCompareService {
     );
   }
 
-  private buildSeeds(config: IKineticsModelConfiguration | undefined): IKineticsSavedSeed[] {
+  buildSeeds(config: IKineticsModelConfiguration | undefined): IKineticsSavedSeed[] {
     return Object.entries(config?.paramValues ?? {}).map(([name, param]) => ({
       name,
       value: Number(param.value),
