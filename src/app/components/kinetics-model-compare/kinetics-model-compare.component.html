@@ -164,11 +164,11 @@
                 <tbody>
                 <tr *ngFor="let result of results">
                   <td>{{ result.modelName }}</td>
-                  <td>{{ result.statistics['r_squared'] | number:'1.4-4' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(result.statistics['r_squared']) }}</td>
                   <td *ngIf="hasLinearR2()">
-                    {{ getLinearR2(result.modelId) !== undefined ? (getLinearR2(result.modelId) | number:'1.4-4') : '—' }}
+                    {{ getLinearR2(result.modelId) !== undefined ? commonUtilsService.formatNumber(getLinearR2(result.modelId)) : '—' }}
                   </td>
-                  <td>{{ result.statistics['RMSE'] | number:'1.4-4' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(result.statistics['RMSE']) }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -199,8 +199,8 @@
                 <tbody>
                 <tr *ngFor="let result of results">
                   <td>{{ result.modelName }}</td>
-                  <td>{{ getHeuristicScore(result.modelId) ?? 'N/A' }}</td>
-                  <td>{{ getMlCoefficient(result.modelId) ?? 'N/A' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(getHeuristicScore(result.modelId)) }}</td>
+                  <td>{{ commonUtilsService.formatNumber(getMlCoefficient(result.modelId)) }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -233,8 +233,8 @@
                         </mat-icon>
                       </span>
                     </td>
-                    <td *ngFor="let result of results">{{ statisticValue(result.modelId, statName) ?? 'N/A' }}</td>
-                    <td *ngIf="comparison?.ml">{{ getMlStatistic(statName) ?? 'N/A' }}</td>
+                    <td *ngFor="let result of results">{{ commonUtilsService.formatNumber(statisticValue(result.modelId, statName)) }}</td>
+                    <td *ngIf="comparison?.ml">{{ commonUtilsService.formatNumber(getMlStatistic(statName)) }}</td>
                   </tr>
                   </tbody>
                 </table>
@@ -265,7 +265,7 @@
                         </mat-icon>
                       </span>
                     </td>
-                    <td *ngFor="let result of results">{{ residualValue(result.modelId, residualName) ?? 'N/A' }}</td>
+                    <td *ngFor="let result of results">{{ commonUtilsService.formatNumber(residualValue(result.modelId, residualName)) }}</td>
                   </tr>
                   </tbody>
                 </table>
@@ -289,15 +289,15 @@
                 <tbody>
                 <tr *ngFor="let param of result.params | keyvalue">
                   <td>{{ param.key }}</td>
-                  <td>{{ param.value | number:'1.4-4' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(param.value) }}</td>
                 </tr>
                 <tr *ngFor="let statName of getStatisticsRows()">
                   <td>{{ 'STATISTICS.' + statName | translate }}</td>
-                  <td>{{ result.statistics[statName] ?? 'N/A' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(result.statistics[statName]) }}</td>
                 </tr>
                 <tr *ngIf="getLinearR2(result.modelId) !== undefined">
                   <td>{{ 'KINETICS_MODEL_COMPARE.STAT_LINEAR_R2' | translate }}</td>
-                  <td>{{ getLinearR2(result.modelId) | number:'1.4-4' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(getLinearR2(result.modelId)) }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -306,7 +306,7 @@
                 <tbody>
                 <tr *ngFor="let residualName of getResidualsRows()">
                   <td>{{ 'RESIDUALS.' + residualName | translate }}</td>
-                  <td>{{ residualValue(result.modelId, residualName) ?? 'N/A' }}</td>
+                  <td>{{ commonUtilsService.formatNumber(residualValue(result.modelId, residualName)) }}</td>
                 </tr>
                 </tbody>
               </table>

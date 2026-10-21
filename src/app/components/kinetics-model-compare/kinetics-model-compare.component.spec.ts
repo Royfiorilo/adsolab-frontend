@@ -1,5 +1,6 @@
 import {signal} from '@angular/core';
 import {of, throwError} from 'rxjs';
+import {CommonUtilsService} from '../../common/common.service';
 import {KineticsModelCompareComponent} from './kinetics-model-compare.component';
 import {IKineticsModelsConfigurations, IKineticsState} from '../kinetics/interface';
 import {IKineticsPersistedLinearization} from '../kinetics/interface';
@@ -78,7 +79,7 @@ function build(configuration: IKineticsModelsConfigurations, results?: any[]): K
   const snackBar = jasmine.createSpyObj('MatSnackBar', ['openFromComponent']);
   const dialog = jasmine.createSpyObj('MatDialog', ['open']);
   const component = new KineticsModelCompareComponent(
-    {state} as any, compareService, translate, modalService, snackBar, dialog
+    {state} as any, compareService, translate, modalService, snackBar, dialog, new CommonUtilsService()
   );
   (component as any).results = results ?? [fitResult(MODEL_ID, 'Pseudo-Segundo Orden')];
   return component;

@@ -8,6 +8,7 @@ import {MatPaginatorIntl, PageEvent} from "@angular/material/paginator";
 import {faArrowUpRightFromSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {finalize} from "rxjs";
 import {AuthService} from "../../common/auth.service";
+import {CommonUtilsService} from "../../common/common.service";
 import {CustomTablePaginator} from "../../common/custom-table-paginator";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
@@ -57,7 +58,8 @@ export class KineticsHistoricComponent implements OnInit {
               private router: Router,
               private translate: TranslateService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              protected commonUtilsService: CommonUtilsService) {
   }
 
   ngOnInit(): void {

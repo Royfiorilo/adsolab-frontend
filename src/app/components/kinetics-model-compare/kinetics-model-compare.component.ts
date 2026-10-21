@@ -8,6 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {finalize} from "rxjs";
 import {SnackBarComponent} from "../snack-bar/snack-bar.component";
 import {ErrorDialogComponent} from "../error-dialog/error-dialog.component";
+import {CommonUtilsService} from "../../common/common.service";
 import {IKineticsModel, IKineticsSample} from "../kinetics/interface";
 import {KineticsStateService} from "../kinetics/kinetics-state.service";
 import {KINETICS_FONT_FAMILIES, KINETICS_PLOT_PALETTE, KineticsModelCompareService} from "./kinetics-model-compare.service";
@@ -72,7 +73,8 @@ export class KineticsModelCompareComponent implements OnInit {
               private translate: TranslateService,
               private modalService: NgbModal,
               private snackBar: MatSnackBar,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              protected commonUtilsService: CommonUtilsService) {
   }
 
   ngOnInit(): void {
