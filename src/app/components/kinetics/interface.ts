@@ -29,6 +29,7 @@ export interface IKineticsSample {
   adsorbate?: string;
   adsorbent_id: number | undefined;
   adsorbent?: string;
+  deleted_at?: string | null;
 }
 
 export interface CreateKineticSampleResponse {
@@ -38,6 +39,9 @@ export interface CreateKineticSampleResponse {
   qt: number[];
   adsorbate_id: number;
   adsorbent_id: number;
+  adsorbate?: string;
+  adsorbent?: string;
+  deleted_at?: string | null;
   title: string;
   description?: string;
   temperature?: number;

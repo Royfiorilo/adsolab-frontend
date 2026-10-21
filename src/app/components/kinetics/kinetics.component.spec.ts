@@ -1,8 +1,8 @@
-import {TestBed} from '@angular/core/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {KineticsComponent} from './kinetics.component';
 import {KineticsStateService} from './kinetics-state.service';
 import {IKineticsModelsConfigurations} from './interface';
@@ -106,5 +106,24 @@ describe('KineticsComponent', () => {
       expect(state.selectedModels).toEqual([]);
       expect(state.stepId).toBe(0);
     });
+  });
+
+  describe('opened from the historic', () => {
+    it('should go to the saved step without asking to resume or reset', fakeAsync(() => {
+      const dialog = jasmine.createSpyObj('MatDialog', ['open']);
+      const route = {snapshot: {queryParamMap: convertToParamMap({fromHistoric: 'true'})}};
+      const fromHistoric = TestBed.runInInjectionContext(() => new KineticsComponent(
+        TestBed.inject(MatSnackBar), stateService, dialog, route as any
+      ));
+      const select = jasmine.createSpy('select');
+      fromHistoric.steps = {get: (index: number) => index === 2 ? {select} : undefined} as any;
+      stateService.state.set({...stateService.state(), stepId: 2, kineticsSample: {time: [0], qt: [0]} as any});
+
+      fromHistoric.ngAfterViewInit();
+      tick();
+
+      expect(dialog.open).not.toHaveBeenCalled();
+      expect(select).toHaveBeenCalled();
+    }));
   });
 });

@@ -2,7 +2,8 @@ import {TestBed} from '@angular/core/testing';
 import {provideHttpClient} from '@angular/common/http';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {environment} from '../../../environments/environment';
-import {KineticsHistoricService, toKineticsSample, toModelResult} from './kinetics-historic.service';
+import {DEFAULT_ITERATIONS, DEFAULT_STEPS} from '../../common/common.service';
+import {KineticsHistoricService, toKineticsSample, toModelResult, toResumeState} from './kinetics-historic.service';
 
 const BASE = environment.backendBaseUrl;
 
@@ -64,5 +65,54 @@ describe('KineticsHistoricService', () => {
 
     expect(sample.sample_id).toBe(50);
     expect(sample.time).toEqual([0, 1]);
+  });
+
+  describe('toResumeState', () => {
+    const PSO = {
+      _id: 2, name: 'PSO', latex_formula: '', parameters: {qe: '', k2: ''},
+      linearizations: [{linearization_id: 20, name: 'PSO'}],
+    } as any;
+    const SAMPLE = {time: [0, 5], qt: [0, 3], sample_id: 50, adsorbate_id: 1, adsorbent_id: 1};
+
+    function savedVersion(seeds?: { name: string; value: number; stderr?: number | null }[]) {
+      return {
+        sample: SAMPLE,
+        models: [PSO],
+        results: [{model: 2, best_adjust: 'leastsq', adjustment_methods: [], seeds}],
+        comparison: {heuristic: null, ml: null},
+      };
+    }
+
+    it('should open the configuration step with the saved models and seeds as manual parameters', () => {
+      const state = toResumeState(savedVersion([{name: 'qe', value: 7.5, stderr: 0.1}, {name: 'k2', value: 2.5e-5}]), 500, 0.2);
+
+      expect(state.stepId).toBe(2);
+      expect(state.kineticsSample).toBe(SAMPLE);
+      expect(state.selectedModels).toEqual([2]);
+      expect(state.modelConfiguration[2]).toEqual({
+        paramValues: {qe: {value: 7.5, stderr: 0.1}, k2: {value: 2.5e-5, stderr: null}},
+        iterations: 500,
+        step: 0.2,
+        automatedParams: false,
+        selectedLinearizations: [20],
+        knownParams: {},
+      });
+      expect(state.modelConfigurationDone).toBeTrue();
+    });
+
+    it('should use the default iterations and step when the version has none', () => {
+      const config = toResumeState(savedVersion([{name: 'qe', value: 7.5}, {name: 'k2', value: 0.01}]), null, null)
+        .modelConfiguration[2];
+
+      expect(config.iterations).toBe(DEFAULT_ITERATIONS);
+      expect(config.step).toBe(DEFAULT_STEPS);
+    });
+
+    it('should leave the configuration pending when a seed is missing', () => {
+      const state = toResumeState(savedVersion([{name: 'qe', value: 7.5}]), null, null);
+
+      expect(state.modelConfiguration[2].paramValues['k2']).toEqual({value: null});
+      expect(state.modelConfigurationDone).toBeFalse();
+    });
   });
 });

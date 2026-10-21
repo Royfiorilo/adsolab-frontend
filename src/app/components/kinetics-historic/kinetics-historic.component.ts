@@ -39,7 +39,7 @@ export class KineticsHistoricComponent implements OnInit {
 
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly faTrash = faTrash;
-  protected readonly displayedColumns = ['kinetic_investigation_id', 'user', 'title', 'description', 'actions'];
+  protected readonly displayedColumns = ['kinetic_investigation_id', 'user', 'title', 'adsorbate', 'adsorbent', 'description', 'actions'];
 
   protected investigations: IKineticsInvestigation[] = [];
   protected rows: IKineticsInvestigation[] = [];
@@ -115,7 +115,8 @@ export class KineticsHistoricComponent implements OnInit {
     }
     this.rows = this.investigations.filter(investigation =>
       investigation.kinetic_investigation_id.toString() === this.filter
-      || [investigation.sample?.title, investigation.sample?.description, investigation.user?.email]
+      || [investigation.sample?.title, investigation.sample?.description, investigation.sample?.adsorbate,
+        investigation.sample?.adsorbent, investigation.user?.email]
         .some(field => field?.toLowerCase().includes(this.filter))
     );
   }

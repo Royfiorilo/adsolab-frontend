@@ -15,6 +15,11 @@
     </button>
   </div>
 
+  <div *ngIf="sample" class="d-flex flex-wrap gap-4 mx-3 text-muted">
+    <span><strong>{{ 'KINETICS_EXPORT.ADSORBATE' | translate }}:</strong> {{ sample.adsorbate ?? '—' }}</span>
+    <span><strong>{{ 'KINETICS_EXPORT.ADSORBENT' | translate }}:</strong> {{ sample.adsorbent ?? '—' }}</span>
+  </div>
+
   <div *ngIf="loading" class="d-flex justify-content-center align-items-center flex-column p-5">
     <div class="spinner-border" role="status"></div>
     <p class="text-muted mt-3 mb-0">{{ 'KINETICS_MODEL_COMPARE.RUNNING' | translate }}</p>

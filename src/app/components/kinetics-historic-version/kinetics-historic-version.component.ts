@@ -1,10 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {forkJoin} from "rxjs";
-import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import {KineticsModelSelectorService} from "../kinetics-model-selector/kinetics-model-selector.service";
 import {IKineticsSavedVersion} from "../kinetics-model-compare/interface";
-import {KineticsHistoricService, toKineticsSample, toModelResult} from "../kinetics-historic/kinetics-historic.service";
+import {KineticsStateService} from "../kinetics/kinetics-state.service";
+import {IKineticsVersion} from "../kinetics-historic/interface";
+import {
+  KineticsHistoricService,
+  toKineticsSample,
+  toModelResult,
+  toResumeState
+} from "../kinetics-historic/kinetics-historic.service";
 
 @Component({
   selector: 'app-kinetics-historic-version',
@@ -12,15 +19,19 @@ import {KineticsHistoricService, toKineticsSample, toModelResult} from "../kinet
 })
 export class KineticsHistoricVersionComponent implements OnInit {
   protected readonly faArrowLeft = faArrowLeft;
+  protected readonly faResume = faArrowUpRightFromSquare;
   protected investigationId!: number;
   protected versionId!: number;
   protected savedVersion?: IKineticsSavedVersion;
+  private version?: IKineticsVersion;
   protected loading = true;
   protected error = false;
 
   constructor(private route: ActivatedRoute,
               private historicService: KineticsHistoricService,
-              private modelService: KineticsModelSelectorService) {
+              private modelService: KineticsModelSelectorService,
+              private stateService: KineticsStateService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -35,6 +46,7 @@ export class KineticsHistoricVersionComponent implements OnInit {
       models: this.modelService.getModels(),
     }).subscribe({
       next: ({version, sample, models}) => {
+        this.version = version;
         this.savedVersion = {
           sample: toKineticsSample(sample),
           models: models.models,
@@ -48,5 +60,15 @@ export class KineticsHistoricVersionComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  canResume(): boolean {
+    return !!this.savedVersion && !this.savedVersion.sample.deleted_at;
+  }
+
+  resume(): void {
+    this.stateService.state.set(toResumeState(this.savedVersion!, this.version?.iterations ?? null,
+      this.version?.steps ?? null));
+    this.router.navigate(['/kinetics'], {queryParams: {fromHistoric: true}});
   }
 }

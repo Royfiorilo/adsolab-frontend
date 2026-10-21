@@ -95,7 +95,7 @@ export class KineticsModelCompareComponent implements OnInit {
     }
   }
 
-  private get sample(): IKineticsSample | undefined {
+  protected get sample(): IKineticsSample | undefined {
     return this.savedVersion?.sample ?? this.state().kineticsSample;
   }
 
