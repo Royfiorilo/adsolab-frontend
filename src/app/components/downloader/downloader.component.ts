@@ -121,7 +121,25 @@ export class DownloaderComponent {
 
 
   private getRowForCe(ceValue: number, index: number): (string | number)[] {
-    return [ceValue, ...this.state().selectedModels.map((modelId) => this.bestTransformedValue(modelId, ceValue)), this.bestTransformedValueRidge(ceValue)];
+    return [
+      ceValue,
+      this.state().investigation?.sample.qe[index] ?? '',
+      ...this.state().selectedModels.map((modelId) => this.bestTransformedValue(modelId, ceValue)),
+      this.bestTransformedValueRidge(ceValue),
+      ...this.state().selectedModels.map((modelId) => this.bestResidualPoint(modelId, index))
+    ];
+  }
+
+  private getPointsHeaders(): string[] {
+    return [
+      'Ce', 'Qe', ...this.getHeaders(),
+      ...this.state().selectedModels.map((modelId) => `Residual qe - qe_pred (${this.getModelName(modelId)})`)
+    ];
+  }
+
+  // The backend returns residuals as qe - qe_pred, in the sample order.
+  private bestResidualPoint(modelId: number, index: number): number | string {
+    return this.getBestAdjustmentDataByModel(modelId).residuals?.values?.[index] ?? '';
   }
 
   private getRowForStatistics(statName: string): (string | number)[] {
@@ -196,7 +214,7 @@ export class DownloaderComponent {
   private addMainDataSheet(workbook: XLSX.WorkBook): void {
     const worksheetData: (string | number)[][] = [];
 
-    worksheetData.push(this.getHeaders('Ce'));
+    worksheetData.push(this.getPointsHeaders());
     this.state().investigation?.sample.ce.forEach((ceValue: number, index: number) => {
       worksheetData.push(this.getRowForCe(ceValue, index));
     });

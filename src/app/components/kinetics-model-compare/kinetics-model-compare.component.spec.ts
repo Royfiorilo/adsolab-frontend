@@ -188,6 +188,24 @@ describe('KineticsModelCompareComponent', () => {
     });
   });
 
+  describe('calculated points table', () => {
+    it('should derive each fitted qt from the experimental qt and the residual', () => {
+      const component = build(buildConfiguration());
+      const result = fitResult(MODEL_ID, 'Pseudo-Segundo Orden');
+
+      // 1e-9: only float subtraction noise.
+      expect(component.predictedQt(result, 1)).toBeCloseTo(3.8 - 0.34, 9);
+      expect(component.predictedQt(result, 2)).toBeCloseTo(5.0 + 0.12, 9);
+    });
+
+    it('should not invent a fitted qt when the residual is missing', () => {
+      const component = build(buildConfiguration());
+      const result = fitResult(MODEL_ID, 'Pseudo-Segundo Orden', STATISTICS, {...RESIDUALS, values: []});
+
+      expect(component.predictedQt(result, 1)).toBeUndefined();
+    });
+  });
+
   describe('comparison block', () => {
     const comparison = {
       heuristic: {best_model: MODEL_ID, results: [{model: MODEL_ID, score: 1.9}, {model: OTHER_MODEL_ID, score: 0.4}]},

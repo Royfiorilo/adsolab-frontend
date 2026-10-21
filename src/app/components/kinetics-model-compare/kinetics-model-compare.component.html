@@ -221,6 +221,33 @@
           </mat-card>
 
           <mat-accordion multi class="d-block mt-3">
+            <mat-expansion-panel *ngIf="sample" [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ 'MODEL_COMPARE.CALCULATED_POINTS' | translate }}</mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                  <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{{ 'KINETICS_EXPORT.TIME' | translate }}</th>
+                    <th scope="col">{{ 'KINETICS_EXPORT.QT_EXPERIMENTAL' | translate }}</th>
+                    <th scope="col" *ngFor="let result of results">{{ result.modelName }}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let time of sample.time; let i = index">
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>{{ commonUtilsService.formatNumber(time) }}</td>
+                    <td>{{ commonUtilsService.formatNumber(sample.qt[i]) }}</td>
+                    <td *ngFor="let result of results">{{ commonUtilsService.formatNumber(predictedQt(result, i)) }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-expansion-panel>
+
             <mat-expansion-panel [expanded]="true">
               <mat-expansion-panel-header>
                 <mat-panel-title>{{ 'KINETICS_MODEL_COMPARE.STATISTICS_TITLE' | translate }}</mat-panel-title>

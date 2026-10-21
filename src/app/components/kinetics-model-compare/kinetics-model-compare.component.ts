@@ -148,6 +148,13 @@ export class KineticsModelCompareComponent implements OnInit {
     return analysis ? (analysis as any)[name] : undefined;
   }
 
+  // The backend returns residuals as qt - qt_fitted at each measured time.
+  predictedQt(result: IKineticsFitResult, index: number): number | undefined {
+    const residual = result.residuals?.values?.[index];
+    const qt = this.sample?.qt[index];
+    return residual === undefined || qt === undefined ? undefined : qt - residual;
+  }
+
   getMlStatistic(name: string): number | undefined {
     return this.comparison?.ml?.statistics?.[name];
   }
