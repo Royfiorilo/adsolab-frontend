@@ -1,6 +1,7 @@
 import {of} from 'rxjs';
 import {KineticsFileUploadComponent} from './kinetics-file-upload.component';
 import {NEW_MATERIAL} from '../material-dialog/interface';
+import {InvalidFileReason} from '../data-selector/data-sample';
 
 function build(created?: object) {
   const sampleService = jasmine.createSpyObj('SampleSelectorService', ['getMaterials']);
@@ -87,6 +88,107 @@ describe('KineticsFileUploadComponent', () => {
 
     expect(component.uploadedFile.valid).toBeFalse();
     expect(component.dataSample.time).toEqual([]);
+  });
+
+  describe('lab spreadsheets', () => {
+    function sheet(name: string, series: number[][][], error?: InvalidFileReason) {
+      return {name, error, series: series.map(points => ({label: '', time: points.map(p => p[0]), qt: points.map(p => p[1])}))};
+    }
+
+    it('should accept a CSV with a header row and decimal commas', () => {
+      const component = build();
+
+      component.validateCSVContent('t [min],q [mg/g]\n0,0\n"5,5","1,25"\n10,2.5');
+
+      expect(component.uploadedFile.valid).toBeTrue();
+      expect(component.dataSample.time).toEqual([0, 5.5, 10]);
+      expect(component.dataSample.qt).toEqual([0, 1.25, 2.5]);
+    });
+
+    it('should still reject a CSV with three columns', () => {
+      const component = build();
+
+      component.validateCSVContent('0,0,1\n5,1,2\n10,2,3');
+
+      expect(component.uploadedFile.valid).toBeFalse();
+      expect(component.uploadedFile.reason).toBe(InvalidFileReason.INVALID_FILE_STRUCTURE);
+    });
+
+    it('should open the first usable sheet and its first series', () => {
+      const component = build();
+
+      component.loadSheets([
+        sheet('Notas', [], InvalidFileReason.INVALID_DATA),
+        sheet('Datos', [[[0, 0], [5, 1]], [[0, 0], [10, 2], [20, 3]]]),
+      ]);
+
+      expect(component.selectedSheet).toBe(1);
+      expect(component.selectedSeries).toBe(0);
+      expect(component.dataSample.time).toEqual([0, 5]);
+      expect(component.uploadedFile.valid).toBeTrue();
+    });
+
+    it('should load only the chosen series', () => {
+      const component = build();
+      component.loadSheets([sheet('Datos', [[[0, 0], [5, 1]], [[0, 0], [10, 2], [20, 3]]])]);
+
+      component.selectSeries(1);
+
+      expect(component.dataSample.time).toEqual([0, 10, 20]);
+      expect(component.dataSample.qt).toEqual([0, 2, 3]);
+    });
+
+    it('should show the sheet error when an invalid sheet is chosen, and recover with a valid one', () => {
+      const component = build();
+      component.loadSheets([
+        sheet('Datos', [[[0, 0], [5, 1]]]),
+        sheet('Notas', [], InvalidFileReason.INVALID_DATA),
+      ]);
+
+      component.selectSheet(1);
+
+      expect(component.uploadedFile.valid).toBeFalse();
+      expect(component.uploadedFile.reason).toBe(InvalidFileReason.INVALID_DATA);
+      expect(component.dataSample.time).toEqual([]);
+
+      component.selectSheet(0);
+
+      expect(component.uploadedFile.valid).toBeTrue();
+      expect(component.uploadedFile.reason).toBeUndefined();
+    });
+
+    it('should reject a series with negative values', () => {
+      const component = build();
+
+      component.loadSheets([sheet('Datos', [[[0, 0], [5, -1]]])]);
+
+      expect(component.uploadedFile.valid).toBeFalse();
+      expect(component.uploadedFile.reason).toBe(InvalidFileReason.INVALID_DATA);
+    });
+
+    it('should offer the selectors only when there is something to choose', () => {
+      const component = build();
+
+      component.loadSheets([sheet('Datos', [[[0, 0], [5, 1]]])]);
+
+      expect(component.showSheetSelector).toBeFalse();
+      expect(component.showSeriesSelector).toBeFalse();
+
+      component.loadSheets([sheet('A', [[[0, 0], [5, 1]], [[0, 0], [5, 2]]]), sheet('B', [[[0, 0], [5, 1]]])]);
+
+      expect(component.showSheetSelector).toBeTrue();
+      expect(component.showSeriesSelector).toBeTrue();
+    });
+
+    it('should forget the sheets on reset', () => {
+      const component = build();
+      component.loadSheets([sheet('A', [[[0, 0], [5, 1]]]), sheet('B', [[[0, 0], [5, 1]]])]);
+
+      component.reset();
+
+      expect(component.sheets).toEqual([]);
+      expect(component.showSheetSelector).toBeFalse();
+    });
   });
 
   describe('"Agregar nuevo..."', () => {

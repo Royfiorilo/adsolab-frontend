@@ -75,7 +75,10 @@
   },
   "KINETICS_DATA_SELECTOR": {
     "DRAG_FILE": "Arrastrar un archivo Excel o CSV",
-    "INFO": "(*) Las columnas deben ser tiempo (t) y capacidad adsorbida (qt).",
+    "INFO": "(*) Las columnas deben ser tiempo (t) y capacidad adsorbida (qt). Se ignoran títulos y encabezados; si el archivo tiene varias hojas o series, puede elegir cuál cargar.",
+    "SHEET": "Hoja",
+    "SERIES": "Serie",
+    "SERIES_N": "Serie {{ n }}",
     "USE_PREVIOUS_SAMPLE": "Utilizar una muestra cargada anteriormente",
     "NO_DATA_SAMPLES_YET": "Aún no se cargaron muestras",
     "SEARCH_SAMPLE": "Buscar muestra por nombre",

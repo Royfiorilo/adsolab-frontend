@@ -34,6 +34,24 @@
     {{ 'KINETICS_DATA_SELECTOR.INFO' | translate }}
   </div>
 </div>
+<div *ngIf="showSheetSelector || showSeriesSelector" class="d-flex gap-3 flex-md-row flex-column mt-4">
+  <mat-form-field *ngIf="showSheetSelector" class="flex-grow-1">
+    <mat-label>{{ 'KINETICS_DATA_SELECTOR.SHEET' | translate }}</mat-label>
+    <mat-select id="sheet" [value]="selectedSheet" [disabled]="isSampleCreated"
+                (selectionChange)="selectSheet($event.value)">
+      <mat-option *ngFor="let sheet of sheets; let i = index" [value]="i">{{ sheet.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field *ngIf="showSeriesSelector" class="flex-grow-1">
+    <mat-label>{{ 'KINETICS_DATA_SELECTOR.SERIES' | translate }}</mat-label>
+    <mat-select id="series" [value]="selectedSeries" [disabled]="isSampleCreated"
+                (selectionChange)="selectSeries($event.value)">
+      <mat-option *ngFor="let series of currentSheet?.series; let i = index" [value]="i">
+        {{ seriesLabel(series, i) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 <div *ngIf="uploadedFile.valid" class="mt-5">
   <h5 class="m-3"> {{ 'FILE_UPLOAD.SAMPLE_SPEC' | translate }} </h5>
 
