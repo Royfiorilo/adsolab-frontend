@@ -9,8 +9,8 @@ import {catchError, firstValueFrom} from "rxjs";
 import {MatSelectChange} from "@angular/material/select";
 import {MaterialDialogService} from "../material-dialog/material-dialog.service";
 import {MaterialKind, NEW_MATERIAL, withMaterial} from "../material-dialog/interface";
-
-const MIN_SAMPLE_POINTS = 2;
+import {IKineticsSeries, IKineticsSheet} from "./interface";
+import {hasNegativeValues, parseWorkbook} from "./kinetics-sheet-parser";
 
 @Component({
   selector: 'app-kinetics-file-upload',
@@ -28,6 +28,9 @@ export class KineticsFileUploadComponent {
   protected dataSample: IKineticsSample = this.emptySample();
   protected adsorbents: IAdsorbent[] = [];
   protected adsorbates: IAdsorbate[] = [];
+  protected sheets: IKineticsSheet[] = [];
+  protected selectedSheet = 0;
+  protected selectedSeries = 0;
 
   protected readonly NEW_MATERIAL = NEW_MATERIAL;
 
@@ -66,6 +69,9 @@ export class KineticsFileUploadComponent {
   reset(): void {
     this.dataSample = this.emptySample();
     this.uploadedFile = {};
+    this.sheets = [];
+    this.selectedSheet = 0;
+    this.selectedSeries = 0;
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
@@ -120,18 +126,14 @@ export class KineticsFileUploadComponent {
     let isCSV = file.type === 'text/csv';
 
     reader.onload = (e) => {
-      let content: string | ArrayBuffer | null | undefined = e.target?.result;
+      const content: string | ArrayBuffer | null | undefined = e.target?.result;
 
       try {
         if (isCSV) {
-          content = content as string;
+          this.validateCSVContent(content as string);
         } else {
-          const workbook = XLSX.read(content, {type: 'binary'});
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          content = XLSX.utils.sheet_to_csv(sheet);
+          this.loadSheets(parseWorkbook(XLSX.read(content, {type: 'array'})));
         }
-        this.validateCSVContent(content)
       } catch (e: any) {
         this.setInvalidUploadedFile(InvalidFileReason.READ_ERROR);
       }
@@ -154,72 +156,57 @@ export class KineticsFileUploadComponent {
     this.uploadedFile.reason = reason;
   }
 
+  // raw: CSV cells stay text so decimal commas ("0,5") are parsed by us, not split or misread.
   validateCSVContent(content: string): void {
-    const lines = content.split('\n');
-    this.dataSample.time = [];
-    this.dataSample.qt = [];
+    this.loadSheets(parseWorkbook(XLSX.read(content, {type: 'string', raw: true})));
+  }
 
-    for (const line of lines) {
-      if (!line.trim() || line.trim() === ',') {
-        continue;
-      }
+  loadSheets(sheets: IKineticsSheet[]): void {
+    this.sheets = sheets;
+    const usable = sheets.findIndex(sheet => !sheet.error);
+    this.selectSheet(usable === -1 ? 0 : usable);
+  }
 
-      const quotedPattern = /^"([\d,]+)","([\d,]+)"$/;
-      const match = line.match(quotedPattern);
-
-      if (match) {
-        const value1 = match[1].replace(',', '.');
-        const value2 = match[2].replace(',', '.');
-
-        const num1 = Number(value1);
-        const num2 = Number(value2);
-
-        if (isNaN(num1) || isNaN(num2)) {
-          this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
-          return undefined;
-        }
-
-        this.dataSample.time.push(num1);
-        this.dataSample.qt.push(num2);
-      } else {
-        const columns = line.split(',');
-        if (columns.length !== 2) {
-          this.setInvalidUploadedFile(InvalidFileReason.INVALID_FILE_STRUCTURE);
-          return undefined;
-        }
-
-        const value1 = columns[0].trim();
-        const value2 = columns[1].trim();
-
-        if (value1 === "" || value2 === "") {
-          this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
-          return undefined;
-        }
-
-        const num1 = Number(value1);
-        const num2 = Number(value2);
-
-        if (isNaN(num1) || isNaN(num2)) {
-          this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
-          return undefined;
-        }
-
-        this.dataSample.time.push(num1);
-        this.dataSample.qt.push(num2);
-      }
+  selectSheet(index: number): void {
+    this.selectedSheet = index;
+    const sheet = this.sheets[index];
+    if (!sheet || sheet.error) {
+      this.dataSample.time = [];
+      this.dataSample.qt = [];
+      this.setInvalidUploadedFile(sheet?.error ?? InvalidFileReason.INVALID_DATA);
+      return;
     }
+    this.selectSeries(0);
+  }
 
-    if (this.dataSample.time.length < MIN_SAMPLE_POINTS || this.dataSample.qt.length < MIN_SAMPLE_POINTS) {
+  selectSeries(index: number): void {
+    this.selectedSeries = index;
+    const series = this.currentSheet!.series[index];
+    this.dataSample.time = [...series.time];
+    this.dataSample.qt = [...series.qt];
+    if (hasNegativeValues(series)) {
       this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
-      return undefined;
+      return;
     }
-
-    if (this.dataSample.time.some(value => value < 0) || this.dataSample.qt.some(value => value < 0)) {
-      this.setInvalidUploadedFile(InvalidFileReason.INVALID_DATA);
-      return undefined;
-    }
-
     this.uploadedFile.valid = true;
+    this.uploadedFile.reason = undefined;
+  }
+
+  get currentSheet(): IKineticsSheet | undefined {
+    return this.sheets[this.selectedSheet];
+  }
+
+  get showSheetSelector(): boolean {
+    return this.sheets.length > 1;
+  }
+
+  get showSeriesSelector(): boolean {
+    return (this.currentSheet?.series.length ?? 0) > 1;
+  }
+
+  seriesLabel(series: IKineticsSeries, index: number): string {
+    const label = series.label || this.translateService.instant('KINETICS_DATA_SELECTOR.SERIES_N', {n: index + 1});
+    return `${label} (${this.translateService.instant('KINETICS_DATA_SELECTOR.POINTS', {points: series.time.length})})`;
   }
 
   onUnitChange(event: any, type: string): void {
