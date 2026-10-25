@@ -79,6 +79,30 @@ describe('KineticsResultsExportService', () => {
     ]);
   });
 
+  it('should export the leave-one-out error under its own column title', () => {
+    const comparison = {
+      heuristic: {best_model: MODEL_ID, results: [{model: MODEL_ID, score: 1.9}]},
+      ml: {criterion: 'loo_cv', best_model: MODEL_ID, results: [{model: MODEL_ID, cv_rmse: 0.21}]},
+    };
+
+    const summary = rows(service.buildWorkbook(exportData({comparison})), 'KINETICS_EXPORT.SUMMARY');
+
+    expect(rowStartingWith(summary, 'KINETICS_EXPORT.MODEL')?.[6]).toBe('KINETICS_EXPORT.ML_LOO');
+    expect(rowStartingWith(summary, 'Pseudo-Segundo Orden')?.[6]).toBe(0.21);
+  });
+
+  it('should export the Ridge coefficient of a version saved before ABE-002', () => {
+    const comparison = {
+      heuristic: {best_model: MODEL_ID, results: [{model: MODEL_ID, score: 1.9}]},
+      ml: {best_model: MODEL_ID, results: [{model: MODEL_ID, coef: 2.68}]},
+    };
+
+    const summary = rows(service.buildWorkbook(exportData({comparison})), 'KINETICS_EXPORT.SUMMARY');
+
+    expect(rowStartingWith(summary, 'KINETICS_EXPORT.MODEL')?.[6]).toBe('KINETICS_EXPORT.RIDGE');
+    expect(rowStartingWith(summary, 'Pseudo-Segundo Orden')?.[6]).toBe(2.68);
+  });
+
   it('should leave the seed origin empty when it is unknown', () => {
     const summary = rows(service.buildWorkbook(exportData({automatedByModel: undefined})), 'KINETICS_EXPORT.SUMMARY');
 

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import * as XLSX from 'xlsx';
 import {saveAs} from 'file-saver';
+import {isLooCriterion, mlScore} from './ml-comparison';
 import {
   IKineticsAdjustmentMethod,
   IKineticsExportData,
@@ -56,7 +57,8 @@ export class KineticsResultsExportService {
       [],
       [
         this.label('MODEL'), this.label('BEST_METHOD'), this.label('SEED_ORIGIN'), this.label('SEEDS'),
-        this.label('PARAMETERS'), this.label('HEURISTIC'), this.label('RIDGE'),
+        this.label('PARAMETERS'), this.label('HEURISTIC'),
+        this.label(isLooCriterion(comparison?.ml) ? 'ML_LOO' : 'RIDGE'),
       ],
     ];
     data.rawResults.forEach(result => rows.push([
@@ -66,7 +68,7 @@ export class KineticsResultsExportService {
       this.joinValues(data.seedsByModel[result.model] ?? []),
       this.joinValues(this.bestMethod(result)?.parameters ?? []),
       comparison?.heuristic?.results.find(item => item.model === result.model)?.score,
-      comparison?.ml?.results.find(item => item.model === result.model)?.coef,
+      mlScore(comparison?.ml, result.model),
     ]));
     return rows;
   }

@@ -14,6 +14,7 @@ import {IKineticsModel, IKineticsSample} from "../kinetics/interface";
 import {KineticsStateService} from "../kinetics/kinetics-state.service";
 import {KINETICS_FONT_FAMILIES, KINETICS_PLOT_PALETTE, KineticsModelCompareService} from "./kinetics-model-compare.service";
 import {KineticsResultsExportService} from "./kinetics-results-export.service";
+import {isLooCriterion, mlScore} from "./ml-comparison";
 import {
   AxisScale,
   ExportFormat,
@@ -163,8 +164,17 @@ export class KineticsModelCompareComponent implements OnInit {
     return this.comparison?.heuristic?.results.find(result => result.model === modelId)?.score;
   }
 
-  getMlCoefficient(modelId: number): number | undefined {
-    return this.comparison?.ml?.results.find(result => result.model === modelId)?.coef;
+  getMlScore(modelId: number): number | undefined {
+    return mlScore(this.comparison?.ml, modelId);
+  }
+
+  get mlColumnKey(): string {
+    return isLooCriterion(this.comparison?.ml) ? 'KINETICS_MODEL_COMPARE.ML_LOO' : 'KINETICS_MODEL_COMPARE.ML';
+  }
+
+  /** Only versions saved before ABE-002 have a combined model with its own statistics. */
+  get hasMlStatistics(): boolean {
+    return !!this.comparison?.ml?.statistics;
   }
 
   /** Sólo hay un ganador claro cuando heurística y ML coinciden. */
