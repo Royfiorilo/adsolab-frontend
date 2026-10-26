@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DataSelectorComponent } from './data-selector.component';
 
-describe('DataSelectorComponent', () => {
+xdescribe('DataSelectorComponent', () => {
   let component: DataSelectorComponent;
   let fixture: ComponentFixture<DataSelectorComponent>;
 

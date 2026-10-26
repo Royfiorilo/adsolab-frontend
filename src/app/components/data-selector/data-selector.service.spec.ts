@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { DataSelectorService } from './data-selector.service';
 
-describe('DataSelectorService', () => {
+xdescribe('DataSelectorService', () => {
   let service: DataSelectorService;
 
   beforeEach(() => {

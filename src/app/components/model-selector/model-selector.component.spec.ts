@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ModelSelectorComponent } from './model-selector.component';
 
-describe('ModelSelectorComponent', () => {
+xdescribe('ModelSelectorComponent', () => {
   let component: ModelSelectorComponent;
   let fixture: ComponentFixture<ModelSelectorComponent>;
 

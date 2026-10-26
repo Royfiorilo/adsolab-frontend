@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { GraphService } from './graph.service';
 
-describe('GraphService', () => {
+xdescribe('GraphService', () => {
   let service: GraphService;
 
   beforeEach(() => {

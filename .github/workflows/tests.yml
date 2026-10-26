@@ -1,0 +1,70 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with line coverage
+        run: npx ng test --watch=false --browsers=ChromeHeadless --code-coverage | tee test-output.txt
+
+      - name: Extract line coverage
+        run: grep -oP 'Lines\s*:\s*\K[0-9.]+' test-output.txt > coverage.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.txt
+
+  # Separate job so that only this one, and only on main, gets a write token.
+  coverage-badge:
+    needs: frontend
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # pushes coverage.svg to the `badges` branch
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: /tmp/coverage
+
+      - name: Publish line-coverage badge to the badges branch
+        run: |
+          pip install anybadge==1.16.0
+          COVERAGE=$(python3 -c "print(round(float(open('/tmp/coverage/coverage.txt').read())))")
+          anybadge --label "line coverage" --value "${COVERAGE}" --suffix "%" --overwrite --file /tmp/coverage.svg \
+            50=red 70=orange 85=yellowgreen 101=green
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git fetch --depth 1 origin +badges:refs/remotes/origin/badges; then git switch -c badges origin/badges; else git switch --orphan badges; fi
+          git rm -rf --quiet --ignore-unmatch .
+          cp /tmp/coverage.svg coverage.svg
+          git add coverage.svg
+          git commit -m "Update line-coverage badge: ${COVERAGE}%" || exit 0  # unchanged coverage
+          git push origin badges
