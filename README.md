@@ -1,5 +1,8 @@
 # AdsoLab Frontend
 
+[![Tests](https://github.com/Royfiorilo/adsolab-frontend/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Royfiorilo/adsolab-frontend/actions/workflows/tests.yml)
+![Line coverage](https://raw.githubusercontent.com/Royfiorilo/adsolab-frontend/badges/coverage.svg)
+
 ## ¿Qué es AdsoLab?
 
 Es una plataforma para el modelado y validación del equilibrio en los procesos de adsorción de contaminantes.
