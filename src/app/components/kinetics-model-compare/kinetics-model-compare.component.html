@@ -206,14 +206,14 @@
                 <tr>
                   <th>{{ 'KINETICS_MODEL_COMPARE.STAT_MODEL' | translate }}</th>
                   <th>{{ 'KINETICS_MODEL_COMPARE.HEURISTIC' | translate }}</th>
-                  <th>{{ 'KINETICS_MODEL_COMPARE.ML' | translate }}</th>
+                  <th>{{ mlColumnKey | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let result of results">
                   <td>{{ result.modelName }}</td>
                   <td>{{ commonUtilsService.formatNumber(getHeuristicScore(result.modelId)) }}</td>
-                  <td>{{ commonUtilsService.formatNumber(getMlCoefficient(result.modelId)) }}</td>
+                  <td>{{ commonUtilsService.formatNumber(getMlScore(result.modelId)) }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -259,7 +259,7 @@
                   <tr>
                     <th></th>
                     <th *ngFor="let result of results">{{ result.modelName }}</th>
-                    <th *ngIf="comparison?.ml">{{ 'KINETICS_MODEL_COMPARE.ML' | translate }}</th>
+                    <th *ngIf="hasMlStatistics">{{ 'KINETICS_MODEL_COMPARE.ML' | translate }}</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -274,7 +274,7 @@
                       </span>
                     </td>
                     <td *ngFor="let result of results">{{ commonUtilsService.formatNumber(statisticValue(result.modelId, statName)) }}</td>
-                    <td *ngIf="comparison?.ml">{{ commonUtilsService.formatNumber(getMlStatistic(statName)) }}</td>
+                    <td *ngIf="hasMlStatistics">{{ commonUtilsService.formatNumber(getMlStatistic(statName)) }}</td>
                   </tr>
                   </tbody>
                 </table>

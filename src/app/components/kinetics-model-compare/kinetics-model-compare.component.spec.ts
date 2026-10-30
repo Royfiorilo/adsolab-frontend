@@ -207,6 +207,7 @@ describe('KineticsModelCompareComponent', () => {
   });
 
   describe('comparison block', () => {
+    // Shape of the versions saved before ABE-002: Ridge coefficients and a combined model.
     const comparison = {
       heuristic: {best_model: MODEL_ID, results: [{model: MODEL_ID, score: 1.9}, {model: OTHER_MODEL_ID, score: 0.4}]},
       ml: {
@@ -216,6 +217,11 @@ describe('KineticsModelCompareComponent', () => {
         residuals: RESIDUALS,
         transformed: {x: [], y: []},
       },
+    };
+    // Current shape: leave-one-out prediction error per model, no combined model.
+    const looComparison = {
+      heuristic: comparison.heuristic,
+      ml: {criterion: 'loo_cv', best_model: MODEL_ID, results: [{model: MODEL_ID, cv_rmse: 0.21}, {model: OTHER_MODEL_ID, cv_rmse: 0.64}]},
     };
 
     function withComparison(value: any): KineticsModelCompareComponent {
@@ -227,26 +233,37 @@ describe('KineticsModelCompareComponent', () => {
       return component;
     }
 
-    it('should expose the heuristic score and the ML coefficient per model', () => {
-      const component = withComparison(comparison);
+    it('should expose the heuristic score and the leave-one-out error per model', () => {
+      const component = withComparison(looComparison);
 
       expect(component.getHeuristicScore(MODEL_ID)).toBe(1.9);
-      expect(component.getMlCoefficient(OTHER_MODEL_ID)).toBe(0.73);
+      expect(component.getMlScore(OTHER_MODEL_ID)).toBe(0.64);
       expect(component.getHeuristicScore(99)).toBeUndefined();
+      expect(component.mlColumnKey).toBe('KINETICS_MODEL_COMPARE.ML_LOO');
     });
 
-    it('should expose the ML statistics separately from the per-model ones', () => {
+    it('should not show a combined-model statistics column for the leave-one-out criterion', () => {
+      const component = withComparison(looComparison);
+
+      expect(component.hasMlStatistics).toBeFalse();
+    });
+
+    it('should still show the Ridge coefficient and its statistics of a version saved before ABE-002', () => {
       const component = withComparison(comparison);
 
+      expect(component.getMlScore(OTHER_MODEL_ID)).toBe(0.73);
+      expect(component.mlColumnKey).toBe('KINETICS_MODEL_COMPARE.ML');
+      expect(component.hasMlStatistics).toBeTrue();
       expect(component.getMlStatistic('r_squared')).toBe(0.9787);
       expect(component.statisticValue(MODEL_ID, 'r_squared')).toBe(0.9971);
     });
 
-    it('should not expose ML statistics when the backend returned no ML block', () => {
+    it('should not expose ML values when the backend returned no ML block', () => {
       const component = withComparison({heuristic: comparison.heuristic, ml: null});
 
       expect(component.getMlStatistic('r_squared')).toBeUndefined();
-      expect(component.getMlCoefficient(MODEL_ID)).toBeUndefined();
+      expect(component.getMlScore(MODEL_ID)).toBeUndefined();
+      expect(component.hasMlStatistics).toBeFalse();
     });
 
     it('should name the best model when heuristic and ML agree', () => {

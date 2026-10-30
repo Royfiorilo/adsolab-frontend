@@ -72,12 +72,15 @@ export interface IKineticsHeuristicComparison {
   results: { model: number; score: number }[];
 }
 
+// `criterion: 'loo_cv'` results carry `cv_rmse`; versions saved before ABE-002 carry a Ridge `coef`
+// plus the statistics, residuals and curve of the combined model.
 export interface IKineticsMlComparison {
+  criterion?: string;
   best_model: number;
-  results: { model: number; coef: number }[];
-  statistics: { [name: string]: number };
-  residuals: IKineticsResiduals;
-  transformed: { x: number[]; y: number[] };
+  results: { model: number; cv_rmse?: number; coef?: number }[];
+  statistics?: { [name: string]: number };
+  residuals?: IKineticsResiduals;
+  transformed?: { x: number[]; y: number[] };
 }
 
 export interface IKineticsComparison {

@@ -156,9 +156,10 @@
     "STAT_LINEAR_R2": "R² linealizado",
     "LINEAR_R2_NOTE": "El R² linealizado proviene del paso de configuración. Linealizar deforma la estructura del error, así que un R² linealizado alto no implica necesariamente un mejor ajuste que el no lineal.",
     "BEST_MODEL": "Mejor modelo",
-    "NO_AGREEMENT": "La heurística y el modelo combinado (ML) no coinciden en el mejor modelo.",
+    "NO_AGREEMENT": "Los dos criterios de comparación no coinciden en el mejor modelo.",
     "HEURISTIC": "Puntaje heurístico",
     "ML": "Coeficiente ML",
+    "ML_LOO": "RMSE de validación cruzada (LOO)",
     "STATISTICS_TITLE": "Estadísticos",
     "RESIDUALS_ANALYSIS": "Análisis de residuos",
     "RESIDUALS_PLOT": "Residuos",
@@ -181,7 +182,7 @@
     "TIME_UNIT": "Unidad de tiempo",
     "QT_UNIT": "Unidad de qt",
     "BEST_MODEL": "Mejor modelo",
-    "NO_AGREEMENT": "Sin acuerdo entre heurística y Ridge",
+    "NO_AGREEMENT": "Sin acuerdo entre los dos criterios de comparación",
     "MODEL": "Modelo",
     "BEST_METHOD": "Mejor ajuste",
     "SEED_ORIGIN": "Origen de las semillas",
@@ -191,6 +192,7 @@
     "PARAMETERS": "Parámetros ajustados",
     "HEURISTIC": "Puntaje heurístico",
     "RIDGE": "Coeficiente Ridge",
+    "ML_LOO": "RMSE de validación cruzada (LOO)",
     "METHOD": "Método",
     "STD_ERR": "Error estándar",
     "FAILED": "Error",
@@ -416,7 +418,7 @@
   },
   "RESIDUOS": {
     "durbin_watson": "Evalúa la autocorrelación en los residuos del modelo, es decir, si los errores están correlacionados entre si en función del orden de las observaciones. Cercano a 2 no hay autocorrelación, valores alejados de 2 (por debajo de 1.5 o por encima de 2.5) indican problemas de autocorrelación.",
-    "homoscedasticity_pvalue": "Evalúa si la varianza de los residuos es constante a lo largo de las observaciones. Si la prueba es exitosa (p valor > 0.05), significa que no hay heterocedasticidad.",
+    "homoscedasticity_pvalue": "Evalúa si la dispersión de los residuos es constante a lo largo del ajuste, con la correlación de Spearman entre el valor absoluto de cada residuo y el valor ajustado. Si la prueba es exitosa (p valor > 0.05), no hay evidencia de que la dispersión crezca o disminuya con el ajuste. Con menos de 5 puntos no se evalúa (N/A).",
     "normality_pvalue": "La prueba de normalidad evalúa si los residuos siguen una distribución normal. Si la prueba es exitosa (p valor > 0.05) sugiere que los residuos son normales."
   },
   "LATEX": {
@@ -430,7 +432,7 @@
     "BIC": "$$BIC = k\\ln(n) - 2\\ln(L)$$",
     "r_squared": "$$R^2 = 1 - \\frac{\\sum (y_i - \\hat{y}_i)^2}{\\sum (y_i - \\bar{y})^2}$$",
     "durbin_watson": "$$DW = \\frac{\\sum (e_t - e_{t-1})^2}{\\sum e_t^2}$$",
-    "homoscedasticity_pvalue": "Sin fórmula específica. Se refiere al valor p obtenido de una prueba como Breusch-Pagan o White.",
+    "homoscedasticity_pvalue": "$$\\rho_s = \\operatorname{Spearman}\\left(|y_i - \\hat{y}_i|,\\ \\hat{y}_i\\right)$$",
     "normality_pvalue": "Sin fórmula específica. Se refiere al valor p de pruebas como Shapiro-Wilk o Jarque-Bera."
   },
   "KINETICS_HISTORIC": {
